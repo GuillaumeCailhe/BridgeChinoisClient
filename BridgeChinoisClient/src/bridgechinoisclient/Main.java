@@ -9,7 +9,7 @@ package bridgechinoisclient;
  *
  * @author helgr
  */
-public class BridgeChinoisClient {
+public class Main {
 
     /**
      * @param args the command line arguments
