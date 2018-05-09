@@ -5,6 +5,11 @@
  */
 package bridgechinoisclient.model.reseau;
 
+import LibrairieReseau.CodeMessage;
+import LibrairieReseau.Communication;
+import LibrairieReseau.Message;
+import LibrairieReseau.MessageString;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,8 +20,22 @@ import java.net.Socket;
  */
 public class Client {
     
-    public Client() throws IOException{
-        
+    public Client() {
+        try {
+           Socket client = new Socket("localhost", 31000);
+
+           System.out.println("Just connected to " + client.getRemoteSocketAddress());
+           Communication c = new Communication(client);
+           c.envoyerPseudo("Pepefab");
+           c.recevoirDonnees();
+           Message m = c.getMessage();
+           if(m.getCode() == CodeMessage.PSEUDO){
+               System.out.println("Reçu: " + m.getDonnees());
+           }
+           client.close();
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
     }
     
 }

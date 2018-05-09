@@ -5,6 +5,8 @@
  */
 package bridgechinoisclient;
 
+import bridgechinoisclient.model.reseau.Client;
+
 /**
  *
  * @author helgr
@@ -16,6 +18,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Client c = new Client();
     }
     
 }
