@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,7 +31,7 @@ public class Client {
         
         // 1 : Connexion au serveur
         Socket client = new Socket("localhost", 31000);
-        System.out.println("Just connected to " + client.getRemoteSocketAddress());
+        System.out.println("Connecté");
         Communication c = new Communication(client);
         Thread t = new Thread(c);
         t.start();
@@ -38,7 +40,13 @@ public class Client {
         c.envoyer(CodeMessage.PARTIE_JCJ);
         
         // 3 : Attente d'une réponse
-        while(c.getNbMessages() == 0);
+        while(c.getNbMessages() == 0){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                throw new Error("Erreur sleep dans client");
+            }
+        }
         Message msg = c.getMessage();
         if(msg.getCode() != CodeMessage.PARTIE_DEMARRER){
             throw new Error("Erreur de réponse du serveur");
@@ -54,20 +62,25 @@ public class Client {
             switch(msg.getCode()){
                 case PSEUDO:
                     System.out.println("Pseudo adversaire: " + (String) msg.getDonnees());
+                    break;
                 case MAIN:
                     System.out.println("Main: ");
                     for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
                         System.out.print(carte + "; ");
                     }
+                    break;
                 case PILES:
                     System.out.println("Piles: ");
                     for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
                         System.out.print(carte + "; ");
                     }
+                    break;
                 case TOUR_OK:
                     System.out.println("Vous jouez en premier.");
+                    break;
                 case TOUR_KO:
                     System.out.println("Vous jouez en second.");
+                    break;
             }
         }
         
