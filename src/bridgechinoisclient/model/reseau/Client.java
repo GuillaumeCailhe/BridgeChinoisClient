@@ -47,7 +47,7 @@ public class Client {
                 throw new Error("Erreur sleep dans client");
             }
         }
-        Message msg = c.getMessage();
+        Message msg = c.getMessageParCode(CodeMessage.PARTIE_DEMARRER);
         if(msg.getCode() != CodeMessage.PARTIE_DEMARRER){
             throw new Error("Erreur de réponse du serveur");
         } else {
@@ -58,7 +58,7 @@ public class Client {
         c.envoyerString(CodeMessage.PSEUDO, "PEPEFAB");
         for(int i = 0; i < 4; i++){
             while(c.getNbMessages() == 0) { t.sleep(10); }
-            msg = c.getMessage();
+            msg = c.getPremierMessage();
             switch(msg.getCode()){
                 case PSEUDO:
                     System.out.println("Pseudo adversaire: " + (String) msg.getDonnees());
@@ -68,12 +68,14 @@ public class Client {
                     for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
                         System.out.print(carte + "; ");
                     }
+                    System.out.println();
                     break;
                 case PILES:
                     System.out.println("Piles: ");
                     for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
                         System.out.print(carte + "; ");
                     }
+                    System.out.println();
                     break;
                 case TOUR_OK:
                     System.out.println("Vous jouez en premier.");
@@ -86,7 +88,7 @@ public class Client {
         
         // 5 : Début de la première manche ! :D
 
-        client.close();
+        //client.close();
 
     }
     
