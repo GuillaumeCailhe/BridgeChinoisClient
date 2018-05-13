@@ -19,7 +19,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException, InterruptedException {
         // TODO code application logic here
-        Client c = new Client();
+        Client c = new Client("Gerard de la riviere",2);
     }
     
 }

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class Client {
     
-    public Client() throws IOException, InterruptedException {
+    public Client(String pseudo, int nbManches) throws IOException, InterruptedException {
         // MANQUANT : négociation du nombre de manches (minimum des 2 demandés ?)
         
         // Connexion au serveur
@@ -56,8 +56,23 @@ public class Client {
             System.out.println("Début de la partie !");
         }
         
+        // Négociation du nombre de manches
+        System.out.println("Négociation du nombre de manches");
+        c.envoyerEntier(CodeMessage.PARTIE_NBMANCHES,(byte) nbManches);
+        if(c.getNbMessages() == 0){
+            try {
+                synchronized(this){
+                    wait();
+                }
+            } catch (InterruptedException ex) {
+                throw new Error("Erreur wait() dans client");
+            }
+        }
+        nbManches = (int) c.getMessageParCode(CodeMessage.PARTIE_NBMANCHES).getDonnees();
+        System.out.println("Il y aura " + nbManches + " manches");
+        
         // Envoi du pseudo et réception de 4 messages (PSEUDO, MAIN, PILES, TOUR_OK ou TOUR_KO)
-        c.envoyerString(CodeMessage.PSEUDO, "PEPEFAB");
+        c.envoyerString(CodeMessage.PSEUDO, pseudo);
         for(int i = 0; i < 4; i++){
             if(c.getNbMessages() == 0) { 
                 synchronized(this){
