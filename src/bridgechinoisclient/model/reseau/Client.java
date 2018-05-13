@@ -29,22 +29,24 @@ public class Client {
     public Client() throws IOException, InterruptedException {
         // MANQUANT : négociation du nombre de manches (minimum des 2 demandés ?)
         
-        // 1 : Connexion au serveur
+        // Connexion au serveur
         Socket client = new Socket("localhost", 31000);
         System.out.println("Connecté");
-        Communication c = new Communication(client);
+        Communication c = new Communication(client, this);
         Thread t = new Thread(c);
         t.start();
         
-        // 2 : Envoi d'une requête de nouvelle partie
+        // Envoi d'une requête de nouvelle partie
         c.envoyer(CodeMessage.PARTIE_JCJ);
         
-        // 3 : Attente d'une réponse
-        while(c.getNbMessages() == 0){
+        // Attente d'une réponse
+        if(c.getNbMessages() == 0){
             try {
-                Thread.sleep(10);
+                synchronized(this){
+                    wait();
+                }
             } catch (InterruptedException ex) {
-                throw new Error("Erreur sleep dans client");
+                throw new Error("Erreur wait() dans client");
             }
         }
         Message msg = c.getMessageParCode(CodeMessage.PARTIE_DEMARRER);
@@ -54,10 +56,14 @@ public class Client {
             System.out.println("Début de la partie !");
         }
         
-        // 4 : Envoi du pseudo et réception de 4 messages (PSEUDO, MAIN, PILES, TOUR_OK ou TOUR_KO)
+        // Envoi du pseudo et réception de 4 messages (PSEUDO, MAIN, PILES, TOUR_OK ou TOUR_KO)
         c.envoyerString(CodeMessage.PSEUDO, "PEPEFAB");
         for(int i = 0; i < 4; i++){
-            while(c.getNbMessages() == 0) { t.sleep(10); }
+            if(c.getNbMessages() == 0) { 
+                synchronized(this){
+                    wait();
+                }
+            }
             msg = c.getPremierMessage();
             switch(msg.getCode()){
                 case PSEUDO:
@@ -86,7 +92,7 @@ public class Client {
             }
         }
         
-        // 5 : Début de la première manche ! :D
+        // Début de la première manche ! :D
 
         //client.close();
 
