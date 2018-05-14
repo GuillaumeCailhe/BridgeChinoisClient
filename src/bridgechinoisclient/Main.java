@@ -5,6 +5,7 @@
  */
 package bridgechinoisclient;
 
+import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.model.reseau.Client;
 import java.io.IOException;
 
@@ -19,7 +20,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException, InterruptedException {
         // TODO code application logic here
-        Client c = new Client("Gerard de la riviere",2);
+        Client c = new Client("Gerard de la riviere",ModeDeJeu.JOUEUR_CONTRE_JOUEUR,2);
     }
     
 }
