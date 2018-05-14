@@ -32,8 +32,8 @@ public class Client {
     private String pseudo;
     private int nbManches;
     
-    ArrayList<Carte> main;
-    ArrayList<Carte> piles;
+    private ArrayList<Carte> main;
+    private ArrayList<Carte> piles;
     
     public Client(String pseudo, ModeDeJeu mode, int nbManches) throws IOException, InterruptedException {        
         this.pseudo = pseudo;
@@ -50,6 +50,52 @@ public class Client {
 
         //client.close();
 
+    } 
+        
+    private void jeu(){
+        Message msg;
+        
+        for(int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++){
+            receptionMain();
+            receptionPiles();
+
+            System.out.println();
+            System.out.println("Début de la manche " + mancheActuelle);
+            
+            do{
+                // Attendre tour
+                attendreMessage();
+                msg = this.c.getPremierMessage();
+                switch(msg.getCode()){
+                    case TOUR_OK:
+                        System.out.println("A votre tour");
+                        break;
+                    case TOUR_KO:
+                        System.out.println("L'adversaire joue...");
+                        attendreMessage();
+                        msg = this.c.getPremierMessage();
+                        if(msg.getCode() == CodeMessage.TOUR_OK){
+                            System.out.println("L'adversaire a joué");
+                        }
+                        break;
+                }
+                
+                // Jouer carte
+                
+                
+                // Attendre résultat du tour (et attendre que l'adversaire pioche s'il a gagné)
+                
+                
+                // Piocher carte si il en reste
+
+                
+                
+            } while(!main.isEmpty());
+            
+            // Réception victoire/défaite
+            
+        }
+        
     }
     
     /**
@@ -122,19 +168,6 @@ public class Client {
         System.out.println("Pseudo adversaire: " + (String) msg.getDonnees());
 
 
-    }
-    
-    private void jeu(){
-        Message msg;
-        
-        for(int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++){
-            receptionMain();
-            receptionPiles();
-
-            System.out.println();
-            System.out.println("Début de la manche " + mancheActuelle);
-        }
-        
     }
     
     private void receptionMain(){
