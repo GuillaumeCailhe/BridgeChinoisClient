@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +43,7 @@ public class Client {
         this.main = new ArrayList<Carte>();
         this.piles = new ArrayList<Carte>();
         
-        connection();
+        connexion();
 
         initialisation();
         
@@ -53,41 +54,40 @@ public class Client {
     } 
         
     private void jeu(){
+        Scanner sc = new Scanner(System.in);
+        int iCarte;
         Message msg;
         
         for(int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++){
-            receptionMain();
-            receptionPiles();
-
-            System.out.println();
             System.out.println("Début de la manche " + mancheActuelle);
             
+            receptionMain();
+            receptionPiles();
+            
             do{
+                afficherMain(); 
+                afficherPiles();
+                
                 // Attendre tour
                 attendreMessage();
                 msg = this.c.getPremierMessage();
                 switch(msg.getCode()){
                     case TOUR_OK:
                         System.out.println("A votre tour");
+                        jouerCarteTextuel();
+                        recupererCoupAdversaire();
                         break;
                     case TOUR_KO:
                         System.out.println("L'adversaire joue...");
-                        attendreMessage();
-                        msg = this.c.getPremierMessage();
-                        if(msg.getCode() == CodeMessage.TOUR_OK){
-                            System.out.println("L'adversaire a joué");
-                        }
+                        recupererCoupAdversaire();
+                        jouerCarteTextuel();
                         break;
                 }
                 
-                // Jouer carte
-                
-                
-                // Attendre résultat du tour (et attendre que l'adversaire pioche s'il a gagné)
-                
+                // Récupération du vainqueur
                 
                 // Piocher carte si il en reste
-
+                
                 
                 
             } while(!main.isEmpty());
@@ -102,14 +102,15 @@ public class Client {
      * Réalise la connexion au serveur et la demande de partie
      * @throws IOException 
      */
-    private void connection() throws IOException{
+    private void connexion() throws IOException{
         // Connexion au serveur
         Socket client = new Socket("localhost", 31000);
         System.out.println("Connecté");
-        this.c = new Communication(client, this);
+        this.c = new Communication(client);
+        this.c.addNotifie(this);
         Thread t = new Thread(c);
         t.start();
-        
+
         // Envoi d'une requête de nouvelle partie
         switch(mode){
             case JOUEUR_CONTRE_JOUEUR:
@@ -174,9 +175,8 @@ public class Client {
         // Réception de la main   
         attendreMessage();
         Message msg = this.c.getMessageParCode(CodeMessage.MAIN);
-        System.out.println("Main: ");
         for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
-            System.out.print(carte + "; ");
+            main.add(carte);
         }
     }
     
@@ -184,11 +184,56 @@ public class Client {
         // Réception de la pile
         attendreMessage();
         Message msg = this.c.getMessageParCode(CodeMessage.PILES);
-        System.out.println();
-        System.out.println("Piles: ");
         for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
-            System.out.print(carte + "; ");
+            piles.add(carte);
         }        
+    }
+    
+    private void jouerCarteTextuel(){
+        Scanner sc = new Scanner(System.in);
+        int iCarte;
+        Message msg;
+        
+        do{
+            System.out.println("Index de la carte à jouer:");
+            iCarte = sc.nextInt();
+            System.out.println("Vous avez joué la carte : " + main.get(iCarte));
+            c.envoyerEntier(CodeMessage.JOUER, (byte) iCarte);
+
+            attendreMessage();
+            msg = c.getPremierMessage();
+        }while(msg.getCode() != CodeMessage.JOUER_OK);
+        
+        main.remove(iCarte);
+    }
+    
+    private void recupererCoupAdversaire(){
+        Message msg;
+        
+        attendreMessage();
+        msg = c.getMessageParCode(CodeMessage.JOUER_ADVERSAIRE);
+        Carte carte = ((ArrayList<Carte>) msg.getDonnees()).get(0);
+        System.out.println("L'adversaire a joué " + carte);
+        
+        attendreMessage();
+        msg = c.getMessageParCode(CodeMessage.TOUR_OK);
+        System.out.println("A votre tour");   
+    }
+    
+    private void afficherPiles(){
+        System.out.println("Piles: ");
+        for(Carte carte : this.piles){
+            System.out.print(carte + "; ");
+        }
+        System.out.println();        
+    }
+    
+    private void afficherMain(){
+        System.out.println("Main: ");
+        for(Carte carte : this.main){
+            System.out.print(carte + "; ");
+        }
+        System.out.println();
     }
 
     private void attendreMessage(){
