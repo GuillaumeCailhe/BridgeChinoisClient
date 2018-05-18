@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.AccueilController">
+   <children>
+      <VBox id="VBox" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="600.0" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#traiterClicMultijoueur" prefHeight="50.0" prefWidth="200.0" text="MULTI-JOUEURS" textAlignment="JUSTIFY" />
+            <Button mnemonicParsing="false" onAction="#traiterClicIA" prefHeight="50.0" prefWidth="200.0" text="JOUEUR VS IA" textAlignment="JUSTIFY" />
+            <Button mnemonicParsing="false" onAction="#traiterClicTutoriel" prefHeight="50.0" prefWidth="200.0" style="-fx-background-image: ;;" stylesheets="@fond.css" text="TUTORIEL" textAlignment="JUSTIFY" />
+            <Button mnemonicParsing="false" onAction="#traiterClicRegles" prefHeight="50.0" prefWidth="200.0" text="REGLES" textAlignment="JUSTIFY" />
+            <Button mnemonicParsing="false" onAction="#traiterClicScores" prefHeight="50.0" prefWidth="200.0" text="SCORES" textAlignment="JUSTIFY" />
+            <Button mnemonicParsing="false" onAction="#traiterClicQuitter" prefHeight="50.0" prefWidth="200.0" text="QUITTER" />
+         </children>
+         <stylesheets>
+            <URL value="@Theme.css" />
+         </stylesheets>
+      </VBox>
+   </children>
+</AnchorPane>
