@@ -8,6 +8,7 @@ package bridgechinoisclient;
 import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.model.reseau.Client;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  *
@@ -20,7 +21,9 @@ public class Main {
      */
     public static void main(String[] args) throws IOException, InterruptedException {
         // TODO code application logic here
-        Client c = new Client("Gerard de la riviere",ModeDeJeu.JOUEUR_CONTRE_JOUEUR,2);
+        String[] pseudos = new String[] {"Pepefab","Helgrind","Djoko","Amadou","Kyle","Perceval","Karadoc","Kadoc","Gabe"};
+        Random r = new Random();
+        Client c = new Client(pseudos[r.nextInt(pseudos.length)],ModeDeJeu.JOUEUR_CONTRE_JOUEUR,1+r.nextInt(5));
     }
     
 }

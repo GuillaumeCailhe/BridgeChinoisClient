@@ -36,7 +36,8 @@ public class Client {
     private ArrayList<Carte> main;
     private ArrayList<Carte> piles;
     
-    public Client(String pseudo, ModeDeJeu mode, int nbManches) throws IOException, InterruptedException {        
+    public Client(String pseudo, ModeDeJeu mode, int nbManches) throws IOException, InterruptedException {     
+        System.out.println("Vous êtes " + pseudo);
         this.pseudo = pseudo;
         this.mode = mode;
         this.nbManches = nbManches;
@@ -55,7 +56,6 @@ public class Client {
         
     private void jeu(){
         Scanner sc = new Scanner(System.in);
-        int iCarte;
         Message msg;
         
         for(int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++){
@@ -75,19 +75,38 @@ public class Client {
                     case TOUR_OK:
                         System.out.println("A votre tour");
                         jouerCarteTextuel();
+                        System.out.println("L'adversaire joue...");
                         recupererCoupAdversaire();
                         break;
                     case TOUR_KO:
                         System.out.println("L'adversaire joue...");
                         recupererCoupAdversaire();
+                        attendreMessage();
+                        msg = c.getMessageParCode(CodeMessage.TOUR_OK);
                         jouerCarteTextuel();
                         break;
                 }
                 
                 // Récupération du vainqueur
+                recupererResultat();
                 
                 // Piocher carte si il en reste
-                
+                attendreMessage();
+                msg = this.c.getPremierMessage();
+                switch(msg.getCode()){
+                    case TOUR_OK:
+                        piocherCarteTextuel();
+                        System.out.println("L'adversaire pioche...");
+                        recupererPiocheAdversaire();
+                        break;
+                    case TOUR_KO:
+                        System.out.println("L'adversaire pioche...");
+                        recupererPiocheAdversaire();
+                        attendreMessage();
+                        msg = c.getMessageParCode(CodeMessage.TOUR_OK);
+                        piocherCarteTextuel();
+                        break;
+                }
                 
                 
             } while(!main.isEmpty());
@@ -206,6 +225,17 @@ public class Client {
         
         main.remove(iCarte);
     }
+       
+    private void piocherCarteTextuel(){
+        Scanner sc = new Scanner(System.in);
+        int iCarte;
+        MessageCartes msg;
+        
+        System.out.println("Index de la carte à piocher: ");
+        iCarte = sc.nextInt();
+        System.out.println("Vous avez pioché la carte : " + piles.get(iCarte));
+        c.envoyerEntier(CodeMessage.PIOCHER,(byte) iCarte);
+    }
     
     private void recupererCoupAdversaire(){
         Message msg;
@@ -214,11 +244,39 @@ public class Client {
         msg = c.getMessageParCode(CodeMessage.JOUER_ADVERSAIRE);
         Carte carte = ((ArrayList<Carte>) msg.getDonnees()).get(0);
         System.out.println("L'adversaire a joué " + carte);
+    }
+    
+    private void recupererPiocheAdversaire(){
+        Message msg;
         
         attendreMessage();
-        msg = c.getMessageParCode(CodeMessage.TOUR_OK);
-        System.out.println("A votre tour");   
+        msg = c.getMessageParCode(CodeMessage.PIOCHER_ADVERSAIRE);
+        ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
+        int i;
+        for(i = 0; i < 6; i++){
+            if(this.piles.get(i).compareTo(pioche.get(0)) == 0){
+                break;
+            }
+        }
+        this.piles.set(i, pioche.get(1));
+        System.out.println("L'adversaire a pioché " + pioche.get(0) + " et a révélée la carte " + pioche.get(1));
+        afficherPiles();
     }
+    
+    private void recupererResultat(){
+        Message msg;
+        attendreMessage();
+        msg = c.getPremierMessage();
+        switch(msg.getCode()){
+            case VICTOIRE_PLI:
+                System.out.println("Vous remportez le pli");
+                break;
+            case DEFAITE_PLI:
+                System.out.println("Vous perdez le pli");
+                break;
+        }
+    }
+
     
     private void afficherPiles(){
         System.out.println("Piles: ");
@@ -235,6 +293,7 @@ public class Client {
         }
         System.out.println();
     }
+   
 
     private void attendreMessage(){
         if(c.getNbMessages() == 0) { 
