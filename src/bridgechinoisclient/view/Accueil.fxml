@@ -11,7 +11,7 @@
          <children>
             <Button mnemonicParsing="false" onAction="#traiterClicMultijoueur" prefHeight="50.0" prefWidth="200.0" text="MULTI-JOUEURS" textAlignment="JUSTIFY" />
             <Button mnemonicParsing="false" onAction="#traiterClicIA" prefHeight="50.0" prefWidth="200.0" text="JOUEUR VS IA" textAlignment="JUSTIFY" />
-            <Button mnemonicParsing="false" onAction="#traiterClicTutoriel" prefHeight="50.0" prefWidth="200.0" style="-fx-background-image: ;;" stylesheets="@fond.css" text="TUTORIEL" textAlignment="JUSTIFY" />
+            <Button mnemonicParsing="false" onAction="#traiterClicTutoriel" prefHeight="50.0" prefWidth="200.0" text="TUTORIEL" textAlignment="JUSTIFY" />
             <Button mnemonicParsing="false" onAction="#traiterClicRegles" prefHeight="50.0" prefWidth="200.0" text="REGLES" textAlignment="JUSTIFY" />
             <Button mnemonicParsing="false" onAction="#traiterClicScores" prefHeight="50.0" prefWidth="200.0" text="SCORES" textAlignment="JUSTIFY" />
             <Button mnemonicParsing="false" onAction="#traiterClicQuitter" prefHeight="50.0" prefWidth="200.0" text="QUITTER" />
