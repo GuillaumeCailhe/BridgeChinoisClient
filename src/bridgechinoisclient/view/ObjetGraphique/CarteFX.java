@@ -5,6 +5,7 @@
  */
 package bridgechinoisclient.view.ObjetGraphique;
 
+import LibrairieCarte.Carte;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,13 +18,15 @@ public class CarteFX extends Parent {
 
     private int largeur;
     private int hauteur;
+    private Carte carte;
 
     /**
      * Crée un objet CarteFX à partir du nom de la carte
      *
      * @param nom le nom de la carte (exemple 10 de coeur)
      */
-    public CarteFX(double posX, double posY, String nom) {
+    public CarteFX(double posX, double posY, Carte carte) {
+        String nom = carte.getValeur() + "_" + carte.getSymbole();
         creerCarte(posX, posY, "../ressources/cartes/" + nom + ".png");
     }
 

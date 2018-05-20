@@ -28,7 +28,7 @@ public class MainJoueurFX extends Parent {
 
         while (it.hasNext()) {
             Carte carte = it.next();
-            CarteFX carteFX = new CarteFX(posCarteX, posCarteY, carte.getValeur() + "_" + carte.getSymbole());
+            CarteFX carteFX = new CarteFX(posCarteX, posCarteY, carte);
             posCarteX += carteFX.getLargeur() - 10;
             this.getChildren().add(carteFX);
         }

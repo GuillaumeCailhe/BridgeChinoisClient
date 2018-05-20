@@ -11,6 +11,7 @@ import LibrairieCarte.ValeurCarte;
 import bridgechinoisclient.view.ObjetGraphique.CarteFX;
 import bridgechinoisclient.view.ObjetGraphique.MainAdversaireFX;
 import bridgechinoisclient.view.ObjetGraphique.MainJoueurFX;
+import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -30,6 +31,8 @@ public class PlateauController extends Controller {
     private HBox mainAdversaireHBox;
     @FXML
     private HBox mainJoueurHBox;
+    @FXML
+    private HBox pilesHBox;
 
     /**
      * Initializes the controller class.
@@ -54,10 +57,15 @@ public class PlateauController extends Controller {
         // On initialise un objet graphique MainJoueur.
         MainAdversaireFX mainAdversaireFX = new MainAdversaireFX();
         MainJoueurFX mainJoueurFX = new MainJoueurFX(mainJoueur);
+        
+        // On initialise le paquet de carte.
+        PaquetFX paquetFX = new PaquetFX(52);
 
         // On ajoute les mains au plateau.
         this.mainAdversaireHBox.getChildren().add(mainAdversaireFX);
         this.mainJoueurHBox.getChildren().add(mainJoueurFX);
+        this.pilesHBox.getChildren().add(paquetFX);
+        paquetFX.decouvrirCarte(new Carte(ValeurCarte.VALET, SymboleCarte.CARREAU));
     }
 
 }

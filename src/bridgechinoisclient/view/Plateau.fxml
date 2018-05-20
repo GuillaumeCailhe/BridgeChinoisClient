@@ -21,6 +21,7 @@
                      <children>
                         <HBox fx:id="mainAdversaireHBox" layoutX="46.0" prefHeight="100.0" prefWidth="581.0" />
                         <HBox fx:id="mainJoueurHBox" layoutX="45.0" layoutY="480.0" prefHeight="91.0" prefWidth="581.0" />
+                        <HBox fx:id="pilesHBox" layoutX="45.0" layoutY="261.0" prefHeight="100.0" prefWidth="581.0" />
                      </children>
                   </AnchorPane>
                </children></AnchorPane>
