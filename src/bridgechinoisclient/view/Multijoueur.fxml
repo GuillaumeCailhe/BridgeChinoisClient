@@ -8,9 +8,9 @@
 
 <AnchorPane prefHeight="595.0" prefWidth="648.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.MultijoueurController">
    <children>
-      <VBox id="VBox" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="600.0" spacing="50.0" stylesheets="@Theme.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+      <VBox id="VBox" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="600.0" spacing="50.0" stylesheets="@ressources/autre/Theme.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <Label text="Recherche d'un adversaire de votre niveau">
+            <Label style="-fx-background-color: white;" text="Recherche d'un adversaire de votre niveau">
                <font>
                   <Font size="24.0" />
                </font>

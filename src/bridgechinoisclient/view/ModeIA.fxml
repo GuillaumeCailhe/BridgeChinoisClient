@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxWidth="663.0" prefHeight="552.0" prefWidth="663.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.ModeIAController">
+<AnchorPane maxWidth="663.0" prefHeight="552.0" prefWidth="663.0" stylesheets="@ressources/autre/Theme.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.ModeIAController">
    <children>
       <VBox id="VBox" alignment="CENTER" layoutX="20.0" layoutY="20.0" prefHeight="580.0" prefWidth="600.0" spacing="50.0" stylesheets="@Theme.css" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
