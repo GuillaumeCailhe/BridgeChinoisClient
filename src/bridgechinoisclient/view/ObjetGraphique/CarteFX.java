@@ -19,6 +19,7 @@ public class CarteFX extends Parent {
     private int largeur;
     private int hauteur;
     private Carte carte;
+    private static final int deplacementAnimation = 40;
 
     /**
      * Crée un objet CarteFX à partir du nom de la carte
@@ -27,6 +28,7 @@ public class CarteFX extends Parent {
      */
     public CarteFX(double posX, double posY, Carte carte) {
         String nom = carte.getValeur() + "_" + carte.getSymbole();
+        this.carte = carte;
         creerCarte(posX, posY, "../ressources/cartes/" + nom + ".png");
     }
 
@@ -34,6 +36,7 @@ public class CarteFX extends Parent {
      * Crée une carteFX retournée
      */
     public CarteFX(double posX, double posY) {
+        this.carte = null;
         creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
     }
 
@@ -53,16 +56,45 @@ public class CarteFX extends Parent {
         carte.setFitHeight(hauteur);
         carte.setLayoutX(posX);
         carte.setLayoutY(posY);
-
+              
         this.getChildren().add(carte);
     }
-
+    
+    /**
+     * @return la largeur de la carte.
+     */
     public int getLargeur() {
         return largeur;
     }
-
+    
+    /**
+     * @return la hauteur de la carte.
+     */
     public int getHauteur() {
         return hauteur;
     }
-
+    
+    /**
+     * L'objet carte associé. null si la carte est inconnue.
+     * @return 
+     */
+    public Carte getCarte() {
+        return carte;
+    }
+    
+    /**
+     * Bouge la carte vers le haut lorsqu'on met la souris dessus.
+     * Est appelée par MainJoueurFX.
+     */
+    public void animationSurvol(){
+        this.setTranslateY(this.getTranslateY() - deplacementAnimation);
+    }
+    
+    /**
+     * Remet la carte à sa position initiale losqu'on relâche la souris.
+     * Est appelée par MainJoueurFX.
+     */
+    public void animationRelachement(){
+        this.setTranslateY(this.getTranslateY() + deplacementAnimation);
+    }
 }

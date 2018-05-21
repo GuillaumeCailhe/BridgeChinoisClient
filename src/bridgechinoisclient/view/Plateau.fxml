@@ -8,7 +8,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="584.0" prefWidth="1124.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.PlateauController">
@@ -19,9 +18,9 @@
                <children>
                   <AnchorPane prefHeight="582.0" prefWidth="679.0">
                      <children>
-                        <HBox fx:id="mainAdversaireHBox" layoutX="46.0" prefHeight="100.0" prefWidth="581.0" />
-                        <HBox fx:id="mainJoueurHBox" layoutX="45.0" layoutY="480.0" prefHeight="91.0" prefWidth="581.0" />
-                        <HBox fx:id="pilesHBox" layoutX="45.0" layoutY="261.0" prefHeight="100.0" prefWidth="581.0" />
+                        <AnchorPane fx:id="mainJoueurAnchorPane" layoutX="46.0" layoutY="450.0" prefHeight="118.0" prefWidth="587.0" />
+                        <AnchorPane fx:id="pilesAnchorPane" layoutX="46.0" layoutY="232.0" prefHeight="118.0" prefWidth="587.0" />
+                        <AnchorPane fx:id="mainAdversaireAnchorPane" layoutX="46.0" layoutY="14.0" prefHeight="118.0" prefWidth="587.0" />
                      </children>
                   </AnchorPane>
                </children></AnchorPane>

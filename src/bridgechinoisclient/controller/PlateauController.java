@@ -8,17 +8,16 @@ package bridgechinoisclient.controller;
 import LibrairieCarte.Carte;
 import LibrairieCarte.SymboleCarte;
 import LibrairieCarte.ValeurCarte;
-import bridgechinoisclient.view.ObjetGraphique.CarteFX;
 import bridgechinoisclient.view.ObjetGraphique.MainAdversaireFX;
 import bridgechinoisclient.view.ObjetGraphique.MainJoueurFX;
 import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
@@ -28,11 +27,11 @@ import javafx.scene.layout.HBox;
 public class PlateauController extends Controller {
 
     @FXML
-    private HBox mainAdversaireHBox;
+    private AnchorPane mainAdversaireAnchorPane;
     @FXML
-    private HBox mainJoueurHBox;
+    private AnchorPane mainJoueurAnchorPane;
     @FXML
-    private HBox pilesHBox;
+    private AnchorPane pilesAnchorPane;
 
     /**
      * Initializes the controller class.
@@ -62,10 +61,10 @@ public class PlateauController extends Controller {
         PaquetFX paquetFX = new PaquetFX(52);
 
         // On ajoute les mains au plateau.
-        this.mainAdversaireHBox.getChildren().add(mainAdversaireFX);
-        this.mainJoueurHBox.getChildren().add(mainJoueurFX);
-        this.pilesHBox.getChildren().add(paquetFX);
-        paquetFX.decouvrirCarte(new Carte(ValeurCarte.VALET, SymboleCarte.CARREAU));
+        //this.mainAdversaireAnchorPane.getChildren().add(mainAdversaireFX);
+        //this.mainJoueurAnchorPane.getChildren().add(mainJoueurFX);
+        this.pilesAnchorPane.getChildren().add(paquetFX);
+        paquetFX.animationDistributionInitiale(mainJoueur);
     }
 
 }
