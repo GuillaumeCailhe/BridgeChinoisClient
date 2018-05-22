@@ -107,10 +107,7 @@ public class PaquetFX extends Parent {
      * @return l'animation
      */
     private TranslateTransition animationDistributionCarteJoueur(Carte carte, int positionCarteDansLaMain) {
-        CarteFX carteFX = decouvrirCarte(carte);
-        retirerCarteSansDecouvrir();
-
-        return animationDistributionCarte(this.mainJoueurFX, carteFX, 150f, 0f, positionCarteDansLaMain);
+        return animationDistributionCarte(this.mainJoueurFX, carte, 150f, 0f, positionCarteDansLaMain);
     }
 
     /**
@@ -120,8 +117,7 @@ public class PaquetFX extends Parent {
      * @return l'animation
      */
     private TranslateTransition animationDistributionCarteAdversaire(int positionCarteDansLaMain) {
-        CarteFX carteFX = retirerCarteSansDecouvrir();
-        return animationDistributionCarte(this.mainAdversaireFX, carteFX, -200f, 0f, positionCarteDansLaMain);
+        return animationDistributionCarte(this.mainAdversaireFX, null, -200f, 0f, positionCarteDansLaMain);
     }
 
     /**
@@ -133,8 +129,9 @@ public class PaquetFX extends Parent {
      * @param nouvellePositionY la position finale en Y.
      * @return l'animation
      */
-    private TranslateTransition animationDistributionCarte(MainFX mainFX, CarteFX carteADeplacer, double nouvellePositionX, double nouvellePositionY, int positionCarteDansLaMain) {
-        TranslateTransition tt = new TranslateTransition(Duration.millis(700), carteADeplacer);
+    private TranslateTransition animationDistributionCarte(MainFX mainFX, Carte carteADeplacer, double nouvellePositionX, double nouvellePositionY, int positionCarteDansLaMain) {
+        CarteFX carteFX = retirerCarteSansDecouvrir();
+        TranslateTransition tt = new TranslateTransition(Duration.millis(600), carteFX);
         tt.setFromX(0);
         tt.setFromY(0);
         tt.setToY(nouvellePositionX);
@@ -144,8 +141,8 @@ public class PaquetFX extends Parent {
         tt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                mainFX.ajouterCarte(carteADeplacer.getCarte(), positionCarteDansLaMain);
-                paquet.getChildren().remove(carteADeplacer);
+                mainFX.ajouterCarte(carteADeplacer, positionCarteDansLaMain);
+                paquet.getChildren().remove(carteFX);
             }
         });
 
