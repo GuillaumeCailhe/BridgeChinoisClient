@@ -16,13 +16,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="720.0">
                <children>
-                  <AnchorPane prefHeight="582.0" prefWidth="679.0">
-                     <children>
-                        <AnchorPane fx:id="mainJoueurAnchorPane" layoutX="46.0" layoutY="450.0" prefHeight="118.0" prefWidth="587.0" />
-                        <AnchorPane fx:id="pilesAnchorPane" layoutX="46.0" layoutY="232.0" prefHeight="118.0" prefWidth="587.0" />
-                        <AnchorPane fx:id="mainAdversaireAnchorPane" layoutX="46.0" layoutY="14.0" prefHeight="118.0" prefWidth="587.0" />
-                     </children>
-                  </AnchorPane>
+                  <AnchorPane fx:id="plateauPane" prefHeight="582.0" prefWidth="679.0" />
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="397.0">
                <children>

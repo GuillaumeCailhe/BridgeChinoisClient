@@ -14,15 +14,11 @@ import javafx.scene.Parent;
  */
 public class MainAdversaireFX extends MainFX {
     private int nombreCartes = 0;
-    
-    /**
-     * Crée l'objet MainAdversaire FX et l'initialise avec des cartes non
-     * découvertes.
-     */
-    public MainAdversaireFX() {
-        super();
-    }
 
+    public MainAdversaireFX(int positionX, int positionY) {
+        super(positionX, positionY);
+    }
+    
     @Override
     public void jouerCarte() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

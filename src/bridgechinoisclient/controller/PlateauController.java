@@ -27,11 +27,8 @@ import javafx.scene.layout.AnchorPane;
 public class PlateauController extends Controller {
 
     @FXML
-    private AnchorPane mainAdversaireAnchorPane;
-    @FXML
-    private AnchorPane mainJoueurAnchorPane;
-    @FXML
-    private AnchorPane pilesAnchorPane;
+    private AnchorPane plateauPane;
+
 
     /**
      * Initializes the controller class.
@@ -52,18 +49,23 @@ public class PlateauController extends Controller {
         mainJoueur.add(new Carte(ValeurCarte.DAME, SymboleCarte.COEUR));
         mainJoueur.add(new Carte(ValeurCarte.HUIT, SymboleCarte.PIQUE));
         mainJoueur.add(new Carte(ValeurCarte.CINQ, SymboleCarte.CARREAU));
+        
+        // On stocke la hauteur et la largeur du plateau.
+        int largeurPlateauPane = (int) (plateauPane.getPrefWidth());
+        int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
 
         // On initialise un objet graphique MainJoueur.
-        MainAdversaireFX mainAdversaireFX = new MainAdversaireFX();
-        MainJoueurFX mainJoueurFX = new MainJoueurFX();
+        MainAdversaireFX mainAdversaireFX = new MainAdversaireFX(60,0);
+        MainJoueurFX mainJoueurFX = new MainJoueurFX(60, hauteurPlateauPane - 85);
+        
         
         // On initialise le paquet de carte.
-        PaquetFX paquetFX = new PaquetFX(52, mainJoueurFX, mainAdversaireFX);
+        PaquetFX paquetFX = new PaquetFX(52, largeurPlateauPane/2 - 60, hauteurPlateauPane/2 - 85, mainJoueurFX, mainAdversaireFX);
         
         // On ajoute les mains au plateau.
-        this.mainAdversaireAnchorPane.getChildren().add(mainAdversaireFX);
-        this.mainJoueurAnchorPane.getChildren().add(mainJoueurFX);
-        this.pilesAnchorPane.getChildren().add(paquetFX);
+        this.plateauPane.getChildren().add(mainAdversaireFX);
+        this.plateauPane.getChildren().add(mainJoueurFX);
+        this.plateauPane.getChildren().add(paquetFX);
         paquetFX.animationDistributionInitiale(mainJoueur);
     }
 

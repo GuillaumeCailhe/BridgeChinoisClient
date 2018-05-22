@@ -28,18 +28,32 @@ import javafx.util.Duration;
  */
 public class PaquetFX extends Parent {
 
+    /* Gestion du paquet*/
     private int nombreCartes;
     private Stack<CarteFX> cartesFX;
-    private int positionXTete = 0;
+
+    /* Position de l'objet graphique paquet */
+    private int positionXTete = 0; // position de la carte en tête de paquet
     private int positionYTete = 0;
-    private int offsetX = 2;
+    private int offsetX = 2; // décalage d'une carte par rapport à une autre
     private int offsetY = 2;
+
+    /* Mains pour les mettre à jour après les animations */
     private MainJoueurFX mainJoueurFX;
     private MainAdversaireFX mainAdversaireFX;
 
-    public PaquetFX(int nombreCartes, MainJoueurFX mainJoueurFX, MainAdversaireFX mainAdversaireFX) {
+    /**
+     * @param nombreCartes le nombre de cartes initiale du paquet.
+     * @param positionPaquetX la position du paquet en X.
+     * @param mainJoueurFX l'objet graphique qui contiendra la main du joueur.
+     * @param mainAdversaireFX l'objet graphique qui contiendra la main de
+     * l'adversaire.
+     */
+    public PaquetFX(int nombreCartes, int positionPaquetX, int positionPaquetY, MainJoueurFX mainJoueurFX, MainAdversaireFX mainAdversaireFX) {
         this.nombreCartes = nombreCartes;
         this.cartesFX = new Stack<>();
+        this.positionXTete = positionPaquetX;
+        this.positionYTete = positionPaquetY;
         this.mainJoueurFX = mainJoueurFX;
         this.mainAdversaireFX = mainAdversaireFX;
         int nombreCartesAAfficher = 0;
@@ -89,25 +103,25 @@ public class PaquetFX extends Parent {
      * Déplace une carte du paquet vers le joueur.
      *
      * @param carte la carte à dessiner.
-     * @param positionCarteDansLaMain la position de la carte dans la main 
+     * @param positionCarteDansLaMain la position de la carte dans la main
      * @return l'animation
      */
     private TranslateTransition animationDistributionCarteJoueur(Carte carte, int positionCarteDansLaMain) {
         CarteFX carteFX = decouvrirCarte(carte);
         retirerCarteSansDecouvrir();
-        
-        return animationDistributionCarte(this.mainJoueurFX, carteFX, 100f, 220f, positionCarteDansLaMain);
+
+        return animationDistributionCarte(this.mainJoueurFX, carteFX, 150f, 0f, positionCarteDansLaMain);
     }
 
     /**
      * Déplace une carte du paquet vers l'adversaire.
      *
-     * @param positionCarteDansLaMain la position de la carte dans la main 
+     * @param positionCarteDansLaMain la position de la carte dans la main
      * @return l'animation
      */
     private TranslateTransition animationDistributionCarteAdversaire(int positionCarteDansLaMain) {
         CarteFX carteFX = retirerCarteSansDecouvrir();
-        return animationDistributionCarte(this.mainAdversaireFX, carteFX, -150f, 220f, positionCarteDansLaMain);
+        return animationDistributionCarte(this.mainAdversaireFX, carteFX, -200f, 0f, positionCarteDansLaMain);
     }
 
     /**
@@ -121,13 +135,15 @@ public class PaquetFX extends Parent {
      */
     private TranslateTransition animationDistributionCarte(MainFX mainFX, CarteFX carteADeplacer, double nouvellePositionX, double nouvellePositionY, int positionCarteDansLaMain) {
         TranslateTransition tt = new TranslateTransition(Duration.millis(700), carteADeplacer);
-        tt.setByY(nouvellePositionX);
-        tt.setByX(nouvellePositionY);
+        tt.setFromX(0);
+        tt.setFromY(0);
+        tt.setToY(nouvellePositionX);
+        tt.setToX(nouvellePositionY);
 
         PaquetFX paquet = this;
         tt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent arg0) {   
+            public void handle(ActionEvent arg0) {
                 mainFX.ajouterCarte(carteADeplacer.getCarte(), positionCarteDansLaMain);
                 paquet.getChildren().remove(carteADeplacer);
             }

@@ -17,16 +17,11 @@ import javafx.scene.input.MouseEvent;
  * @author helgr
  */
 public class MainJoueurFX extends MainFX {
-    
-    /**
-     * Crée l'objet MainJoueurFX à partir de la main du joueur.
-     *
-     * @param main la main du joueur
-     */
-    public MainJoueurFX() {
-        super();
+
+    public MainJoueurFX(int positionX, int positionY) {
+        super(positionX, positionY);
     }
- 
+    
     @Override
     public void jouerCarte() {
 

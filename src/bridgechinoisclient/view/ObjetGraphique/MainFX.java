@@ -20,8 +20,11 @@ public abstract class MainFX extends Parent {
     private static final int offsetCarteX = 50;
     private ArrayList<CarteFX> mainFX;
 
-    public MainFX() {
+    public MainFX(int positionX, int positionY) {
         this.mainFX = new ArrayList<>();
+        
+        this.setLayoutX(positionX);
+        this.setLayoutY(positionY);
     }
 
     public void ajouterCarte(Carte carte, int positionDansLaMain) {
