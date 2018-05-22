@@ -16,8 +16,8 @@ import javafx.scene.image.ImageView;
  */
 public class CarteFX extends Parent {
 
-    private int largeur;
-    private int hauteur;
+    private static final int largeur = 60;
+    private static final int hauteur = 85;
     private Carte carte;
     private static final int deplacementAnimation = 40;
 
@@ -27,17 +27,13 @@ public class CarteFX extends Parent {
      * @param nom le nom de la carte (exemple 10 de coeur)
      */
     public CarteFX(double posX, double posY, Carte carte) {
-        String nom = carte.getValeur() + "_" + carte.getSymbole();
         this.carte = carte;
-        creerCarte(posX, posY, "../ressources/cartes/" + nom + ".png");
-    }
-
-    /**
-     * Crée une carteFX retournée
-     */
-    public CarteFX(double posX, double posY) {
-        this.carte = null;
-        creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
+        if(carte == null){
+            creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
+        }else{
+            String nom = carte.getValeur() + "_" + carte.getSymbole();
+            creerCarte(posX, posY, "../ressources/cartes/" + nom + ".png");
+        }
     }
 
     /**
@@ -46,9 +42,7 @@ public class CarteFX extends Parent {
      * @param cheminVersImage le chemin vers l'image de la carte.
      */
     private void creerCarte(double posX, double posY, String cheminVersImage) {
-        largeur = 60;
-        hauteur = 85;
-
+        
         Image imageCarte = new Image(getClass().getResourceAsStream(cheminVersImage));
         ImageView carte = new ImageView();
         carte.setImage(imageCarte);

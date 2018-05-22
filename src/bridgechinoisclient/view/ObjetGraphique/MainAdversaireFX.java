@@ -5,29 +5,26 @@
  */
 package bridgechinoisclient.view.ObjetGraphique;
 
+import LibrairieCarte.Carte;
 import javafx.scene.Parent;
 
 /**
  *
  * @author helgr
  */
-public class MainAdversaireFX extends Parent {
-
+public class MainAdversaireFX extends MainFX {
+    private int nombreCartes = 0;
+    
     /**
      * Crée l'objet MainAdversaire FX et l'initialise avec des cartes non
      * découvertes.
      */
     public MainAdversaireFX() {
-        int nombreCartes = 11;
-        double posCarteX = 0;
-        double posCarteY = 0;
+        super();
+    }
 
-        while (nombreCartes > 0) {
-            CarteFX carteFX = new CarteFX(posCarteX, posCarteY);
-            posCarteX += carteFX.getLargeur() - 10;
-            nombreCartes--;
-
-            this.getChildren().add(carteFX);
-        }
+    @Override
+    public void jouerCarte() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

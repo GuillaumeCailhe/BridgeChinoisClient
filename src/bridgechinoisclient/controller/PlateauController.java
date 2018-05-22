@@ -55,14 +55,14 @@ public class PlateauController extends Controller {
 
         // On initialise un objet graphique MainJoueur.
         MainAdversaireFX mainAdversaireFX = new MainAdversaireFX();
-        MainJoueurFX mainJoueurFX = new MainJoueurFX(mainJoueur);
+        MainJoueurFX mainJoueurFX = new MainJoueurFX();
         
         // On initialise le paquet de carte.
-        PaquetFX paquetFX = new PaquetFX(52);
-
+        PaquetFX paquetFX = new PaquetFX(52, mainJoueurFX, mainAdversaireFX);
+        
         // On ajoute les mains au plateau.
-        //this.mainAdversaireAnchorPane.getChildren().add(mainAdversaireFX);
-        //this.mainJoueurAnchorPane.getChildren().add(mainJoueurFX);
+        this.mainAdversaireAnchorPane.getChildren().add(mainAdversaireFX);
+        this.mainJoueurAnchorPane.getChildren().add(mainJoueurFX);
         this.pilesAnchorPane.getChildren().add(paquetFX);
         paquetFX.animationDistributionInitiale(mainJoueur);
     }

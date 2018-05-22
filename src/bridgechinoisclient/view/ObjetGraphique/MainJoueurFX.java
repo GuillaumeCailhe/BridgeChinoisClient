@@ -16,48 +16,19 @@ import javafx.scene.input.MouseEvent;
  *
  * @author helgr
  */
-public class MainJoueurFX extends Parent {
-
+public class MainJoueurFX extends MainFX {
+    
     /**
      * Crée l'objet MainJoueurFX à partir de la main du joueur.
      *
      * @param main la main du joueur
      */
-    public MainJoueurFX(ArrayList<Carte> main) {
-        Iterator<Carte> it = main.iterator();
-        double posCarteX = 0;
-        double posCarteY = 0;
+    public MainJoueurFX() {
+        super();
+    }
+ 
+    @Override
+    public void jouerCarte() {
 
-        while (it.hasNext()) {
-            // Création de la carte
-            Carte carte = it.next();
-            CarteFX carteFX = new CarteFX(posCarteX, posCarteY, carte);
-            posCarteX += carteFX.getLargeur() - 10;
-
-            // Ajout des événements sur la carte
-            carteFX.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    carteFX.animationSurvol();
-                }
-            });
-
-            carteFX.setOnMouseExited(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    carteFX.animationRelachement();
-                }
-            });
-
-            carteFX.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    System.out.println(carteFX.getCarte().toString());
-                }
-            });
-
-            // Affichage de la carte.
-            this.getChildren().add(carteFX);
-        }
     }
 }
