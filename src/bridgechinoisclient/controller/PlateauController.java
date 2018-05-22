@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -28,6 +29,10 @@ public class PlateauController extends Controller {
 
     @FXML
     private AnchorPane plateauPane;
+    @FXML
+    private Label nomJoueurLabel;
+    @FXML
+    private Label nomAdversaireLabel;
 
 
     /**
@@ -35,6 +40,10 @@ public class PlateauController extends Controller {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // On met les noms des joueurs.
+        nomJoueurLabel.setText("Guillaume");
+        nomAdversaireLabel.setText("IA Facile");
+        
         // On récupère les mains des joueurs.
         ArrayList<Carte> mainJoueur = new ArrayList();
 
@@ -53,7 +62,7 @@ public class PlateauController extends Controller {
         // On stocke la hauteur et la largeur du plateau.
         int largeurPlateauPane = (int) (plateauPane.getPrefWidth());
         int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
-
+        
         // On initialise un objet graphique MainJoueur.
         MainAdversaireFX mainAdversaireFX = new MainAdversaireFX(60,0);
         MainJoueurFX mainJoueurFX = new MainJoueurFX(60, hauteurPlateauPane - 85);

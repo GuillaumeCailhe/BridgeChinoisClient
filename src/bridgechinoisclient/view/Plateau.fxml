@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="584.0" prefWidth="1124.0" stylesheets="@ressources/autre/Theme.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.PlateauController">
    <children>
@@ -16,7 +17,19 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="720.0">
                <children>
-                  <AnchorPane fx:id="plateauPane" prefHeight="582.0" prefWidth="679.0" />
+                  <AnchorPane fx:id="plateauPane" prefHeight="582.0" prefWidth="679.0">
+                     <children>
+                        <Label fx:id="nomAdversaireLabel" alignment="BOTTOM_CENTER" layoutY="113.0" prefHeight="17.0" prefWidth="117.0" styleClass="labelNom" text="Adversaire" textAlignment="CENTER">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nomJoueurLabel" alignment="BASELINE_CENTER" layoutY="451.0" prefHeight="25.0" prefWidth="117.0" styleClass="labelNom" text="Vous">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                     </children></AnchorPane>
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="397.0">
                <children>

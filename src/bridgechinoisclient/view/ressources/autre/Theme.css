@@ -1,3 +1,9 @@
+/*
+Couleurs
+Vert : #40A44D
+
+*/
+
 #VBox{
         -fx-background-image: url("bridge.png");
         -fx-background-repeat: stretch;   
@@ -70,4 +76,8 @@
 
 .button:default:hover {
     -fx-background-color: derive(-fx-focus-color,30%);
+}
+
+.labelNom{
+    -fx-background-color: #40A44D;
 }
