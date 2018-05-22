@@ -14,7 +14,7 @@ import java.util.Random;
  *
  * @author helgr
  */
-public class Main {
+public class ApplicationTextuelle {
 
     /**
      * @param args the command line arguments
