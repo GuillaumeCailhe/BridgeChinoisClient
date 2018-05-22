@@ -6,6 +6,7 @@
 package bridgechinoisclient.model.reseau;
 
 import LibrairieCarte.Carte;
+import LibrairieCarte.SymboleCarte;
 import LibrairieMoteur.ModeDeJeu;
 import LibrairieReseau.CodeMessage;
 import LibrairieReseau.Communication;
@@ -33,8 +34,12 @@ public class Client {
     private String pseudo;
     private int nbManches;
     
+    private boolean peutJouer;
+    private boolean peutPiocher;
+    
     private ArrayList<Carte> main;
     private ArrayList<Carte> piles;
+    private SymboleCarte atout;
     
     public Client(String pseudo, ModeDeJeu mode, int nbManches) throws IOException, InterruptedException {     
         System.out.println("Vous êtes " + pseudo);
@@ -43,6 +48,8 @@ public class Client {
         this.nbManches = nbManches;
         this.main = new ArrayList<Carte>();
         this.piles = new ArrayList<Carte>();
+        this.peutJouer = false;
+        this.peutPiocher = false;
         
         connexion();
 
@@ -61,53 +68,20 @@ public class Client {
         for(int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++){
             System.out.println("Début de la manche " + mancheActuelle);
             
-            receptionMain();
-            receptionPiles();
+            initialisationManche();
+            TEXTUELafficherMain();
+            TEXTUELafficherPiles();
             
             do{
-                afficherMain(); 
-                afficherPiles();
+                receptionAtout();
+                System.out.println("L'atout est " + atout);
                 
-                // Attendre tour
-                attendreMessage();
-                msg = this.c.getPremierMessage();
-                switch(msg.getCode()){
-                    case TOUR_OK:
-                        System.out.println("A votre tour");
-                        jouerCarteTextuel();
-                        System.out.println("L'adversaire joue...");
-                        recupererCoupAdversaire();
-                        break;
-                    case TOUR_KO:
-                        System.out.println("L'adversaire joue...");
-                        recupererCoupAdversaire();
-                        attendreMessage();
-                        msg = c.getMessageParCode(CodeMessage.TOUR_OK);
-                        jouerCarteTextuel();
-                        break;
-                }
+                tour();
                 
                 // Récupération du vainqueur
                 recupererResultat();
                 
-                // Piocher carte si il en reste
-                attendreMessage();
-                msg = this.c.getPremierMessage();
-                switch(msg.getCode()){
-                    case TOUR_OK:
-                        piocherCarteTextuel();
-                        System.out.println("L'adversaire pioche...");
-                        recupererPiocheAdversaire();
-                        break;
-                    case TOUR_KO:
-                        System.out.println("L'adversaire pioche...");
-                        recupererPiocheAdversaire();
-                        attendreMessage();
-                        msg = c.getMessageParCode(CodeMessage.TOUR_OK);
-                        piocherCarteTextuel();
-                        break;
-                }
-                
+                piocher();
                 
             } while(!main.isEmpty());
             
@@ -186,8 +160,11 @@ public class Client {
         this.attendreMessage();
         msg = c.getMessageParCode(CodeMessage.PSEUDO);
         System.out.println("Pseudo adversaire: " + (String) msg.getDonnees());
-
-
+    }
+    
+    private void initialisationManche(){
+        receptionMain();
+        receptionPiles();
     }
     
     private void receptionMain(){
@@ -208,7 +185,40 @@ public class Client {
         }        
     }
     
-    private void jouerCarteTextuel(){
+    private void receptionAtout(){
+        attendreMessage();
+        MessageEntier msg = (MessageEntier) this.c.getMessageParCode(CodeMessage.ATOUT);
+        int i = msg.getDonnees();
+        if(i < 4) {
+            this.atout = SymboleCarte.values()[i];
+        } else {
+            this.atout = null;
+        }
+    }
+    
+    private void tour(){
+        Message msg;
+        
+        attendreMessage();
+        msg = this.c.getPremierMessage();
+        switch(msg.getCode()){
+            case TOUR_OK:
+                System.out.println("A votre tour");
+                peutJouer = true;
+                TEXTUELjouer();
+                System.out.println("L'adversaire joue...");
+                recupererCoupAdversaire();
+                break;
+            case TOUR_KO:
+                System.out.println("L'adversaire joue...");
+                recupererCoupAdversaire();
+                peutJouer = true;
+                TEXTUELjouer();
+                break;
+        }
+    }
+        
+    private void TEXTUELjouer(){
         Scanner sc = new Scanner(System.in);
         int iCarte;
         Message msg;
@@ -225,16 +235,51 @@ public class Client {
         
         main.remove(iCarte);
     }
+    
+    private void piocher(){
+        Message msg;
+        
+        attendreMessage();
+        msg = this.c.getPremierMessage();
+        if(msg.getCode() == CodeMessage.PIOCHER_OK){
+            attendreMessage();
+            msg = this.c.getPremierMessage();
+            switch(msg.getCode()){
+                case TOUR_OK:
+                    peutPiocher = true;
+                    TEXTUELpiocher();
+                    TEXTUELafficherMain();
+                    peutPiocher = false;
+                    // Permet de révéler la carte retournée
+                    recupererPiocheAdversaire();
+                    System.out.println("L'adversaire pioche...");
+                    // Permet de savoir la carte piochée par l'adversaire et la carte retournée
+                    recupererPiocheAdversaire();
+                    break;
+                case TOUR_KO:
+                    System.out.println("L'adversaire pioche...");
+                    recupererPiocheAdversaire();
+                    attendreMessage();
+                    msg = c.getMessageParCode(CodeMessage.TOUR_OK);
+                    peutPiocher = true;
+                    TEXTUELpiocher();
+                    TEXTUELafficherMain();
+                    peutPiocher = false;
+                    recupererPiocheAdversaire();
+                    break;
+            }   
+        }
+    }
        
-    private void piocherCarteTextuel(){
+    private void TEXTUELpiocher(){
         Scanner sc = new Scanner(System.in);
         int iCarte;
-        MessageCartes msg;
         
         System.out.println("Index de la carte à piocher: ");
         iCarte = sc.nextInt();
         System.out.println("Vous avez pioché la carte : " + piles.get(iCarte));
         c.envoyerEntier(CodeMessage.PIOCHER,(byte) iCarte);
+        main.add(piles.get(iCarte));
     }
     
     private void recupererCoupAdversaire(){
@@ -260,7 +305,7 @@ public class Client {
         }
         this.piles.set(i, pioche.get(1));
         System.out.println("L'adversaire a pioché " + pioche.get(0) + " et a révélée la carte " + pioche.get(1));
-        afficherPiles();
+        TEXTUELafficherPiles();
     }
     
     private void recupererResultat(){
@@ -278,7 +323,7 @@ public class Client {
     }
 
     
-    private void afficherPiles(){
+    private void TEXTUELafficherPiles(){
         System.out.println("Piles: ");
         for(Carte carte : this.piles){
             System.out.print(carte + "; ");
@@ -286,7 +331,7 @@ public class Client {
         System.out.println();        
     }
     
-    private void afficherMain(){
+    private void TEXTUELafficherMain(){
         System.out.println("Main: ");
         for(Carte carte : this.main){
             System.out.print(carte + "; ");
@@ -304,6 +349,22 @@ public class Client {
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }
+    }
+    
+    public boolean jouer(int i){
+        if(peutJouer){
+            this.c.envoyerEntier(CodeMessage.JOUER, (byte) i);
+            attendreMessage();
+            Message msg = this.c.getPremierMessage();
+            if(msg.getCode() == CodeMessage.JOUER_OK){
+                peutJouer = false;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
    
