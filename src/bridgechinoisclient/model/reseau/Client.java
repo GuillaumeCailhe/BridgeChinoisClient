@@ -11,12 +11,8 @@ import LibrairieMoteur.ModeDeJeu;
 import LibrairieReseau.CodeMessage;
 import LibrairieReseau.Communication;
 import LibrairieReseau.Message;
-import LibrairieReseau.MessageCartes;
 import LibrairieReseau.MessageEntier;
-import LibrairieReseau.MessageString;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -28,20 +24,20 @@ import java.util.logging.Logger;
  * @author Pepefab
  */
 public class Client {
-    
+
     private ModeDeJeu mode;
     private Communication c;
     private String pseudo;
     private int nbManches;
-    
+
     private boolean peutJouer;
     private boolean peutPiocher;
-    
+
     private ArrayList<Carte> main;
     private ArrayList<Carte> piles;
     private SymboleCarte atout;
-    
-    public Client(String pseudo, ModeDeJeu mode, int nbManches) throws IOException, InterruptedException {     
+
+    public Client(String pseudo, ModeDeJeu mode, int nbManches) throws IOException, InterruptedException {
         System.out.println("Vous êtes " + pseudo);
         this.pseudo = pseudo;
         this.mode = mode;
@@ -50,52 +46,50 @@ public class Client {
         this.piles = new ArrayList<Carte>();
         this.peutJouer = false;
         this.peutPiocher = false;
-        
+
         connexion();
 
         initialisation();
-        
+
         jeu();
-
         //client.close();
+    }
 
-    } 
-        
-    private void jeu(){
+    private void jeu() {
         Scanner sc = new Scanner(System.in);
         Message msg;
-        
-        for(int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++){
+
+        for (int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++) {
             System.out.println("Début de la manche " + mancheActuelle);
-            
+
             initialisationManche();
             TEXTUELafficherMain();
             TEXTUELafficherPiles();
-            
-            do{
+
+            do {
                 receptionAtout();
                 System.out.println("L'atout est " + atout);
-                
+
                 tour();
-                
+
                 // Récupération du vainqueur
                 recupererResultat();
-                
+
                 piocher();
-                
-            } while(!main.isEmpty());
-            
+
+            } while (!main.isEmpty());
+
             // Réception victoire/défaite
-            
         }
-        
+
     }
-    
+
     /**
      * Réalise la connexion au serveur et la demande de partie
-     * @throws IOException 
+     *
+     * @throws IOException
      */
-    private void connexion() throws IOException{
+    private void connexion() throws IOException {
         // Connexion au serveur
         Socket client = new Socket("localhost", 31000);
         System.out.println("Connecté");
@@ -105,7 +99,7 @@ public class Client {
         t.start();
 
         // Envoi d'une requête de nouvelle partie
-        switch(mode){
+        switch (mode) {
             case JOUEUR_CONTRE_JOUEUR:
                 c.envoyer(CodeMessage.PARTIE_JCJ);
                 break;
@@ -117,33 +111,34 @@ public class Client {
                 break;
             case JOUEUR_CONTRE_IA_DIFFICILE:
                 c.envoyer(CodeMessage.PARTIE_JCDIFFICILE);
-                break;           
+                break;
         }
-        
+
         // Attente d'une réponse
         this.attendreMessage();
         Message msg = c.getMessageParCode(CodeMessage.PARTIE_DEMARRER);
-        if(msg.getCode() != CodeMessage.PARTIE_DEMARRER){
+        if (msg.getCode() != CodeMessage.PARTIE_DEMARRER) {
             throw new Error("Erreur de réponse du serveur");
         } else {
             System.out.println("Adversaire trouvé : Début de la partie !");
         }
-        
+
     }
-    
+
     /**
      * Négocie le nombre de manches et échange les pseudos
-     * @throws InterruptedException 
+     *
+     * @throws InterruptedException
      */
-    private void initialisation() throws InterruptedException{
+    private void initialisation() throws InterruptedException {
         Message msg;
-         
+
         // Négociation du nombre de manches
         System.out.println("Négociation du nombre de manches");
-        c.envoyerEntier(CodeMessage.PARTIE_NBMANCHES,(byte) this.nbManches);
-        if(c.getNbMessages() == 0){
+        c.envoyerEntier(CodeMessage.PARTIE_NBMANCHES, (byte) this.nbManches);
+        if (c.getNbMessages() == 0) {
             try {
-                synchronized(this){
+                synchronized (this) {
                     wait();
                 }
             } catch (InterruptedException ex) {
@@ -152,7 +147,7 @@ public class Client {
         }
         this.nbManches = (int) c.getMessageParCode(CodeMessage.PARTIE_NBMANCHES).getDonnees();
         System.out.println("Il y aura " + nbManches + " manches");
-        
+
         // Envoi du pseudo
         c.envoyerString(CodeMessage.PSEUDO, pseudo);
 
@@ -161,47 +156,47 @@ public class Client {
         msg = c.getMessageParCode(CodeMessage.PSEUDO);
         System.out.println("Pseudo adversaire: " + (String) msg.getDonnees());
     }
-    
-    private void initialisationManche(){
+
+    private void initialisationManche() {
         receptionMain();
         receptionPiles();
     }
-    
-    private void receptionMain(){
+
+    private void receptionMain() {
         // Réception de la main   
         attendreMessage();
         Message msg = this.c.getMessageParCode(CodeMessage.MAIN);
-        for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
+        for (Carte carte : (ArrayList<Carte>) msg.getDonnees()) {
             main.add(carte);
         }
     }
-    
-    private void receptionPiles(){
+
+    private void receptionPiles() {
         // Réception de la pile
         attendreMessage();
         Message msg = this.c.getMessageParCode(CodeMessage.PILES);
-        for(Carte carte : (ArrayList<Carte>) msg.getDonnees()){
+        for (Carte carte : (ArrayList<Carte>) msg.getDonnees()) {
             piles.add(carte);
-        }        
+        }
     }
-    
-    private void receptionAtout(){
+
+    private void receptionAtout() {
         attendreMessage();
         MessageEntier msg = (MessageEntier) this.c.getMessageParCode(CodeMessage.ATOUT);
         int i = msg.getDonnees();
-        if(i < 4) {
+        if (i < 4) {
             this.atout = SymboleCarte.values()[i];
         } else {
             this.atout = null;
         }
     }
-    
-    private void tour(){
+
+    private void tour() {
         Message msg;
-        
+
         attendreMessage();
         msg = this.c.getPremierMessage();
-        switch(msg.getCode()){
+        switch (msg.getCode()) {
             case TOUR_OK:
                 System.out.println("A votre tour");
                 peutJouer = true;
@@ -217,13 +212,13 @@ public class Client {
                 break;
         }
     }
-        
-    private void TEXTUELjouer(){
+
+    private void TEXTUELjouer() {
         Scanner sc = new Scanner(System.in);
         int iCarte;
         Message msg;
-        
-        do{
+
+        do {
             System.out.println("Index de la carte à jouer:");
             iCarte = sc.nextInt();
             System.out.println("Vous avez joué la carte : " + main.get(iCarte));
@@ -231,20 +226,20 @@ public class Client {
 
             attendreMessage();
             msg = c.getPremierMessage();
-        }while(msg.getCode() != CodeMessage.JOUER_OK);
-        
+        } while (msg.getCode() != CodeMessage.JOUER_OK);
+
         main.remove(iCarte);
     }
-    
-    private void piocher(){
+
+    private void piocher() {
         Message msg;
-        
+
         attendreMessage();
         msg = this.c.getPremierMessage();
-        if(msg.getCode() == CodeMessage.PIOCHER_OK){
+        if (msg.getCode() == CodeMessage.PIOCHER_OK) {
             attendreMessage();
             msg = this.c.getPremierMessage();
-            switch(msg.getCode()){
+            switch (msg.getCode()) {
                 case TOUR_OK:
                     peutPiocher = true;
                     TEXTUELpiocher();
@@ -267,39 +262,39 @@ public class Client {
                     peutPiocher = false;
                     recupererPiocheAdversaire();
                     break;
-            }   
+            }
         }
     }
-       
-    private void TEXTUELpiocher(){
+
+    private void TEXTUELpiocher() {
         Scanner sc = new Scanner(System.in);
         int iCarte;
-        
+
         System.out.println("Index de la carte à piocher: ");
         iCarte = sc.nextInt();
         System.out.println("Vous avez pioché la carte : " + piles.get(iCarte));
-        c.envoyerEntier(CodeMessage.PIOCHER,(byte) iCarte);
+        c.envoyerEntier(CodeMessage.PIOCHER, (byte) iCarte);
         main.add(piles.get(iCarte));
     }
-    
-    private void recupererCoupAdversaire(){
+
+    private void recupererCoupAdversaire() {
         Message msg;
-        
+
         attendreMessage();
         msg = c.getMessageParCode(CodeMessage.JOUER_ADVERSAIRE);
         Carte carte = ((ArrayList<Carte>) msg.getDonnees()).get(0);
         System.out.println("L'adversaire a joué " + carte);
     }
-    
-    private void recupererPiocheAdversaire(){
+
+    private void recupererPiocheAdversaire() {
         Message msg;
-        
+
         attendreMessage();
         msg = c.getMessageParCode(CodeMessage.PIOCHER_ADVERSAIRE);
         ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
         int i;
-        for(i = 0; i < 6; i++){
-            if(this.piles.get(i).compareTo(pioche.get(0)) == 0){
+        for (i = 0; i < 6; i++) {
+            if (this.piles.get(i).compareTo(pioche.get(0)) == 0) {
                 break;
             }
         }
@@ -307,12 +302,12 @@ public class Client {
         System.out.println("L'adversaire a pioché " + pioche.get(0) + " et a révélée la carte " + pioche.get(1));
         TEXTUELafficherPiles();
     }
-    
-    private void recupererResultat(){
+
+    private void recupererResultat() {
         Message msg;
         attendreMessage();
         msg = c.getPremierMessage();
-        switch(msg.getCode()){
+        switch (msg.getCode()) {
             case VICTOIRE_PLI:
                 System.out.println("Vous remportez le pli");
                 break;
@@ -322,27 +317,25 @@ public class Client {
         }
     }
 
-    
-    private void TEXTUELafficherPiles(){
+    private void TEXTUELafficherPiles() {
         System.out.println("Piles: ");
-        for(Carte carte : this.piles){
-            System.out.print(carte + "; ");
-        }
-        System.out.println();        
-    }
-    
-    private void TEXTUELafficherMain(){
-        System.out.println("Main: ");
-        for(Carte carte : this.main){
+        for (Carte carte : this.piles) {
             System.out.print(carte + "; ");
         }
         System.out.println();
     }
-   
 
-    private void attendreMessage(){
-        if(c.getNbMessages() == 0) { 
-            synchronized(this){
+    private void TEXTUELafficherMain() {
+        System.out.println("Main: ");
+        for (Carte carte : this.main) {
+            System.out.print(carte + "; ");
+        }
+        System.out.println();
+    }
+
+    private void attendreMessage() {
+        if (c.getNbMessages() == 0) {
+            synchronized (this) {
                 try {
                     wait();
                 } catch (InterruptedException ex) {
@@ -351,13 +344,13 @@ public class Client {
             }
         }
     }
-    
-    public boolean jouer(int i){
-        if(peutJouer){
+
+    public boolean jouer(int i) {
+        if (peutJouer) {
             this.c.envoyerEntier(CodeMessage.JOUER, (byte) i);
             attendreMessage();
             Message msg = this.c.getPremierMessage();
-            if(msg.getCode() == CodeMessage.JOUER_OK){
+            if (msg.getCode() == CodeMessage.JOUER_OK) {
                 peutJouer = false;
                 return true;
             } else {
@@ -367,5 +360,5 @@ public class Client {
             return false;
         }
     }
-   
+
 }

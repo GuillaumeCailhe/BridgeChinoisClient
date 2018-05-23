@@ -72,7 +72,7 @@ public class PlateauController extends Controller {
         this.plateauPane.getChildren().add(mainAdversaireFX);
         this.plateauPane.getChildren().add(mainJoueurFX);
         this.plateauPane.getChildren().add(paquetFX);
-        paquetFX.animationDistributionInitiale(mainJoueur);
+        paquetFX.animationDistributionInitiale(mainJoueur, plateauPane);
     }
 
 }

@@ -5,6 +5,7 @@
  */
 package bridgechinoisclient.controller;
 
+import LibrairieMoteur.ModeDeJeu;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -31,7 +32,7 @@ public class ModeIAController extends Controller {
      */
     @FXML
     private void traiterClicDebutant() {
-        this.getApplicationGraphique().afficherPlateau();
+        this.getApplicationGraphique().connexionServeur(ModeDeJeu.JOUEUR_CONTRE_IA_FACILE);
     }
 
     /**
@@ -40,7 +41,7 @@ public class ModeIAController extends Controller {
      */
     @FXML
     private void traiterClicConfirme() {
-        this.getApplicationGraphique().afficherPlateau();
+        this.getApplicationGraphique().connexionServeur(ModeDeJeu.JOUEUR_CONTRE_IA_INTERMEDIAIRE);
     }
 
     /**
@@ -49,7 +50,15 @@ public class ModeIAController extends Controller {
      */
     @FXML
     private void traiterClicMaster() {
-        this.getApplicationGraphique().afficherPlateau();
+        this.getApplicationGraphique().connexionServeur(ModeDeJeu.JOUEUR_CONTRE_IA_DIFFICILE);
+    }
+    
+    /**
+     * Retourne au menu principal lors du clic sur le bouton Retour
+     */
+    @FXML
+    private void traiterClicRetour(){
+        this.getApplicationGraphique().afficherMenu();
     }
 
 }

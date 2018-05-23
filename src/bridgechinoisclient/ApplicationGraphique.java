@@ -1,8 +1,12 @@
 package bridgechinoisclient;
 
+import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.controller.AccueilController;
 import bridgechinoisclient.controller.Controller;
+import bridgechinoisclient.model.reseau.Client;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -66,39 +70,53 @@ public class ApplicationGraphique extends Application {
     public void afficherModeIA() {
         afficherFenetre("view/ModeIA.fxml");
     }
-    
+
     /**
      * Affiche le tutoriel
      */
-    public void afficherTutoriel(){
-        afficherFenetre("view/Plateau.fxml");
+    public void afficherTutoriel() {
+        afficherPlateau();
     }
-    
+
     /**
      * Affiche les règles
      */
-    public void afficherRegles(){
-        
+    public void afficherRegles() {
+
     }
-    
+
     /**
      * Affiche le score
      */
-    public void afficherScore(){
-        
+    public void afficherScore() {
+
     }
-    
+
     /**
      * Affiche le plateau
      */
-    public void afficherPlateau(){
+    public void afficherPlateau() {
         afficherFenetre("view/Plateau.fxml");
     }
+
     /**
      * Quitte l'application
      */
     public void quitterApplication() {
         Platform.exit();
+    }
+
+    public void connexionServeur(ModeDeJeu modeDeJeu) {
+        /*try {
+            Client c = new Client("Guillaume", modeDeJeu, 3);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        
+        afficherPlateau();
     }
 
     public static void main(String[] args) {
