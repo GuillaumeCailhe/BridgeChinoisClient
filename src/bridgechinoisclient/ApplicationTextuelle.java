@@ -23,7 +23,7 @@ public class ApplicationTextuelle {
         // TODO code application logic here
         String[] pseudos = new String[] {"Pepefab","Helgrind","Djoko","Amadou","Kyle","Perceval","Karadoc","Kadoc","Gabe"};
         Random r = new Random();
-        Client c = new Client(pseudos[r.nextInt(pseudos.length)],ModeDeJeu.JOUEUR_CONTRE_JOUEUR,1+r.nextInt(5));
+        Client c = new Client(pseudos[r.nextInt(pseudos.length)],ModeDeJeu.JOUEUR_CONTRE_IA_FACILE,1+r.nextInt(5));
     }
     
 }

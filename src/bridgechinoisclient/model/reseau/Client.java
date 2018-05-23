@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -248,8 +249,9 @@ public class Client {
                 case TOUR_OK:
                     peutPiocher = true;
                     TEXTUELpiocher();
-                    TEXTUELafficherMain();
                     peutPiocher = false;
+                    Collections.sort(main);                 
+                    TEXTUELafficherMain();
                     // Permet de révéler la carte retournée
                     recupererPiocheAdversaire();
                     System.out.println("L'adversaire pioche...");
@@ -263,8 +265,9 @@ public class Client {
                     msg = c.getMessageParCode(CodeMessage.TOUR_OK);
                     peutPiocher = true;
                     TEXTUELpiocher();
-                    TEXTUELafficherMain();
                     peutPiocher = false;
+                    Collections.sort(main);                    
+                    TEXTUELafficherMain();
                     recupererPiocheAdversaire();
                     break;
             }   
