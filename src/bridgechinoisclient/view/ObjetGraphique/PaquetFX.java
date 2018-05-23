@@ -81,7 +81,7 @@ public class PaquetFX extends Parent {
      */
     public CarteFX decouvrirCarte(Carte carte) {
         // Création de la carte
-        CarteFX carteFX = new CarteFX(positionXTete, positionYTete, carte);
+        CarteFX carteFX = new CarteFX(positionXTete-offsetX, positionYTete-offsetY, carte);
 
         // On enlève la carte inconnue et on la remplace par la carte connue dans la pile.
         CarteFX carteTete = cartesFX.pop();
