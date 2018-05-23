@@ -159,6 +159,7 @@ public class PaquetFX extends Parent {
      * Distribue les cartes au début de la partie.
      *
      * @param mainJoueur la main du joueur courant.
+     * @param plateau le plateau où dessiner les cartes.
      */
     public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, AnchorPane plateau) {
         SequentialTransition seqT = new SequentialTransition();
