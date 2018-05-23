@@ -9,6 +9,9 @@ import LibrairieCarte.Carte;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -18,6 +21,8 @@ public class CarteFX extends Parent {
 
     private static final int largeur = 60;
     private static final int hauteur = 85;
+    private double positionX;
+    private double positionY;
     private Carte carte;
     private static final int deplacementAnimation = 40;
 
@@ -28,6 +33,8 @@ public class CarteFX extends Parent {
      */
     public CarteFX(double posX, double posY, Carte carte) {
         this.carte = carte;
+        this.positionX = posX;
+        this.positionY = posY;
         if(carte == null){
             creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
         }else{
@@ -81,6 +88,9 @@ public class CarteFX extends Parent {
      * Est appelée par MainJoueurFX.
      */
     public void animationSurvol(){
+        Rectangle hitbox = new Rectangle(positionX, positionY, largeur, hauteur+deplacementAnimation);
+        hitbox.setFill(Color.TRANSPARENT);
+        this.getChildren().add(hitbox);
         this.setTranslateY(this.getTranslateY() - deplacementAnimation);
     }
     
