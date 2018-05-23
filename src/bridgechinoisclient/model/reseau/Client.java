@@ -46,12 +46,6 @@ public class Client implements Runnable {
         this.piles = new ArrayList<Carte>();
         this.peutJouer = false;
         this.peutPiocher = false;
-
-        connexion();
-
-        initialisation();
-
-        jeu();
         //client.close();
     }
 
@@ -317,7 +311,19 @@ public class Client implements Runnable {
     
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            connexion();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            initialisation();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        jeu();    
     }
 
 }
