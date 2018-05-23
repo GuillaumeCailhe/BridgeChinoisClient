@@ -24,6 +24,7 @@ public class CarteFX extends Parent {
     private double positionY;
     private Carte carte;
     private static final double deplacementAnimationSurvolMain = 40;
+    private static final double agrandissementAnimationSurvolMain = 0.2;
     private Rectangle hitboxSurvolMain;
     private static final double agrandissementAnimationSurvolPile = 0.3;
     private Rectangle hitboxSurvolPile;
@@ -37,9 +38,9 @@ public class CarteFX extends Parent {
         this.carte = carte;
         this.positionX = posX;
         this.positionY = posY;
-        if(carte == null){
+        if (carte == null) {
             creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
-        }else{
+        } else {
             String nom = carte.getValeur() + "_" + carte.getSymbole();
             creerCarte(posX, posY, "../ressources/cartes/" + nom + ".png");
         }
@@ -51,7 +52,7 @@ public class CarteFX extends Parent {
      * @param cheminVersImage le chemin vers l'image de la carte.
      */
     private void creerCarte(double posX, double posY, String cheminVersImage) {
-        
+
         Image imageCarte = new Image(getClass().getResourceAsStream(cheminVersImage));
         ImageView carte = new ImageView();
         carte.setImage(imageCarte);
@@ -59,69 +60,75 @@ public class CarteFX extends Parent {
         carte.setFitHeight(hauteur);
         carte.setTranslateX(posX);
         carte.setTranslateY(posY);
-              
+
         this.getChildren().add(carte);
     }
-    
+
     /**
      * @return la largeur de la carte.
      */
     public int getLargeur() {
         return largeur;
     }
-    
+
     /**
      * @return la hauteur de la carte.
      */
     public int getHauteur() {
         return hauteur;
     }
-    
+
     /**
      * L'objet carte associé. null si la carte est inconnue.
-     * @return 
+     *
+     * @return
      */
     public Carte getCarte() {
         return carte;
     }
-    
+
     /**
-     * Bouge la carte vers le haut lorsqu'on met la souris dessus.
-     * Concerne les cartes dans la main.
+     * Bouge la carte vers le haut lorsqu'on met la souris dessus. Concerne les
+     * cartes dans la main.
      */
-    public void animationSurvolMain(){
-        hitboxSurvolMain = new Rectangle(positionX, positionY, largeur, hauteur+deplacementAnimationSurvolMain);
+    public void animationSurvolMain() {
+        hitboxSurvolMain = new Rectangle(positionX, positionY, largeur + agrandissementAnimationSurvolPile, hauteur + deplacementAnimationSurvolMain + agrandissementAnimationSurvolPile);
         hitboxSurvolMain.setFill(Color.TRANSPARENT);
         this.getChildren().add(hitboxSurvolMain);
         this.setTranslateY(this.getTranslateY() - deplacementAnimationSurvolMain);
+        this.setScaleX(this.getScaleX() + agrandissementAnimationSurvolMain);
+        this.setScaleY(this.getScaleY() + agrandissementAnimationSurvolMain);
+        this.toFront();
     }
-    
+
     /**
-     * Agrandit la carte lorsqu'on met la souris dessus.
-     * Concerne les cartes sur la pile.
+     * Agrandit la carte lorsqu'on met la souris dessus. Concerne les cartes sur
+     * la pile.
      */
-    public void animationSurvolPile(){
-        Rectangle hitbox = new Rectangle(positionX, positionY, largeur+agrandissementAnimationSurvolPile, hauteur+agrandissementAnimationSurvolPile);
+    public void animationSurvolPile() {
+        Rectangle hitbox = new Rectangle(positionX, positionY, largeur + agrandissementAnimationSurvolPile, hauteur + agrandissementAnimationSurvolPile);
         hitbox.setFill(Color.TRANSPARENT);
         this.getChildren().add(hitbox);
         this.setScaleX(this.getScaleX() + agrandissementAnimationSurvolPile);
         this.setScaleY(this.getScaleY() + agrandissementAnimationSurvolPile);
     }
-    
+
     /**
      * Remet la carte à sa position initiale losqu'on relâche la souris.
      * Concerne les cartes sur la pile.
      */
-    public void animationRelachementMain(){
+    public void animationRelachementMain() {
         this.setTranslateY(this.getTranslateY() + deplacementAnimationSurvolMain);
         this.getChildren().remove(hitboxSurvolMain);
+        this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolMain);
+        this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolMain);
     }
-    
+
     /**
      * Redonne à la carte sa taille initiale lorsqu'on relâche la souris.
-     * 
+     *
      */
-    public void animationRelachementPile(){
+    public void animationRelachementPile() {
         this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolPile);
         this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolPile);
         this.getChildren().remove(hitboxSurvolPile);
@@ -129,9 +136,9 @@ public class CarteFX extends Parent {
 
     @Override
     public String toString() {
-        if(carte != null){
+        if (carte != null) {
             return carte.toString();
-        }else{
+        } else {
             return "Carte face cachée.";
         }
     }

@@ -7,6 +7,7 @@ package bridgechinoisclient.view.ObjetGraphique;
 
 import LibrairieCarte.Carte;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
@@ -22,9 +23,13 @@ public class MainFX extends Parent {
 
     public MainFX(int positionX, int positionY) {
         this.mainFX = new ArrayList<>();
-        
+
         this.setLayoutX(positionX);
         this.setLayoutY(positionY);
+    }
+
+    public static int getOffsetCarteX() {
+        return offsetCarteX;
     }
 
     public void ajouterCarte(Carte carte, int positionDansLaMain) {
@@ -44,9 +49,10 @@ public class MainFX extends Parent {
                 @Override
                 public void handle(MouseEvent event) {
                     carteFX.animationRelachementMain();
+                    recalculerZOrder();
                 }
             });
-            
+
             MainFX mainFX = this;
             carteFX.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -61,15 +67,25 @@ public class MainFX extends Parent {
         this.getChildren().add(carteFX);
 
     }
-
-    public void jouerCarte(CarteFX carteFXJouee){
+    
+    /**
+     * Joue une carte de la main au milieu.
+     * @param carteFXJouee 
+     */
+    public void jouerCarte(CarteFX carteFXJouee) {
         System.out.println("Je joue la carte " + carteFXJouee.toString());
         carteFXJouee.setTranslateX(230);
         carteFXJouee.setTranslateY(-200);
     }
-
-    public static int getOffsetCarteX() {
-        return offsetCarteX;
+    
+    /**
+     * Remet les cartes les unes au dessus des autres.
+     */
+    public void recalculerZOrder(){
+        Iterator<CarteFX> it = this.mainFX.iterator();
+        while(it.hasNext()){
+            CarteFX carteFX = it.next();
+            carteFX.toFront();
+        }
     }
-
 }
