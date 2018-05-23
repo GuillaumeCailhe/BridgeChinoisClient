@@ -12,6 +12,7 @@ import LibrairieReseau.CodeMessage;
 import LibrairieReseau.Communication;
 import LibrairieReseau.Message;
 import LibrairieReseau.MessageEntier;
+import bridgechinoisclient.ApplicationGraphique;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 /**
  *
@@ -26,6 +28,7 @@ import java.util.logging.Logger;
  */
 public class Client implements Runnable {
 
+    private ApplicationGraphique app;
     private ModeDeJeu mode;
     private Communication c;
     private String pseudo;
@@ -38,10 +41,11 @@ public class Client implements Runnable {
     private ArrayList<Carte> piles;
     private SymboleCarte atout;
 
-    public Client(String pseudo, ModeDeJeu mode, int nbManches) throws IOException, InterruptedException {
+    public Client(String pseudo, ModeDeJeu mode, int nbManches, ApplicationGraphique app) throws IOException, InterruptedException {
         this.pseudo = pseudo;
         this.mode = mode;
         this.nbManches = nbManches;
+        this.app = app;
         this.main = new ArrayList<Carte>();
         this.piles = new ArrayList<Carte>();
         this.peutJouer = false;
@@ -49,6 +53,18 @@ public class Client implements Runnable {
         //client.close();
     }
 
+    public ArrayList<Carte> getMain() {
+        return main;
+    }
+
+    public ArrayList<Carte> getPiles() {
+        return piles;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+    
     private void jeu() {
         Scanner sc = new Scanner(System.in);
         Message msg;
@@ -106,6 +122,8 @@ public class Client implements Runnable {
 
         // Attente d'une réponse
         this.attendreMessage();
+        
+        Platform.runLater(() -> app.afficherPlateau());
         Message msg = c.getMessageParCode(CodeMessage.PARTIE_DEMARRER);
 
     }
@@ -207,7 +225,7 @@ public class Client implements Runnable {
                     peutPiocher = true;
                     attendreJoueur();
                     peutPiocher = false;
-                    Collections.sort(main);                 
+                    Collections.sort(main);
                     // Permet de révéler la carte retournée
                     recupererPiocheAdversaire();
                     // Permet de savoir la carte piochée par l'adversaire et la carte retournée
@@ -220,7 +238,7 @@ public class Client implements Runnable {
                     peutPiocher = true;
                     attendreJoueur();
                     peutPiocher = false;
-                    Collections.sort(main);                    
+                    Collections.sort(main);
                     recupererPiocheAdversaire();
                     break;
             }
@@ -272,14 +290,14 @@ public class Client implements Runnable {
             }
         }
     }
-    
-    private synchronized void attendreJoueur(){
-        try{
+
+    private synchronized void attendreJoueur() {
+        try {
             wait();
         } catch (InterruptedException ex) {
             Logger.getLogger(ClientTextuel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     public boolean jouer(int i) {
@@ -297,7 +315,7 @@ public class Client implements Runnable {
             return false;
         }
     }
-    
+
     public boolean piocher(int i) {
         if (peutJouer) {
             this.c.envoyerEntier(CodeMessage.PIOCHER, (byte) i);
@@ -308,7 +326,7 @@ public class Client implements Runnable {
             return false;
         }
     }
-    
+
     @Override
     public void run() {
         try {
@@ -323,7 +341,7 @@ public class Client implements Runnable {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        jeu();    
+        jeu();
     }
 
 }

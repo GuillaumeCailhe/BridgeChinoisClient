@@ -1,12 +1,10 @@
 package bridgechinoisclient;
 
 import LibrairieMoteur.ModeDeJeu;
-import bridgechinoisclient.controller.AccueilController;
 import bridgechinoisclient.controller.Controller;
+import bridgechinoisclient.controller.PlateauController;
 import bridgechinoisclient.model.reseau.Client;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,17 +18,23 @@ public class ApplicationGraphique extends Application {
 
     private Stage primaryStage;
     private AnchorPane rootLayout;
+    private Client client;
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("BRIDGE  CHINOIS");
+        this.primaryStage.setTitle("BRIDGE CHINOIS");
         this.primaryStage.getIcons().add(new Image(ApplicationGraphique.class.getResourceAsStream("view/ressources/cartes/symbole_pique.png")));
 
         afficherMenu();
     }
-
-    private void afficherFenetre(String viewPath) {
+    
+    /**
+     * Affiche la fenêtre choisie.
+     * @param viewPath le chemin vers le fxml à afficher.
+     * @return le controller associé
+     */
+    private Controller afficherFenetre(String viewPath) {
         try {
             // lecture du FXML
             FXMLLoader loader = new FXMLLoader();
@@ -45,9 +49,11 @@ public class ApplicationGraphique extends Application {
             controller.setMainApp(this);
 
             primaryStage.show();
+            return controller;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -62,6 +68,7 @@ public class ApplicationGraphique extends Application {
      */
     public void afficherMultijoueur() {
         afficherFenetre("view/Multijoueur.fxml");
+        connexionServeur(ModeDeJeu.JOUEUR_CONTRE_JOUEUR);
     }
 
     /**
@@ -96,7 +103,9 @@ public class ApplicationGraphique extends Application {
      * Affiche le plateau
      */
     public void afficherPlateau() {
-        afficherFenetre("view/Plateau.fxml");
+        PlateauController plateauController = (PlateauController) afficherFenetre("view/Plateau.fxml");
+        
+        plateauController.distributionInitiale(this.client.getMain(), this.client.getPiles(), this.client.getPseudo(), "Adversaire");
     }
 
     /**
@@ -107,16 +116,15 @@ public class ApplicationGraphique extends Application {
     }
 
     public void connexionServeur(ModeDeJeu modeDeJeu) {
-        /*try {
-            Client c = new Client("Guillaume", modeDeJeu, 3);
-            
+        try {
+            this.client = new Client("Guillaume", modeDeJeu, 3, this);
+            Thread thread = new Thread(this.client);
+            thread.start();
         } catch (IOException ex) {
-            Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
+            
         } catch (InterruptedException ex) {
-            Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        
-        afficherPlateau();
+            
+        }      
     }
 
     public static void main(String[] args) {

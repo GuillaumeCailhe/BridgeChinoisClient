@@ -11,18 +11,14 @@ import LibrairieCarte.ValeurCarte;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
 /**
@@ -179,7 +175,7 @@ public class PaquetFX extends Parent {
      * @param mainJoueur la main du joueur courant.
      * @param plateau le plateau où dessiner les cartes.
      */
-    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, AnchorPane plateau) {
+    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, AnchorPane plateau) {
         SequentialTransition seqT = new SequentialTransition();
         Iterator<Carte> it = mainJoueur.iterator();
         int positionDansLaMain = 0;
@@ -197,7 +193,7 @@ public class PaquetFX extends Parent {
         seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                animationScinderEnPiles(plateau);
+                animationScinderEnPiles(piles, plateau);
             }
         });
     }
@@ -207,7 +203,7 @@ public class PaquetFX extends Parent {
      *
      * @param plateau le plateau où dessiner les piles.
      */
-    private void animationScinderEnPiles(AnchorPane plateau) {
+    private void animationScinderEnPiles(ArrayList<Carte> piles,AnchorPane plateau) {
         // Création d'une liste d'animations jouées en parallèle.
         ParallelTransition parT = new ParallelTransition();
         // Création des piles.
@@ -219,11 +215,12 @@ public class PaquetFX extends Parent {
             TranslateTransition tt = new TranslateTransition(Duration.millis(1000), pile);
             tt.setFromX(positionPaquetX);
             tt.setToX((i * offsetY) + 20);
-
+            
+            int j = i;
             tt.setOnFinished(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent arg0) {
-                    pile.decouvrirCarte(new Carte(ValeurCarte.VALET, SymboleCarte.TREFLE));
+                    pile.decouvrirCarte(piles.get(j));
                 }
             });
 

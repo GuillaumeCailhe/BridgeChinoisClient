@@ -7,7 +7,6 @@ package bridgechinoisclient.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
 
 /**
  * FXML Controller class
@@ -21,8 +20,7 @@ public class MultijoueurController extends Controller {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+    }
     
     /**
      * Annule la recherche de partenaire et retourne au menu.
