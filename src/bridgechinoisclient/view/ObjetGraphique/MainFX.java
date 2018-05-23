@@ -15,7 +15,7 @@ import javafx.scene.input.MouseEvent;
  *
  * @author helgr
  */
-public abstract class MainFX extends Parent {
+public class MainFX extends Parent {
 
     private static final int offsetCarteX = 50;
     private ArrayList<CarteFX> mainFX;
@@ -46,11 +46,12 @@ public abstract class MainFX extends Parent {
                     carteFX.animationRelachement();
                 }
             });
-
+            
+            MainFX mainFX = this;
             carteFX.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    System.out.println(carteFX.getCarte().toString());
+                    mainFX.jouerCarte(carteFX);
                 }
             });
         }
@@ -61,7 +62,11 @@ public abstract class MainFX extends Parent {
 
     }
 
-    public abstract void jouerCarte();
+    public void jouerCarte(CarteFX carteFXJouee){
+        System.out.println("Je joue la carte " + carteFXJouee.toString());
+        carteFXJouee.setTranslateX(230);
+        carteFXJouee.setTranslateY(-200);
+    }
 
     public static int getOffsetCarteX() {
         return offsetCarteX;

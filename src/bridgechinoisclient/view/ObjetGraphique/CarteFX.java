@@ -48,8 +48,8 @@ public class CarteFX extends Parent {
         carte.setImage(imageCarte);
         carte.setFitWidth(largeur);
         carte.setFitHeight(hauteur);
-        carte.setLayoutX(posX);
-        carte.setLayoutY(posY);
+        carte.setTranslateX(posX);
+        carte.setTranslateY(posY);
               
         this.getChildren().add(carte);
     }
@@ -90,5 +90,14 @@ public class CarteFX extends Parent {
      */
     public void animationRelachement(){
         this.setTranslateY(this.getTranslateY() + deplacementAnimation);
+    }
+
+    @Override
+    public String toString() {
+        if(carte != null){
+            return carte.toString();
+        }else{
+            return "Carte face cachée.";
+        }
     }
 }
