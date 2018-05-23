@@ -13,12 +13,14 @@ import java.util.Iterator;
 import java.util.Stack;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
@@ -33,6 +35,8 @@ public class PaquetFX extends Parent {
     private Stack<CarteFX> cartesFX;
 
     /* Position de l'objet graphique paquet */
+    private int positionPaquetX; // position du paquet du le plateau
+    private int positionPaquetY;
     private int positionXTete = 0; // position de la carte en tête de paquet
     private int positionYTete = 0;
     private int offsetX = 2; // décalage d'une carte par rapport à une autre
@@ -54,6 +58,8 @@ public class PaquetFX extends Parent {
         this.cartesFX = new Stack<>();
         this.positionXTete = positionPaquetX;
         this.positionYTete = positionPaquetY;
+        this.positionPaquetX = positionPaquetX;
+        this.positionPaquetY = positionPaquetY;
         this.mainJoueurFX = mainJoueurFX;
         this.mainAdversaireFX = mainAdversaireFX;
         int nombreCartesAAfficher = 0;
@@ -107,7 +113,7 @@ public class PaquetFX extends Parent {
      * @return l'animation
      */
     private TranslateTransition animationDistributionCarteJoueur(Carte carte, int positionCarteDansLaMain) {
-        return animationDistributionCarte(this.mainJoueurFX, carte, 150f, 0f, positionCarteDansLaMain);
+        return animationDistributionCarte(this.mainJoueurFX, carte, 0f, 150f, positionCarteDansLaMain);
     }
 
     /**
@@ -117,7 +123,7 @@ public class PaquetFX extends Parent {
      * @return l'animation
      */
     private TranslateTransition animationDistributionCarteAdversaire(int positionCarteDansLaMain) {
-        return animationDistributionCarte(this.mainAdversaireFX, null, -200f, 0f, positionCarteDansLaMain);
+        return animationDistributionCarte(this.mainAdversaireFX, null, 0f, -200f, positionCarteDansLaMain);
     }
 
     /**
@@ -134,8 +140,8 @@ public class PaquetFX extends Parent {
         TranslateTransition tt = new TranslateTransition(Duration.millis(600), carteFX);
         tt.setFromX(0);
         tt.setFromY(0);
-        tt.setToY(nouvellePositionX);
-        tt.setToX(nouvellePositionY);
+        tt.setToX(nouvellePositionX);
+        tt.setToY(nouvellePositionY);
 
         PaquetFX paquet = this;
         tt.setOnFinished(new EventHandler<ActionEvent>() {
@@ -154,7 +160,7 @@ public class PaquetFX extends Parent {
      *
      * @param mainJoueur la main du joueur courant.
      */
-    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur) {
+    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, AnchorPane plateau) {
         SequentialTransition seqT = new SequentialTransition();
         Iterator<Carte> it = mainJoueur.iterator();
         int positionDansLaMain = 0;
@@ -169,5 +175,29 @@ public class PaquetFX extends Parent {
         }
 
         seqT.play();
+        seqT.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                animationScinderEnPiles(plateau);
+            }
+        });
     }
+
+    private void animationScinderEnPiles(AnchorPane plateau) {
+        ParallelTransition parT = new ParallelTransition();
+        for (int i = 0; i < 6; i++) {
+            int offsetY = (int) (plateau.getPrefWidth() / 6);
+            PaquetFX pile = new PaquetFX(5, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+            TranslateTransition tt = new TranslateTransition(Duration.millis(1000), pile);
+            tt.setFromX(positionPaquetX);
+            tt.setToX((i * offsetY) + 20);
+            parT.getChildren().add(tt);
+
+            plateau.getChildren().add(pile);
+
+        }
+        plateau.getChildren().remove(this);
+        parT.play();
+    }
+
 }
