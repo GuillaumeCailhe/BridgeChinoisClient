@@ -39,8 +39,8 @@ public class PaquetFX extends Parent {
     private int offsetY = 2;
 
     /* Mains pour les mettre à jour après les animations */
-    private MainJoueurFX mainJoueurFX;
-    private MainAdversaireFX mainAdversaireFX;
+    private MainFX mainJoueurFX;
+    private MainFX mainAdversaireFX;
 
     /**
      * @param nombreCartes le nombre de cartes initiale du paquet.
@@ -49,7 +49,7 @@ public class PaquetFX extends Parent {
      * @param mainAdversaireFX l'objet graphique qui contiendra la main de
      * l'adversaire.
      */
-    public PaquetFX(int nombreCartes, int positionPaquetX, int positionPaquetY, MainJoueurFX mainJoueurFX, MainAdversaireFX mainAdversaireFX) {
+    public PaquetFX(int nombreCartes, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
         this.nombreCartes = nombreCartes;
         this.cartesFX = new Stack<>();
         this.positionXTete = positionPaquetX;

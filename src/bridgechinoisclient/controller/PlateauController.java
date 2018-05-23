@@ -8,14 +8,11 @@ package bridgechinoisclient.controller;
 import LibrairieCarte.Carte;
 import LibrairieCarte.SymboleCarte;
 import LibrairieCarte.ValeurCarte;
-import bridgechinoisclient.view.ObjetGraphique.MainAdversaireFX;
-import bridgechinoisclient.view.ObjetGraphique.MainJoueurFX;
+import bridgechinoisclient.view.ObjetGraphique.MainFX;
 import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -42,7 +39,7 @@ public class PlateauController extends Controller {
     public void initialize(URL url, ResourceBundle rb) {
         // On met les noms des joueurs.
         nomJoueurLabel.setText("Guillaume");
-        nomAdversaireLabel.setText("IA Facile");
+        nomAdversaireLabel.setText("IA Débutante");
         
         // On récupère les mains des joueurs.
         ArrayList<Carte> mainJoueur = new ArrayList();
@@ -64,12 +61,12 @@ public class PlateauController extends Controller {
         int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
         
         // On initialise un objet graphique MainJoueur.
-        MainAdversaireFX mainAdversaireFX = new MainAdversaireFX(60,0);
-        MainJoueurFX mainJoueurFX = new MainJoueurFX(60, hauteurPlateauPane - 85);
+        MainFX mainAdversaireFX = new MainFX(60,0);
+        MainFX mainJoueurFX = new MainFX(60, hauteurPlateauPane - 85);
         
         
         // On initialise le paquet de carte.
-        PaquetFX paquetFX = new PaquetFX(52, largeurPlateauPane/2 - 60, hauteurPlateauPane/2 - 85, mainJoueurFX, mainAdversaireFX);
+        PaquetFX paquetFX = new PaquetFX(52, largeurPlateauPane/2 - 60, hauteurPlateauPane/2 - 65, mainJoueurFX, mainAdversaireFX);
         
         // On ajoute les mains au plateau.
         this.plateauPane.getChildren().add(mainAdversaireFX);

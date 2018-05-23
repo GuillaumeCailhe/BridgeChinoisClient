@@ -40,7 +40,7 @@
                            <children>
                               <VBox alignment="CENTER" prefHeight="130.0" prefWidth="416.0">
                                  <children>
-                                    <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="106.0" text="Régles" />
+                                    <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="106.0" text="Règles" />
                                     <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="108.0" text="Capituler">
                                        <VBox.margin>
                                           <Insets top="20.0" />
@@ -60,7 +60,6 @@
                         <FlowPane hgap="15.0" prefHeight="33.0" prefWidth="462.0">
                            <children>
                               <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="129.0" text="Annuler" />
-                              <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="129.0" text="Pause" />
                               <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="129.0" text="Sauvegarder" />
                            </children>
                            <VBox.margin>
