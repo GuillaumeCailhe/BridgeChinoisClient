@@ -6,7 +6,7 @@
 package bridgechinoisclient;
 
 import LibrairieMoteur.ModeDeJeu;
-import bridgechinoisclient.model.reseau.Client;
+import bridgechinoisclient.model.reseau.ClientTextuel;
 import java.io.IOException;
 import java.util.Random;
 
@@ -23,7 +23,7 @@ public class ApplicationTextuelle {
         // TODO code application logic here
         String[] pseudos = new String[] {"Pepefab","Helgrind","Djoko","Amadou","Kyle","Perceval","Karadoc","Kadoc","Gabe"};
         Random r = new Random();
-        Client c = new Client(pseudos[r.nextInt(pseudos.length)],ModeDeJeu.JOUEUR_CONTRE_IA_FACILE,1+r.nextInt(5));
+        ClientTextuel c = new ClientTextuel(pseudos[r.nextInt(pseudos.length)],ModeDeJeu.JOUEUR_CONTRE_IA_FACILE,1+r.nextInt(5));
     }
     
 }
