@@ -14,6 +14,7 @@ import java.util.Stack;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -83,16 +84,33 @@ public class PaquetFX extends Parent {
      * @param carte la carte à découvrir.
      */
     public CarteFX decouvrirCarte(Carte carte) {
+        // Création de la carte
         CarteFX carteFX = new CarteFX(positionXTete, positionYTete, carte);
 
-        // On enlève la carte inconnue et on la remplace par la carte connue
+        // On enlève la carte inconnue et on la remplace par la carte connue dans la pile.
         CarteFX carteTete = cartesFX.pop();
         cartesFX.add(carteFX);
 
-        // Mise à jour de l'affichage.
-        this.getChildren().remove(carteTete);
-        this.getChildren().add(carteFX);
+        // Animation : on retourne la carte face cachée.
+        ScaleTransition stAncienneCarte = new ScaleTransition(Duration.millis(500), carteTete);
+        stAncienneCarte.setByX(-1);
 
+        PaquetFX paquet = this;
+        stAncienneCarte.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                paquet.getChildren().remove(carteTete);
+                paquet.getChildren().add(carteFX);
+                // Suite de l'animation : on retourne la carte.
+                ScaleTransition stNouvelleCarte = new ScaleTransition(Duration.millis(500), carteFX);
+                stNouvelleCarte.setFromX(0);
+                stNouvelleCarte.setByX(1);
+                stNouvelleCarte.play();
+            }
+        });
+        stAncienneCarte.play();
+
+        // Mise à jour de l'affichage.
         return carteFX;
     }
 
@@ -184,20 +202,41 @@ public class PaquetFX extends Parent {
         });
     }
 
+    /**
+     * Scinde le paquet en 6 paquets, les piles.
+     *
+     * @param plateau le plateau où dessiner les piles.
+     */
     private void animationScinderEnPiles(AnchorPane plateau) {
+        // Création d'une liste d'animations jouées en parallèle.
         ParallelTransition parT = new ParallelTransition();
+        // Création des piles.
         for (int i = 0; i < 6; i++) {
             int offsetY = (int) (plateau.getPrefWidth() / 6);
             PaquetFX pile = new PaquetFX(5, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+
+            // Animation de déplacement de la pile.
             TranslateTransition tt = new TranslateTransition(Duration.millis(1000), pile);
             tt.setFromX(positionPaquetX);
             tt.setToX((i * offsetY) + 20);
+
+            tt.setOnFinished(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent arg0) {
+                    pile.decouvrirCarte(new Carte(ValeurCarte.VALET, SymboleCarte.TREFLE));
+                }
+            });
+
+            // On ajoute l'animation à la liste d'animations.
             parT.getChildren().add(tt);
 
+            // On ajoute la pile au plateau.
             plateau.getChildren().add(pile);
-
         }
+        // Suppression du paquet initial.
         plateau.getChildren().remove(this);
+
+        // Lancement de l'animation.
         parT.play();
     }
 
