@@ -36,14 +36,14 @@ public class MainFX extends Parent {
             carteFX.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    carteFX.animationSurvol();
+                    carteFX.animationSurvolMain();
                 }
             });
 
             carteFX.setOnMouseExited(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    carteFX.animationRelachement();
+                    carteFX.animationRelachementMain();
                 }
             });
             

@@ -23,7 +23,10 @@ public class CarteFX extends Parent {
     private double positionX;
     private double positionY;
     private Carte carte;
-    private static final int deplacementAnimation = 40;
+    private static final double deplacementAnimationSurvolMain = 40;
+    private Rectangle hitboxSurvolMain;
+    private static final double agrandissementAnimationSurvolPile = 0.3;
+    private Rectangle hitboxSurvolPile;
 
     /**
      * Crée un objet CarteFX à partir du nom de la carte
@@ -84,21 +87,44 @@ public class CarteFX extends Parent {
     
     /**
      * Bouge la carte vers le haut lorsqu'on met la souris dessus.
-     * Est appelée par MainJoueurFX.
+     * Concerne les cartes dans la main.
      */
-    public void animationSurvol(){
-        Rectangle hitbox = new Rectangle(positionX, positionY, largeur, hauteur+deplacementAnimation);
+    public void animationSurvolMain(){
+        hitboxSurvolMain = new Rectangle(positionX, positionY, largeur, hauteur+deplacementAnimationSurvolMain);
+        hitboxSurvolMain.setFill(Color.TRANSPARENT);
+        this.getChildren().add(hitboxSurvolMain);
+        this.setTranslateY(this.getTranslateY() - deplacementAnimationSurvolMain);
+    }
+    
+    /**
+     * Agrandit la carte lorsqu'on met la souris dessus.
+     * Concerne les cartes sur la pile.
+     */
+    public void animationSurvolPile(){
+        Rectangle hitbox = new Rectangle(positionX, positionY, largeur+agrandissementAnimationSurvolPile, hauteur+agrandissementAnimationSurvolPile);
         hitbox.setFill(Color.TRANSPARENT);
         this.getChildren().add(hitbox);
-        this.setTranslateY(this.getTranslateY() - deplacementAnimation);
+        this.setScaleX(this.getScaleX() + agrandissementAnimationSurvolPile);
+        this.setScaleY(this.getScaleY() + agrandissementAnimationSurvolPile);
     }
     
     /**
      * Remet la carte à sa position initiale losqu'on relâche la souris.
-     * Est appelée par MainJoueurFX.
+     * Concerne les cartes sur la pile.
      */
-    public void animationRelachement(){
-        this.setTranslateY(this.getTranslateY() + deplacementAnimation);
+    public void animationRelachementMain(){
+        this.setTranslateY(this.getTranslateY() + deplacementAnimationSurvolMain);
+        this.getChildren().remove(hitboxSurvolMain);
+    }
+    
+    /**
+     * Redonne à la carte sa taille initiale lorsqu'on relâche la souris.
+     * 
+     */
+    public void animationRelachementPile(){
+        this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolPile);
+        this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolPile);
+        this.getChildren().remove(hitboxSurvolPile);
     }
 
     @Override
