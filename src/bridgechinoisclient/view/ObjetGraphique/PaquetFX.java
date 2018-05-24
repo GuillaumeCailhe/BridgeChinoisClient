@@ -174,11 +174,7 @@ public class PaquetFX extends Parent {
      */
     private TranslateTransition animationDistributionCarte(MainFX mainFX, Carte carteADeplacer, double nouvellePositionX, double nouvellePositionY, int positionCarteDansLaMain) {
         CarteFX carteFX = retirerCarteSansDecouvrir();
-        TranslateTransition tt = new TranslateTransition(Duration.millis(250), carteFX);
-        tt.setFromX(0);
-        tt.setFromY(0);
-        tt.setToX(nouvellePositionX);
-        tt.setToY(nouvellePositionY);
+        TranslateTransition tt = carteFX.animationDeplacementCarte(250, nouvellePositionX, nouvellePositionY);
 
         PaquetFX paquet = this;
         tt.setOnFinished(new EventHandler<ActionEvent>() {

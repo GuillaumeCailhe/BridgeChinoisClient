@@ -6,11 +6,13 @@
 package bridgechinoisclient.view.ObjetGraphique;
 
 import LibrairieCarte.Carte;
+import javafx.animation.TranslateTransition;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 /**
  *
@@ -85,6 +87,21 @@ public class CarteFX extends Parent {
      */
     public Carte getCarte() {
         return carte;
+    }
+    
+    /**
+     * Déplace la carte de en nouvellePositionX, nouvellePositionY
+     * @param duree la durée de l'animation
+     * @param nouvellePositionX
+     * @param nouvellePositionY
+     * @return la transition d'animation de déplacement
+     */
+    public TranslateTransition animationDeplacementCarte(double duree, double nouvellePositionX, double nouvellePositionY) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(duree), this);
+        tt.setToX(nouvellePositionX);
+        tt.setToY(nouvellePositionY);
+
+        return tt;
     }
 
     /**

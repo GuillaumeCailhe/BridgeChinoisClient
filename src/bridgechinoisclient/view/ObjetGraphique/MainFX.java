@@ -8,9 +8,12 @@ package bridgechinoisclient.view.ObjetGraphique;
 import LibrairieCarte.Carte;
 import java.util.ArrayList;
 import java.util.Iterator;
+import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -67,23 +70,36 @@ public class MainFX extends Parent {
         this.getChildren().add(carteFX);
 
     }
-    
+
     /**
      * Joue une carte de la main au milieu.
-     * @param carteFXJouee 
+     *
+     * @param carteFXJouee
      */
     public void jouerCarte(CarteFX carteFXJouee) {
-        System.out.println("Je joue la carte " + carteFXJouee.toString());
-        carteFXJouee.setTranslateX(230);
-        carteFXJouee.setTranslateY(-200);
+        // Suppression des événements
+        
+        carteFXJouee.setOnMouseEntered(null);
+        carteFXJouee.setOnMouseExited(null);
+        carteFXJouee.setOnMouseClicked(null);
+        carteFXJouee.animationRelachementMain();
+
+        // Animation de déplacement
+        int positionDansLaMain = this.mainFX.indexOf(carteFXJouee);
+        double offsetX = carteFXJouee.getLargeur() - 10;
+        double coordonneesX = 230 - (offsetX * positionDansLaMain);
+        double coordonneesY = -150;
+
+        TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
+        tt.play();
     }
-    
+
     /**
      * Remet les cartes les unes au dessus des autres.
      */
-    public void recalculerZOrder(){
+    public void recalculerZOrder() {
         Iterator<CarteFX> it = this.mainFX.iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             CarteFX carteFX = it.next();
             carteFX.toFront();
         }
