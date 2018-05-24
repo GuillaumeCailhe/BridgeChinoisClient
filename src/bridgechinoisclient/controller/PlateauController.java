@@ -44,7 +44,11 @@ public class PlateauController extends Controller {
     public MainFX getMainJoueurFX() {
         return mainJoueurFX;
     }
-    
+
+    public MainFX getMainAdversaireFX() {
+        return mainAdversaireFX;
+    }
+
     public void distributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         // On affiche les noms des joueurs.
         nomJoueurLabel.setText(nomJoueur);
@@ -87,7 +91,7 @@ public class PlateauController extends Controller {
         changerClasseLabel(this.nomJoueurLabel, "labelNomTourJoueur");
         changerClasseLabel(this.nomAdversaireLabel, "labelNom");
         // On met la main en surbrillance.
-        
+
         // On rend l'usage de la main.
         this.mainJoueurFX.ajouterEvenementCartes();
     }
