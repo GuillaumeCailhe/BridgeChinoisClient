@@ -191,6 +191,7 @@ public class PaquetFX extends Parent {
         }
 
         seqT.play();
+        seqT.setRate(2);
         seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
