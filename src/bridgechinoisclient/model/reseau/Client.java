@@ -258,7 +258,7 @@ public class Client implements Runnable {
                 case TOUR_KO:
                     recupererPiocheAdversaire();
                     attendreMessage();
-                    msg = c.getMessageParCode(CodeMessage.TOUR_OK);
+                    c.getMessageParCode(CodeMessage.TOUR_OK);
                     peutPiocher = true;
                     attendreJoueur();
                     peutPiocher = false;
@@ -317,20 +317,23 @@ public class Client implements Runnable {
 
     private synchronized void attendreJoueur() {
         try {
-            wait();
+            while(peutJouer) {
+                wait();
+            }
         } catch (InterruptedException ex) {
             Logger.getLogger(ClientTextuel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-    public boolean jouer(int i) {
+    public synchronized boolean jouer(int i) {
         if (peutJouer) {
             this.c.envoyerEntier(CodeMessage.JOUER, (byte) i);
             attendreMessage();
             Message msg = this.c.getPremierMessage();
             if (msg.getCode() == CodeMessage.JOUER_OK) {
                 peutJouer = false;
+                notify();
                 return true;
             } else {
                 return false;
