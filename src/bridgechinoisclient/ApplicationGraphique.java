@@ -119,6 +119,7 @@ public class ApplicationGraphique extends Application {
         try {
             this.client = new Client("Guillaume", modeDeJeu, 3, this);
             Thread thread = new Thread(this.client);
+            thread.setDaemon(true);
             thread.start();
         } catch (IOException ex) {
             
