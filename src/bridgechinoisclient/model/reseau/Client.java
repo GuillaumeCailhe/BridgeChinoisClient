@@ -65,6 +65,14 @@ public class Client implements Runnable {
         return pseudo;
     }
 
+    public boolean peutJouer() {
+        return peutJouer;
+    }
+
+    public boolean peutPiocher() {
+        return peutPiocher;
+    }
+
     private void jeu() {
         Scanner sc = new Scanner(System.in);
         Message msg;

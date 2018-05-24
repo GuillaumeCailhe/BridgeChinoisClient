@@ -61,7 +61,7 @@ public class PlateauController extends Controller {
         this.plateauPane.getChildren().add(mainAdversaireFX);
         this.plateauPane.getChildren().add(mainJoueurFX);
         this.plateauPane.getChildren().add(paquetFX);
-        paquetFX.animationDistributionInitiale(mainJoueur, piles, plateauPane);
+        paquetFX.animationDistributionInitiale(mainJoueur, this.getApplicationGraphique().getClient().peutJouer(), piles, plateauPane);
     }
 
     /**
@@ -87,6 +87,7 @@ public class PlateauController extends Controller {
         // On met la main en surbrillance.
         
         // On rend l'usage de la main.
+        this.mainJoueurFX.ajouterEvenementCartes();
     }
 
     /**
@@ -100,6 +101,7 @@ public class PlateauController extends Controller {
         // On enlève la surbrillance de la main.
 
         // On bloque l'usage de la main.
+        this.mainJoueurFX.retirerEvenementCartes();
     }
 
 }

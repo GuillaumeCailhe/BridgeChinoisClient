@@ -43,8 +43,51 @@ public class MainFX extends Parent {
         // Création de la carte
         CarteFX carteFX = new CarteFX(positionDansLaMain * this.getOffsetCarteX(), 0, carte);
 
-        // Ajout des événements sur la carte
-        if (carte != null) {
+        // Affichage de la carte.
+        this.mainFX.add(carteFX);
+        this.getChildren().add(carteFX);
+    }
+
+    /**
+     * Joue une carte de la main au milieu.
+     *
+     * @param carteFXJouee
+     */
+    public void jouerCarte(CarteFX carteFXJouee) {
+        int positionDansLaMain = this.mainFX.indexOf(carteFXJouee);
+        boolean aJoue = this.plateauController.getApplicationGraphique().getClient().jouer(positionDansLaMain);
+
+        if (aJoue) {
+            carteFXJouee.animationRelachementMain();
+            // Animation de déplacement
+            double offsetX = carteFXJouee.getLargeur() - 10;
+            double coordonneesX = 230 - (offsetX * positionDansLaMain);
+            double coordonneesY = -150;
+
+            TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
+            tt.play();
+        }
+    }
+
+    /**
+     * Remet les cartes les unes au dessus des autres.
+     */
+    public void recalculerZOrder() {
+        Iterator<CarteFX> it = this.mainFX.iterator();
+        while (it.hasNext()) {
+            CarteFX carteFX = it.next();
+            carteFX.toFront();
+        }
+    }
+
+    /**
+     * Ajoute les événements de souris sur la main du joueur.
+     */
+    public void ajouterEvenementCartes() {
+        Iterator<CarteFX> it = this.mainFX.iterator();
+        while (it.hasNext()) {
+            CarteFX carteFX = it.next();
+
             carteFX.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -68,47 +111,20 @@ public class MainFX extends Parent {
                 }
             });
         }
-
-        // Affichage de la carte.
-        this.mainFX.add(carteFX);
-        this.getChildren().add(carteFX);
-
     }
 
     /**
-     * Joue une carte de la main au milieu.
-     *
-     * @param carteFXJouee
+     * Retire les événements de souris sur la main du joueur.
      */
-    public void jouerCarte(CarteFX carteFXJouee) {
-        int positionDansLaMain = this.mainFX.indexOf(carteFXJouee);
-        boolean aJoue = this.plateauController.getApplicationGraphique().getClient().jouer(positionDansLaMain);
-
-        if (aJoue) {
-            // Suppression des événements
-            carteFXJouee.setOnMouseEntered(null);
-            carteFXJouee.setOnMouseExited(null);
-            carteFXJouee.setOnMouseClicked(null);
-            carteFXJouee.animationRelachementMain();
-
-            // Animation de déplacement
-            double offsetX = carteFXJouee.getLargeur() - 10;
-            double coordonneesX = 230 - (offsetX * positionDansLaMain);
-            double coordonneesY = -150;
-
-            TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
-            tt.play();
-        }
-    }
-
-    /**
-     * Remet les cartes les unes au dessus des autres.
-     */
-    public void recalculerZOrder() {
+    public void retirerEvenementCartes() {
+        System.out.println("Erreur ?"); 
         Iterator<CarteFX> it = this.mainFX.iterator();
         while (it.hasNext()) {
+            System.out.println("Boucle infinie ?");
             CarteFX carteFX = it.next();
-            carteFX.toFront();
+            carteFX.setOnMouseEntered(null);
+            carteFX.setOnMouseExited(null);
+            carteFX.setOnMouseClicked(null);
         }
     }
 }

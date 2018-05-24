@@ -192,9 +192,11 @@ public class PaquetFX extends Parent {
      * Distribue les cartes au début de la partie.
      *
      * @param mainJoueur la main du joueur courant.
+     * @param estTourJoueur vrai si c'est le tour du joueur.
+     * @param piles les cartes au dessus des piles.
      * @param plateau le plateau où dessiner les cartes.
      */
-    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, AnchorPane plateau) {
+    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, boolean estTourJoueur, ArrayList<Carte> piles, AnchorPane plateau) {
         SequentialTransition seqT = new SequentialTransition();
         Iterator<Carte> it = mainJoueur.iterator();
         int positionDansLaMain = 0;
@@ -212,7 +214,7 @@ public class PaquetFX extends Parent {
         seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                animationScinderEnPiles(piles, plateau);
+                animationScinderEnPiles(piles, plateau, estTourJoueur);
             }
         });
     }
@@ -222,7 +224,7 @@ public class PaquetFX extends Parent {
      *
      * @param plateau le plateau où dessiner les piles.
      */
-    private void animationScinderEnPiles(ArrayList<Carte> piles, AnchorPane plateau) {
+    private void animationScinderEnPiles(ArrayList<Carte> piles, AnchorPane plateau, boolean estTourJoueur) {
         // Création d'une liste d'animations jouées en parallèle.
         ParallelTransition parT = new ParallelTransition();
         // Création des piles.
@@ -240,6 +242,9 @@ public class PaquetFX extends Parent {
                 @Override
                 public void handle(ActionEvent arg0) {
                     pile.decouvrirCarte(piles.get(j));
+                    if (estTourJoueur) {
+                        mainJoueurFX.ajouterEvenementCartes();
+                    }
                 }
             });
 
