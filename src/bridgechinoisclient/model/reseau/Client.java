@@ -228,10 +228,10 @@ public class Client implements Runnable {
                 recupererCoupAdversaire();
                 break;
             case TOUR_KO:
+                prevenirTourAdversaire();
                 recupererCoupAdversaire();
                 prevenirTourJoueur();
-                attendreJoueur();
-                prevenirTourAdversaire();
+                attendreJoueur(); 
                 break;
         }
     }
@@ -275,7 +275,7 @@ public class Client implements Runnable {
         attendreMessage();
         msg = c.getMessageParCode(CodeMessage.JOUER_ADVERSAIRE);
         Carte carte = ((ArrayList<Carte>) msg.getDonnees()).get(0);
-        System.out.println("L'adversaire a joué " + carte);
+        Platform.runLater(() -> app.getPlateauController().getMainJoueurFX().jouerCarteAdversaire(carte));
     }
 
     private void recupererPiocheAdversaire() {

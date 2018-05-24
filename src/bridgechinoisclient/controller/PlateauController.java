@@ -41,6 +41,10 @@ public class PlateauController extends Controller {
     public void initialize(URL url, ResourceBundle rb) {
     }
 
+    public MainFX getMainJoueurFX() {
+        return mainJoueurFX;
+    }
+    
     public void distributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         // On affiche les noms des joueurs.
         nomJoueurLabel.setText(nomJoueur);

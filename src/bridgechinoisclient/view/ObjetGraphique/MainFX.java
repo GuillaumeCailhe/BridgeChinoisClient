@@ -10,6 +10,7 @@ import bridgechinoisclient.ApplicationGraphique;
 import bridgechinoisclient.controller.PlateauController;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -53,7 +54,7 @@ public class MainFX extends Parent {
      *
      * @param carteFXJouee
      */
-    public void jouerCarte(CarteFX carteFXJouee) {
+    public void jouerCarteJoueur(CarteFX carteFXJouee) {
         int positionDansLaMain = this.mainFX.indexOf(carteFXJouee);
         boolean aJoue = this.plateauController.getApplicationGraphique().getClient().jouer(positionDansLaMain);
 
@@ -67,6 +68,17 @@ public class MainFX extends Parent {
             TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
             tt.play();
         }
+    }
+    
+    /**
+     * Joue la carte de l'adversaire
+     * @param carte la carte à jouer.
+     */
+    public void jouerCarteAdversaire(Carte carte){
+        Random rand = new Random();
+        int indiceCarteJouee = rand.nextInt(mainFX.size() + 1);
+        CarteFX carteJouee = this.mainFX.get(indiceCarteJouee);
+        //decouvrirCarte();
     }
 
     /**
@@ -107,7 +119,7 @@ public class MainFX extends Parent {
             carteFX.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    mainFX.jouerCarte(carteFX);
+                    mainFX.jouerCarteJoueur(carteFX);
                 }
             });
         }

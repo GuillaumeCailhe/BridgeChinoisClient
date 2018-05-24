@@ -81,8 +81,12 @@ public class PaquetFX extends Parent {
      * @param carte la carte à découvrir.
      */
     public CarteFX decouvrirCarte(Carte carte) {
-        // Création de la carte
-        CarteFX carteFX = new CarteFX(positionXTete - offsetX, positionYTete - offsetY, carte);
+        // On récupère la carte en tête de pile.
+        CarteFX carteFX = cartesFX.peek();
+
+        // Animation : on retourne la carte face cachée.
+        ScaleTransition st = carteFX.animationDecouverteCarte(carte);
+        st.play();
 
         // Rajout des événements associés de survol/relâchement.
         carteFX.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -106,30 +110,6 @@ public class PaquetFX extends Parent {
             }
         });
 
-        // On enlève la carte inconnue et on la remplace par la carte connue dans la pile.
-        CarteFX carteTete = cartesFX.pop();
-        cartesFX.add(carteFX);
-
-        // Animation : on retourne la carte face cachée.
-        ScaleTransition stAncienneCarte = new ScaleTransition(Duration.millis(500), carteTete);
-        stAncienneCarte.setByX(-1);
-
-        PaquetFX paquet = this;
-        stAncienneCarte.setOnFinished(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent arg0) {
-                paquet.getChildren().remove(carteTete);
-                paquet.getChildren().add(carteFX);
-                // Suite de l'animation : on retourne la carte.
-                ScaleTransition stNouvelleCarte = new ScaleTransition(Duration.millis(500), carteFX);
-                stNouvelleCarte.setFromX(0);
-                stNouvelleCarte.setByX(1);
-                stNouvelleCarte.play();
-            }
-        });
-        stAncienneCarte.play();
-
-        // Mise à jour de l'affichage.
         return carteFX;
     }
 

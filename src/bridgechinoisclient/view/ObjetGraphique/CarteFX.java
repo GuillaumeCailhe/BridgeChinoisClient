@@ -6,7 +6,10 @@
 package bridgechinoisclient.view.ObjetGraphique;
 
 import LibrairieCarte.Carte;
+import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -45,9 +48,13 @@ public class CarteFX extends Parent {
         if (carte == null) {
             creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
         } else {
-            String nom = carte.getValeur() + "_" + carte.getSymbole();
-            creerCarte(posX, posY, "../ressources/cartes/" + nom + ".png");
+            creerCarte(posX, posY, getCheminVersImage(carte));
         }
+    }
+    
+    private String getCheminVersImage(Carte carte){
+        String nom = carte.getValeur() + "_" + carte.getSymbole();
+        return "../ressources/cartes/" + nom + ".png";
     }
 
     /**
@@ -105,6 +112,32 @@ public class CarteFX extends Parent {
         tt.setToY(nouvellePositionY);
 
         return tt;
+    }
+
+    /**
+     * Découvre une carte face cachée et lui attribue la valeur de carte
+     *
+     * @param carte l'objet carte associé à la nouvelle carte.
+     */
+    public ScaleTransition animationDecouverteCarte(Carte carte) {
+        // On retourne la carte face cachée.
+        CarteFX carteFaceCachee = this;
+        ScaleTransition stAncienneCarte = new ScaleTransition(Duration.millis(500), carteFaceCachee);
+        stAncienneCarte.setByX(-1);
+        
+        stAncienneCarte.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                // Suite de l'animation : on retourne la carte.
+                carteFaceCachee.getChildren().remove(carteFaceCachee);
+                carteFaceCachee.creerCarte(positionX, positionY, getCheminVersImage(carte));
+                ScaleTransition stNouvelleCarte = new ScaleTransition(Duration.millis(500), carteFaceCachee);
+                stNouvelleCarte.setFromX(0);
+                stNouvelleCarte.setByX(1);
+                stNouvelleCarte.play();
+            }
+        });
+        return stAncienneCarte;
     }
 
     /**
