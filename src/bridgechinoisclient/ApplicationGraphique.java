@@ -19,6 +19,7 @@ public class ApplicationGraphique extends Application {
     private Stage primaryStage;
     private AnchorPane rootLayout;
     private Client client;
+    private PlateauController plateauController;
 
     @Override
     public void start(Stage primaryStage) {
@@ -103,9 +104,9 @@ public class ApplicationGraphique extends Application {
      * Affiche le plateau
      */
     public void afficherPlateau() {
-        PlateauController plateauController = (PlateauController) afficherFenetre("view/Plateau.fxml");
+        this.plateauController = (PlateauController) afficherFenetre("view/Plateau.fxml");
         
-        plateauController.distributionInitiale(this.client.getMain(), this.client.getPiles(), this.client.getPseudo(), "Adversaire");
+        this.plateauController.distributionInitiale(this.client.getMain(), this.client.getPiles(), this.client.getPseudo(), "Adversaire");
     }
 
     /**
@@ -130,5 +131,13 @@ public class ApplicationGraphique extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public PlateauController getPlateauController() {
+        return plateauController;
     }
 }

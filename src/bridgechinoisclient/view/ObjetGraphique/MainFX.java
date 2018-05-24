@@ -6,6 +6,8 @@
 package bridgechinoisclient.view.ObjetGraphique;
 
 import LibrairieCarte.Carte;
+import bridgechinoisclient.ApplicationGraphique;
+import bridgechinoisclient.controller.PlateauController;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javafx.animation.TranslateTransition;
@@ -23,9 +25,11 @@ public class MainFX extends Parent {
 
     private static final int offsetCarteX = 50;
     private ArrayList<CarteFX> mainFX;
+    private PlateauController plateauController;
 
-    public MainFX(int positionX, int positionY) {
+    public MainFX(PlateauController plateauController, int positionX, int positionY) {
         this.mainFX = new ArrayList<>();
+        this.plateauController = plateauController;
 
         this.setLayoutX(positionX);
         this.setLayoutY(positionY);
@@ -77,21 +81,24 @@ public class MainFX extends Parent {
      * @param carteFXJouee
      */
     public void jouerCarte(CarteFX carteFXJouee) {
-        // Suppression des événements
-        
-        carteFXJouee.setOnMouseEntered(null);
-        carteFXJouee.setOnMouseExited(null);
-        carteFXJouee.setOnMouseClicked(null);
-        carteFXJouee.animationRelachementMain();
-
-        // Animation de déplacement
         int positionDansLaMain = this.mainFX.indexOf(carteFXJouee);
-        double offsetX = carteFXJouee.getLargeur() - 10;
-        double coordonneesX = 230 - (offsetX * positionDansLaMain);
-        double coordonneesY = -150;
+        boolean aJoue = this.plateauController.getApplicationGraphique().getClient().jouer(positionDansLaMain);
+        
+        if (aJoue) {
+            // Suppression des événements
+            carteFXJouee.setOnMouseEntered(null);
+            carteFXJouee.setOnMouseExited(null);
+            carteFXJouee.setOnMouseClicked(null);
+            carteFXJouee.animationRelachementMain();
 
-        TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
-        tt.play();
+            // Animation de déplacement
+            double offsetX = carteFXJouee.getLargeur() - 10;
+            double coordonneesX = 230 - (offsetX * positionDansLaMain);
+            double coordonneesY = -150;
+
+            TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
+            tt.play();
+        }
     }
 
     /**

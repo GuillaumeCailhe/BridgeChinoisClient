@@ -64,7 +64,7 @@ public class Client implements Runnable {
     public String getPseudo() {
         return pseudo;
     }
-    
+
     private void jeu() {
         Scanner sc = new Scanner(System.in);
         Message msg;
@@ -122,7 +122,7 @@ public class Client implements Runnable {
 
         // Attente d'une réponse
         this.attendreMessage();
-        
+
         Platform.runLater(() -> app.afficherPlateau());
         Message msg = c.getMessageParCode(CodeMessage.PARTIE_DEMARRER);
 
@@ -191,6 +191,22 @@ public class Client implements Runnable {
         }
     }
 
+    /**
+     * Met la variable peutJouer à jour et prévient l'application graphique.
+     */
+    private void prevenirTourJoueur() {
+        peutJouer = true;
+        Platform.runLater(() -> app.getPlateauController().prevenirTourJoueur());
+    }
+
+    /**
+     * Met la variable peutJouer à jour et prévient l'application graphique.
+     */
+    private void prevenirTourAdversaire() {
+        peutJouer = false;
+        Platform.runLater(() -> app.getPlateauController().prevenirTourAdversaire());
+    }
+
     private void tour() {
         Message msg;
 
@@ -198,16 +214,16 @@ public class Client implements Runnable {
         msg = this.c.getPremierMessage();
         switch (msg.getCode()) {
             case TOUR_OK:
-                peutJouer = true;
+                prevenirTourJoueur();
                 attendreJoueur();
-                peutJouer = false;
+                prevenirTourAdversaire();
                 recupererCoupAdversaire();
                 break;
             case TOUR_KO:
                 recupererCoupAdversaire();
-                peutJouer = true;
+                prevenirTourJoueur();
                 attendreJoueur();
-                peutJouer = false;
+                prevenirTourAdversaire();
                 break;
         }
     }

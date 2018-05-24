@@ -48,8 +48,8 @@ public class PlateauController extends Controller {
         int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
 
         // On initialise un objet graphique MainJoueur.
-        MainFX mainAdversaireFX = new MainFX(60, 0);
-        MainFX mainJoueurFX = new MainFX(60, hauteurPlateauPane - 85);
+        MainFX mainAdversaireFX = new MainFX(this, 60, 0);
+        MainFX mainJoueurFX = new MainFX(this, 60, hauteurPlateauPane - 85);
 
         // On initialise le paquet de carte.
         PaquetFX paquetFX = new PaquetFX(52, largeurPlateauPane / 2 - 60, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
@@ -59,6 +59,20 @@ public class PlateauController extends Controller {
         this.plateauPane.getChildren().add(mainJoueurFX);
         this.plateauPane.getChildren().add(paquetFX);
         paquetFX.animationDistributionInitiale(mainJoueur, piles, plateauPane);
+    }
+
+    /**
+     * Prévient le joueur que c'est son tour.
+     */
+    public void prevenirTourJoueur() {
+        System.out.println("C'est ton tour.");
+    }
+
+    /**
+     * Prévient le joueur que c'est le tour de l'adversaire.
+     */
+    public void prevenirTourAdversaire() {
+        System.out.println("C'est le tour de l'adversaire.");
     }
 
 }
