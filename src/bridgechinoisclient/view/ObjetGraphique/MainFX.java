@@ -117,10 +117,8 @@ public class MainFX extends Parent {
      * Retire les événements de souris sur la main du joueur.
      */
     public void retirerEvenementCartes() {
-        System.out.println("Erreur ?"); 
         Iterator<CarteFX> it = this.mainFX.iterator();
         while (it.hasNext()) {
-            System.out.println("Boucle infinie ?");
             CarteFX carteFX = it.next();
             carteFX.setOnMouseEntered(null);
             carteFX.setOnMouseExited(null);
