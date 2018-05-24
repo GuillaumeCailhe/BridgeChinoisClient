@@ -30,6 +30,7 @@ public class CarteFX extends Parent {
     private Rectangle hitboxSurvolMain;
     private static final double agrandissementAnimationSurvolPile = 0.3;
     private Rectangle hitboxSurvolPile;
+    private boolean estSurvoleeMain;
 
     /**
      * Crée un objet CarteFX à partir du nom de la carte
@@ -40,6 +41,7 @@ public class CarteFX extends Parent {
         this.carte = carte;
         this.positionX = posX;
         this.positionY = posY;
+        this.estSurvoleeMain = false;
         if (carte == null) {
             creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
         } else {
@@ -88,9 +90,10 @@ public class CarteFX extends Parent {
     public Carte getCarte() {
         return carte;
     }
-    
+
     /**
      * Déplace la carte de en nouvellePositionX, nouvellePositionY
+     *
      * @param duree la durée de l'animation
      * @param nouvellePositionX
      * @param nouvellePositionY
@@ -116,6 +119,7 @@ public class CarteFX extends Parent {
         this.setScaleX(this.getScaleX() + agrandissementAnimationSurvolMain);
         this.setScaleY(this.getScaleY() + agrandissementAnimationSurvolMain);
         this.toFront();
+        estSurvoleeMain = true;
     }
 
     /**
@@ -135,10 +139,13 @@ public class CarteFX extends Parent {
      * Concerne les cartes sur la pile.
      */
     public void animationRelachementMain() {
-        this.setTranslateY(this.getTranslateY() + deplacementAnimationSurvolMain);
-        this.getChildren().remove(hitboxSurvolMain);
-        this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolMain);
-        this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolMain);
+        if (estSurvoleeMain) {
+            this.setTranslateY(this.getTranslateY() + deplacementAnimationSurvolMain);
+            this.getChildren().remove(hitboxSurvolMain);
+            this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolMain);
+            this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolMain);
+            estSurvoleeMain = false;
+        }
     }
 
     /**
