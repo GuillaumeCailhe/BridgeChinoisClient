@@ -23,17 +23,25 @@ import javafx.util.Duration;
  */
 public class CarteFX extends Parent {
 
+    // Position et taille
     private static final int largeur = 60;
     private static final int hauteur = 85;
     private double positionX;
     private double positionY;
+
+    // L'objet carte sur lequel la carteFX est basée.
     private Carte carte;
+
+    // Constantes et hitbox pour les animations de survol.
     private static final double deplacementAnimationSurvolMain = 40;
     private static final double agrandissementAnimationSurvolMain = 0.2;
     private Rectangle hitboxSurvolMain;
     private static final double agrandissementAnimationSurvolPile = 0.3;
     private Rectangle hitboxSurvolPile;
+
+    // Pour éviter quelques bugs gênants
     private boolean estSurvoleeMain;
+    private boolean estSurvoleePile;
 
     /**
      * Crée un objet CarteFX à partir du nom de la carte
@@ -45,14 +53,15 @@ public class CarteFX extends Parent {
         this.positionX = posX;
         this.positionY = posY;
         this.estSurvoleeMain = false;
+        this.estSurvoleePile = false;
         if (carte == null) {
             creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
         } else {
             creerCarte(posX, posY, getCheminVersImage(carte));
         }
     }
-    
-    private String getCheminVersImage(Carte carte){
+
+    private String getCheminVersImage(Carte carte) {
         String nom = carte.getValeur() + "_" + carte.getSymbole();
         return "../ressources/cartes/" + nom + ".png";
     }
@@ -124,7 +133,7 @@ public class CarteFX extends Parent {
         CarteFX carteFaceCachee = this;
         ScaleTransition stAncienneCarte = new ScaleTransition(Duration.millis(500), carteFaceCachee);
         stAncienneCarte.setByX(-1);
-        
+
         stAncienneCarte.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
@@ -152,7 +161,7 @@ public class CarteFX extends Parent {
         this.setScaleX(this.getScaleX() + agrandissementAnimationSurvolMain);
         this.setScaleY(this.getScaleY() + agrandissementAnimationSurvolMain);
         this.toFront();
-        estSurvoleeMain = true;
+        this.estSurvoleeMain = true;
     }
 
     /**
@@ -165,6 +174,7 @@ public class CarteFX extends Parent {
         this.getChildren().add(hitbox);
         this.setScaleX(this.getScaleX() + agrandissementAnimationSurvolPile);
         this.setScaleY(this.getScaleY() + agrandissementAnimationSurvolPile);
+        this.estSurvoleeMain = true;
     }
 
     /**
@@ -172,12 +182,12 @@ public class CarteFX extends Parent {
      * Concerne les cartes sur la pile.
      */
     public void animationRelachementMain() {
-        if (estSurvoleeMain) {
+        if (this.estSurvoleeMain) {
             this.setTranslateY(this.getTranslateY() + deplacementAnimationSurvolMain);
             this.getChildren().remove(hitboxSurvolMain);
             this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolMain);
             this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolMain);
-            estSurvoleeMain = false;
+            this.estSurvoleeMain = false;
         }
     }
 
@@ -186,9 +196,12 @@ public class CarteFX extends Parent {
      *
      */
     public void animationRelachementPile() {
-        this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolPile);
-        this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolPile);
-        this.getChildren().remove(hitboxSurvolPile);
+        if (this.estSurvoleeMain) {
+            this.setScaleX(this.getScaleX() - agrandissementAnimationSurvolPile);
+            this.setScaleY(this.getScaleY() - agrandissementAnimationSurvolPile);
+            this.getChildren().remove(hitboxSurvolPile);
+            this.estSurvoleeMain = false;
+        }
     }
 
     @Override
