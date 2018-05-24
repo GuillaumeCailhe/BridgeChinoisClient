@@ -79,8 +79,6 @@ public class PlateauController extends Controller {
      * Prévient le joueur que c'est son tour.
      */
     public void prevenirTourJoueur() {
-        System.out.println("C'est ton tour.");
-
         // On change la couleur du nom
         changerClasseLabel(this.nomJoueurLabel, "labelNomTourJoueur");
         changerClasseLabel(this.nomAdversaireLabel, "labelNom");
@@ -94,7 +92,6 @@ public class PlateauController extends Controller {
      * Prévient le joueur que c'est le tour de l'adversaire.
      */
     public void prevenirTourAdversaire() {
-        System.out.println("C'est le tour de l'adversaire.");
         // On change la couleur du nom
         changerClasseLabel(this.nomAdversaireLabel, "labelNomTourJoueur");
         changerClasseLabel(this.nomJoueurLabel, "labelNom");
