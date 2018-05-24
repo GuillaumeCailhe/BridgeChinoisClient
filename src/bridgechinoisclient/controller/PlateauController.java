@@ -24,6 +24,9 @@ import javafx.scene.layout.AnchorPane;
  */
 public class PlateauController extends Controller {
 
+    private MainFX mainAdversaireFX;
+    private MainFX mainJoueurFX;
+
     @FXML
     private AnchorPane plateauPane;
     @FXML
@@ -48,8 +51,8 @@ public class PlateauController extends Controller {
         int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
 
         // On initialise un objet graphique MainJoueur.
-        MainFX mainAdversaireFX = new MainFX(this, 60, 0);
-        MainFX mainJoueurFX = new MainFX(this, 60, hauteurPlateauPane - 85);
+        this.mainAdversaireFX = new MainFX(this, 60, 0);
+        this.mainJoueurFX = new MainFX(this, 60, hauteurPlateauPane - 85);
 
         // On initialise le paquet de carte.
         PaquetFX paquetFX = new PaquetFX(52, largeurPlateauPane / 2 - 60, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
@@ -62,10 +65,28 @@ public class PlateauController extends Controller {
     }
 
     /**
+     * Change la classe css d'un label.
+     *
+     * @param label le label à modifier.
+     * @param classe la nouvelle classe du label.
+     */
+    private void changerClasseLabel(Label label, String classe) {
+        label.getStyleClass().clear();
+        label.getStyleClass().add(classe);
+    }
+
+    /**
      * Prévient le joueur que c'est son tour.
      */
     public void prevenirTourJoueur() {
         System.out.println("C'est ton tour.");
+
+        // On change la couleur du nom
+        changerClasseLabel(this.nomJoueurLabel, "labelNomTourJoueur");
+        changerClasseLabel(this.nomAdversaireLabel, "labelNom");
+        // On met la main en surbrillance.
+        
+        // On rend l'usage de la main.
     }
 
     /**
@@ -73,6 +94,12 @@ public class PlateauController extends Controller {
      */
     public void prevenirTourAdversaire() {
         System.out.println("C'est le tour de l'adversaire.");
+        // On change la couleur du nom
+        changerClasseLabel(this.nomAdversaireLabel, "labelNomTourJoueur");
+        changerClasseLabel(this.nomJoueurLabel, "labelNom");
+        // On enlève la surbrillance de la main.
+
+        // On bloque l'usage de la main.
     }
 
 }

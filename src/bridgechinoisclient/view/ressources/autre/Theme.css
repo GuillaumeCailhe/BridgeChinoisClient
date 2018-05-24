@@ -5,19 +5,19 @@ Vert : #40A44D
 */
 
 #VBox{
-        -fx-background-image: url("bridge.png");
-        -fx-background-repeat: stretch;   
-        -fx-background-size: 900 506;
-        -fx-background-position: center center;
-        -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); 
-    }
+    -fx-background-image: url("bridge.png");
+    -fx-background-repeat: stretch;   
+    -fx-background-size: 900 506;
+    -fx-background-position: center center;
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); 
+}
 #chat{
-        -fx-background-repeat: stretch;   
-        -fx-background-size: 900 506;
-        -fx-background-position: center center;
-        -fx-background-color: #40A44D;
-        -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); 
-    }
+    -fx-background-repeat: stretch;   
+    -fx-background-size: 900 506;
+    -fx-background-position: center center;
+    -fx-background-color: #40A44D;
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); 
+}
 
 
 .background {
@@ -51,8 +51,8 @@ Vert : #40A44D
 }
 
 .button:pressed, .button:default:hover:pressed {
-  -fx-background-color: white;
-  -fx-text-fill: #1d1d1d;
+    -fx-background-color: white;
+    -fx-text-fill: #1d1d1d;
 }
 
 .button:focused {
@@ -80,4 +80,8 @@ Vert : #40A44D
 
 .labelNom{
     -fx-background-color: #40A44D;
+}
+
+.labelNomTourJoueur{
+    -fx-background-color: #CC7114;
 }

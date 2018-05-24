@@ -83,7 +83,7 @@ public class MainFX extends Parent {
     public void jouerCarte(CarteFX carteFXJouee) {
         int positionDansLaMain = this.mainFX.indexOf(carteFXJouee);
         boolean aJoue = this.plateauController.getApplicationGraphique().getClient().jouer(positionDansLaMain);
-        
+
         if (aJoue) {
             // Suppression des événements
             carteFXJouee.setOnMouseEntered(null);
