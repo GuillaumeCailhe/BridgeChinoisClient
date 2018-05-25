@@ -231,7 +231,7 @@ public class Client implements Runnable {
                 prevenirTourAdversaire();
                 recupererCoupAdversaire();
                 prevenirTourJoueur();
-                attendreJoueur(); 
+                attendreJoueur();
                 break;
         }
     }
@@ -299,8 +299,10 @@ public class Client implements Runnable {
         msg = c.getPremierMessage();
         switch (msg.getCode()) {
             case VICTOIRE_PLI:
+                Platform.runLater(() -> app.getPlateauController().comparerCartesPli(true));
                 break;
             case DEFAITE_PLI:
+                Platform.runLater(() -> app.getPlateauController().comparerCartesPli(false));
                 break;
         }
     }
@@ -317,7 +319,7 @@ public class Client implements Runnable {
 
     private synchronized void attendreJoueur() {
         try {
-            while(peutJouer) {
+            while (peutJouer) {
                 wait();
             }
         } catch (InterruptedException ex) {

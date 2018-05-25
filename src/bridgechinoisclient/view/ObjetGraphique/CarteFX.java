@@ -72,7 +72,6 @@ public class CarteFX extends Parent {
      * @param cheminVersImage le chemin vers l'image de la carte.
      */
     private void creerCarte(double posX, double posY, String cheminVersImage) {
-
         Image imageCarte = new Image(getClass().getResourceAsStream(cheminVersImage));
         ImageView carte = new ImageView();
         carte.setImage(imageCarte);
@@ -80,7 +79,7 @@ public class CarteFX extends Parent {
         carte.setFitHeight(hauteur);
         carte.setTranslateX(posX);
         carte.setTranslateY(posY);
-
+        
         this.getChildren().add(carte);
     }
 

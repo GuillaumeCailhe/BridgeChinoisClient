@@ -241,5 +241,5 @@ public class PaquetFX extends Parent {
         // Lancement de l'animation.
         parT.play();
     }
-
+    
 }

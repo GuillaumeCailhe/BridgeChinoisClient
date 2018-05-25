@@ -68,6 +68,16 @@ public class MainFX extends Parent {
             double coordonneesY = -150;
 
             TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
+            tt.setOnFinished(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent arg0) {
+                    // Ajout de la carte au controleur
+                    mainFX.remove(carteFXJouee);
+                    plateauController.getPlateauPane().getChildren().remove(carteFXJouee);
+                    CarteFX carteFX = new CarteFX(coordonneesX, coordonneesY, carteFXJouee.getCarte());
+                    plateauController.setCartePliJoueur(carteFX);
+                }
+            });
             tt.play();
         }
     }
@@ -82,23 +92,34 @@ public class MainFX extends Parent {
         Random rand = new Random();
         int indiceCarteJouee = rand.nextInt(mainFX.size());
         CarteFX carteFXJouee = this.mainFX.get(indiceCarteJouee);
-        
+
         //Séquence d'animation
         SequentialTransition seqT = new SequentialTransition();
 
         // Retournement de la carte choisie.
         ScaleTransition st = carteFXJouee.animationDecouverteCarte(carte);
         seqT.getChildren().add(st);
-        
+
         // Déplacement de la carte choisie vers la destination.
         double offsetX = carteFXJouee.getLargeur() - 10;
         double coordonneesX = 230 - (offsetX * indiceCarteJouee);
         double coordonneesY = 120;
         TranslateTransition tt = carteFXJouee.animationDeplacementCarte(250, coordonneesX, coordonneesY);
         seqT.getChildren().add(tt);
-        
+
+        seqT.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                // Mise à jour des vraies coordonnées.
+                mainFX.remove(carteFXJouee);
+                plateauController.getPlateauPane().getChildren().remove(carteFXJouee);
+                CarteFX carteFX = new CarteFX(coordonneesX, coordonneesY, carteFXJouee.getCarte());
+                // Ajout de la carte au contrôleur
+                plateauController.setCartePliAdversaire(carteFX);
+            }
+        });
         // Lancement de la séquence
-        seqT.play(); 
+        seqT.play();
     }
 
     /**

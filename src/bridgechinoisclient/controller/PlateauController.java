@@ -6,16 +6,22 @@
 package bridgechinoisclient.controller;
 
 import LibrairieCarte.Carte;
-import LibrairieCarte.SymboleCarte;
-import LibrairieCarte.ValeurCarte;
+import bridgechinoisclient.view.ObjetGraphique.CarteFX;
 import bridgechinoisclient.view.ObjetGraphique.MainFX;
 import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 
 /**
  * FXML Controller class
@@ -24,8 +30,10 @@ import javafx.scene.layout.AnchorPane;
  */
 public class PlateauController extends Controller {
 
-    private MainFX mainAdversaireFX;
     private MainFX mainJoueurFX;
+    private MainFX mainAdversaireFX;
+    private CarteFX cartePliJoueur;
+    private CarteFX cartePliAdversaire;
 
     @FXML
     private AnchorPane plateauPane;
@@ -47,6 +55,18 @@ public class PlateauController extends Controller {
 
     public MainFX getMainAdversaireFX() {
         return mainAdversaireFX;
+    }
+
+    public AnchorPane getPlateauPane() {
+        return plateauPane;
+    }
+
+    public void setCartePliJoueur(CarteFX cartePliJoueur) {
+        this.cartePliJoueur = cartePliJoueur;
+    }
+
+    public void setCartePliAdversaire(CarteFX cartePliAdversaire) {
+        this.cartePliAdversaire = cartePliAdversaire;
     }
 
     public void distributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
@@ -107,6 +127,52 @@ public class PlateauController extends Controller {
 
         // On bloque l'usage de la main.
         this.mainJoueurFX.retirerEvenementCartes();
+    }
+
+    /**
+     * Définit le gagnant d'un pli.
+     *
+     * @param estVictorieux vrai si le joueur a remporté le pli.
+     */
+    public void comparerCartesPli(boolean estVictorieux) {
+        // L'un des deux joueurs vient de jouer, on attend un peu pour ne pas surprendre l'utilisateur.
+        PauseTransition pt = new PauseTransition(Duration.millis(2000));
+        pt.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                // Création de la séquence d'animations.
+                SequentialTransition seqT = new SequentialTransition();
+
+                // On cherche qui a gagné le pli.
+                CarteFX carteGagnante = cartePliAdversaire;
+                CarteFX cartePerdante = cartePliJoueur;
+                int offsetY = -370;
+                int posXPaquetDesPlis = 200;
+                int posYPaquetDesPlis = 300;
+
+                if (estVictorieux) {
+                    System.out.println("Gagné");
+                    carteGagnante = cartePliJoueur;
+                    cartePerdante = cartePliAdversaire;
+                    offsetY = 370;
+                    posYPaquetDesPlis = -300;
+                }
+
+                // On agrandit la carte gagnante.
+                /*ScaleTransition st = new ScaleTransition(Duration.millis(100), carteGagnante);
+                st.setToX(1.5);
+                st.setToY(1.5);
+                seqT.getChildren().add(st);*/
+                // On déplace la carte perdante vers la carte gagnante.
+                seqT.getChildren().add(cartePerdante.animationDeplacementCarte(200, 0, 0));
+
+                // On déplace les cartes vers leur destination
+                //seqT.getChildren().add(cartePerdante.animationDeplacementCarte(200, posXPaquetDesPlis, posYPaquetDesPlis));
+                //seqT.getChildren().add(carteGagnante.animationDeplacementCarte(200, posXPaquetDesPlis, posYPaquetDesPlis));
+                seqT.play();
+            }
+        });
+        pt.play();
     }
 
 }
