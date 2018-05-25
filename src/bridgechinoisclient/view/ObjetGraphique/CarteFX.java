@@ -7,6 +7,7 @@ package bridgechinoisclient.view.ObjetGraphique;
 
 import LibrairieCarte.Carte;
 import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -54,16 +55,17 @@ public class CarteFX extends Parent {
         this.positionY = posY;
         this.estSurvoleeMain = false;
         this.estSurvoleePile = false;
-        if (carte == null) {
-            creerCarte(posX, posY, "../ressources/cartes/back-navy.png");
-        } else {
-            creerCarte(posX, posY, getCheminVersImage(carte));
-        }
+
+        creerCarte(posX, posY, getCheminVersImage(carte));
     }
 
     private String getCheminVersImage(Carte carte) {
-        String nom = carte.getValeur() + "_" + carte.getSymbole();
-        return "../ressources/cartes/" + nom + ".png";
+        if (carte == null) {
+            return "../ressources/cartes/back-navy.png";
+        } else {
+            String nom = carte.getValeur() + "_" + carte.getSymbole();
+            return "../ressources/cartes/" + nom + ".png";
+        }
     }
 
     /**
@@ -79,7 +81,7 @@ public class CarteFX extends Parent {
         carte.setFitHeight(hauteur);
         carte.setTranslateX(posX);
         carte.setTranslateY(posY);
-        
+
         this.getChildren().add(carte);
     }
 
@@ -128,26 +130,42 @@ public class CarteFX extends Parent {
      * Découvre une carte face cachée et lui attribue la valeur de carte
      *
      * @param carte l'objet carte associé à la nouvelle carte.
+     * @return l'animation
      */
-    public ScaleTransition animationDecouverteCarte(Carte carte) {
-        // On retourne la carte face cachée.
-        CarteFX carteFaceCachee = this;
-        ScaleTransition stAncienneCarte = new ScaleTransition(Duration.millis(500), carteFaceCachee);
-        stAncienneCarte.setByX(-1);
+    public SequentialTransition animationDecouverteCarte(Carte carte) {
+        return animationRetournerCarte(carte);
+    }
 
-        stAncienneCarte.setOnFinished(new EventHandler<ActionEvent>() {
+    /**
+     * Met la carte en face cachée
+     *
+     * @return l'animation
+     */
+    public SequentialTransition animationMettreFaceCachee() {
+        return animationRetournerCarte(null);
+    }
+
+    private SequentialTransition animationRetournerCarte(Carte carte) {
+        // pour l'utiliser dans le handler
+        CarteFX cetteCarte = this;
+
+        // On retourne la carte.
+        ScaleTransition st1 = new ScaleTransition(Duration.millis(250), this);
+        st1.setFromX(1);
+        st1.setToX(0);
+        st1.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                // Suite de l'animation : on retourne la carte.
-                carteFaceCachee.getChildren().remove(carteFaceCachee);
-                carteFaceCachee.creerCarte(positionX, positionY, getCheminVersImage(carte));
-                ScaleTransition stNouvelleCarte = new ScaleTransition(Duration.millis(500), carteFaceCachee);
-                stNouvelleCarte.setFromX(0);
-                stNouvelleCarte.setByX(1);
-                stNouvelleCarte.play();
+                cetteCarte.creerCarte(positionX, positionY, getCheminVersImage(carte));
             }
         });
-        return stAncienneCarte;
+
+        ScaleTransition st2 = new ScaleTransition(Duration.millis(250), this);
+        st2.setFromX(0);
+        st2.setToX(1);
+        st2.play();
+
+        return new SequentialTransition(st1, st2);
     }
 
     /**

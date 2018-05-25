@@ -52,7 +52,7 @@ public class PaquetFX extends Parent {
      * l'adversaire.
      */
     public PaquetFX(int nombreCartes, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
-        this.nombreCartes = nombreCartes;
+        this.nombreCartes = 0;
         this.cartesFX = new Stack<>();
         this.positionXTete = positionPaquetX;
         this.positionYTete = positionPaquetY;
@@ -60,19 +60,25 @@ public class PaquetFX extends Parent {
         this.positionPaquetY = positionPaquetY;
         this.mainJoueurFX = mainJoueurFX;
         this.mainAdversaireFX = mainAdversaireFX;
-        int nombreCartesAAfficher = 0;
         // Affichage des cartes et initialisation du tableau d'objets.
-        while (nombreCartesAAfficher < this.nombreCartes) {
-            CarteFX carteFX = new CarteFX(positionXTete, positionYTete, null);
-            if (nombreCartesAAfficher < 11) { // pour ne pas surcharger l'affichage
-                positionXTete += offsetX;
-                positionYTete += offsetY;
-            }
-
-            nombreCartesAAfficher++;
-            cartesFX.add(carteFX);
-            this.getChildren().add(carteFX);
+        for(int i =0; i<nombreCartes; i++){
+            ajouterCarte(null);
         }
+    }
+    /**
+     * Ajoute une carte dans le paquet.
+     * @param carte la carte à ajouter
+     */
+    public void ajouterCarte(Carte carte) {
+        nombreCartes++;
+        CarteFX carteFX = new CarteFX(positionXTete, positionYTete, null);
+        if (nombreCartes < 11) { // pour ne pas surcharger l'affichage
+            positionXTete += offsetX;
+            positionYTete += offsetY;
+        }
+
+        cartesFX.add(carteFX);
+        this.getChildren().add(carteFX);
     }
 
     /**
@@ -85,7 +91,7 @@ public class PaquetFX extends Parent {
         CarteFX carteFX = cartesFX.peek();
 
         // Animation : on retourne la carte face cachée.
-        ScaleTransition st = carteFX.animationDecouverteCarte(carte);
+        SequentialTransition st = carteFX.animationDecouverteCarte(carte);
         st.play();
 
         // Rajout des événements associés de survol/relâchement.
@@ -241,5 +247,5 @@ public class PaquetFX extends Parent {
         // Lancement de l'animation.
         parT.play();
     }
-    
+
 }

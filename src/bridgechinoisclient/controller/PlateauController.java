@@ -34,6 +34,8 @@ public class PlateauController extends Controller {
     private MainFX mainAdversaireFX;
     private CarteFX cartePliJoueur;
     private CarteFX cartePliAdversaire;
+    private PaquetFX paquetPliJoueur;
+    private PaquetFX paquetPliAdversaire;
 
     @FXML
     private AnchorPane plateauPane;
@@ -79,8 +81,12 @@ public class PlateauController extends Controller {
         int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
 
         // On initialise un objet graphique MainJoueur.
-        this.mainAdversaireFX = new MainFX(this, 60, 0);
-        this.mainJoueurFX = new MainFX(this, 60, hauteurPlateauPane - 85);
+        this.mainAdversaireFX = new MainFX(this, 30, 0);
+        this.mainJoueurFX = new MainFX(this, 30, hauteurPlateauPane - 85);
+
+        // On initialise les piles de pli.
+        this.paquetPliJoueur = new PaquetFX(0, largeurPlateauPane-60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliAdversaire = new PaquetFX(0, largeurPlateauPane-60, 0, mainJoueurFX, mainAdversaireFX);
 
         // On initialise le paquet de carte.
         PaquetFX paquetFX = new PaquetFX(52, largeurPlateauPane / 2 - 60, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
@@ -89,6 +95,8 @@ public class PlateauController extends Controller {
         this.plateauPane.getChildren().add(mainAdversaireFX);
         this.plateauPane.getChildren().add(mainJoueurFX);
         this.plateauPane.getChildren().add(paquetFX);
+        this.plateauPane.getChildren().add(paquetPliJoueur);
+        this.plateauPane.getChildren().add(paquetPliAdversaire);
         paquetFX.animationDistributionInitiale(mainJoueur, this.getApplicationGraphique().getClient().peutJouer(), piles, plateauPane);
     }
 
@@ -146,30 +154,61 @@ public class PlateauController extends Controller {
                 // On cherche qui a gagné le pli.
                 CarteFX carteGagnante = cartePliAdversaire;
                 CarteFX cartePerdante = cartePliJoueur;
-                int offsetY = -370;
-                int posXPaquetDesPlis = 200;
-                int posYPaquetDesPlis = 300;
+                int deplacementY = -227;
+                PaquetFX paquetDesPlisGagnant = paquetPliAdversaire;
+                int posXPaquetDesPlis = 350;
+                int posYPaquetDesPlis = -120;
 
                 if (estVictorieux) {
-                    System.out.println("Gagné");
                     carteGagnante = cartePliJoueur;
                     cartePerdante = cartePliAdversaire;
-                    offsetY = 370;
-                    posYPaquetDesPlis = -300;
+                    deplacementY = 227;
+                    paquetDesPlisGagnant = paquetPliJoueur;
+                    posYPaquetDesPlis = 150;
                 }
-
+                // On met les cartes en avant (plus esthétique)
+                cartePerdante.toFront();
+                carteGagnante.toFront();
                 // On agrandit la carte gagnante.
-                /*ScaleTransition st = new ScaleTransition(Duration.millis(100), carteGagnante);
+                ScaleTransition st = new ScaleTransition(Duration.millis(250), carteGagnante);
                 st.setToX(1.5);
                 st.setToY(1.5);
-                seqT.getChildren().add(st);*/
+                ScaleTransition st2 = new ScaleTransition(Duration.millis(250), carteGagnante);
+                st2.setToX(1);
+                st2.setToY(1);
+                seqT.getChildren().add(st);
+                seqT.getChildren().add(st2);
+
                 // On déplace la carte perdante vers la carte gagnante.
-                seqT.getChildren().add(cartePerdante.animationDeplacementCarte(200, 0, 0));
+                TranslateTransition tt = cartePerdante.animationDeplacementCarte(300, cartePerdante.getTranslateX(), cartePerdante.getTranslateY() + deplacementY);
+                CarteFX carteASupprimer = cartePerdante;
+                tt.setOnFinished(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent arg0) {
+                        carteASupprimer.setVisible(false);
+                    }
+                });
+
+                seqT.getChildren().add(tt);
+
+                // On met les cartes face cachée.
+                seqT.getChildren().add(carteGagnante.animationMettreFaceCachee());
 
                 // On déplace les cartes vers leur destination
-                //seqT.getChildren().add(cartePerdante.animationDeplacementCarte(200, posXPaquetDesPlis, posYPaquetDesPlis));
-                //seqT.getChildren().add(carteGagnante.animationDeplacementCarte(200, posXPaquetDesPlis, posYPaquetDesPlis));
+                seqT.getChildren().add(carteGagnante.animationDeplacementCarte(200, carteGagnante.getTranslateX() + posXPaquetDesPlis, carteGagnante.getTranslateY() + posYPaquetDesPlis));
+
+                // On joue les animations.
                 seqT.play();
+                PaquetFX paquet = paquetDesPlisGagnant;
+                CarteFX carteASupprimer2 = carteGagnante;
+                seqT.setOnFinished(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent arg0) {
+                        carteASupprimer2.setVisible(false);
+                        paquet.ajouterCarte(null);
+                        paquet.ajouterCarte(null);
+                    }
+                });
             }
         });
         pt.play();
