@@ -8,6 +8,7 @@ package bridgechinoisclient.view.ObjetGraphique;
 import LibrairieCarte.Carte;
 import LibrairieCarte.SymboleCarte;
 import LibrairieCarte.ValeurCarte;
+import bridgechinoisclient.controller.PlateauController;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
@@ -61,12 +62,14 @@ public class PaquetFX extends Parent {
         this.mainJoueurFX = mainJoueurFX;
         this.mainAdversaireFX = mainAdversaireFX;
         // Affichage des cartes et initialisation du tableau d'objets.
-        for(int i =0; i<nombreCartes; i++){
+        for (int i = 0; i < nombreCartes; i++) {
             ajouterCarte(null);
         }
     }
+
     /**
      * Ajoute une carte dans le paquet.
+     *
      * @param carte la carte à ajouter
      */
     public void ajouterCarte(Carte carte) {
@@ -93,28 +96,6 @@ public class PaquetFX extends Parent {
         // Animation : on retourne la carte face cachée.
         SequentialTransition st = carteFX.animationDecouverteCarte(carte);
         st.play();
-
-        // Rajout des événements associés de survol/relâchement.
-        carteFX.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                carteFX.animationSurvolPile();
-            }
-        });
-
-        carteFX.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                carteFX.animationRelachementPile();
-            }
-        });
-
-        carteFX.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("Je pioche la carte " + carte.toString());
-            }
-        });
 
         return carteFX;
     }
@@ -182,7 +163,7 @@ public class PaquetFX extends Parent {
      * @param piles les cartes au dessus des piles.
      * @param plateau le plateau où dessiner les cartes.
      */
-    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, boolean estTourJoueur, ArrayList<Carte> piles, AnchorPane plateau) {
+    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, boolean estTourJoueur, ArrayList<Carte> piles, PlateauController plateau) {
         SequentialTransition seqT = new SequentialTransition();
         Iterator<Carte> it = mainJoueur.iterator();
         int positionDansLaMain = 0;
@@ -211,13 +192,15 @@ public class PaquetFX extends Parent {
      *
      * @param plateau le plateau où dessiner les piles.
      */
-    private void animationScinderEnPiles(ArrayList<Carte> piles, AnchorPane plateau, boolean estTourJoueur) {
+    private void animationScinderEnPiles(ArrayList<Carte> piles, PlateauController plateauController, boolean estTourJoueur) {
         // Création d'une liste d'animations jouées en parallèle.
         ParallelTransition parT = new ParallelTransition();
+        ArrayList<PaquetFX> pilesFX = new ArrayList<>();
         // Création des piles.
         for (int i = 0; i < 6; i++) {
-            int offsetY = (int) (plateau.getPrefWidth() / 6);
+            int offsetY = (int) (plateauController.getPlateauPane().getPrefWidth() / 6);
             PaquetFX pile = new PaquetFX(5, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+            pilesFX.add(pile);
 
             // Animation de déplacement de la pile.
             TranslateTransition tt = new TranslateTransition(Duration.millis(1000), pile);
@@ -228,6 +211,7 @@ public class PaquetFX extends Parent {
             tt.setOnFinished(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent arg0) {
+                    // découverte des cartes
                     pile.decouvrirCarte(piles.get(j));
                     if (estTourJoueur) {
                         mainJoueurFX.ajouterEvenementCartes();
@@ -239,13 +223,51 @@ public class PaquetFX extends Parent {
             parT.getChildren().add(tt);
 
             // On ajoute la pile au plateau.
-            plateau.getChildren().add(pile);
+            plateauController.getPlateauPane().getChildren().add(pile);
         }
         // Suppression du paquet initial.
-        plateau.getChildren().remove(this);
+        plateauController.getPlateauPane().getChildren().remove(this);
 
         // Lancement de l'animation.
         parT.play();
+
+        // Enregistrement des piles dans le plateau
+        plateauController.setPiles(pilesFX);
     }
 
+    public void ajouterEvenementsPioche() {
+        CarteFX tete = this.cartesFX.peek();
+        if (tete != null) {
+            // Rajout des événements associés de survol/relâchement.
+            tete.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    tete.animationSurvolPile();
+                }
+            });
+
+            tete.setOnMouseExited(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    tete.animationRelachementPile();
+                }
+            });
+
+            tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    System.out.println("Je pioche la carte " + tete.toString());
+                }
+            });
+        }
+    }
+
+    public void retirerEvenementPioche() {
+        CarteFX tete = this.cartesFX.peek();
+        if (tete != null) {
+            tete.setOnMouseEntered(null);
+            tete.setOnMouseExited(null);
+            tete.setOnMouseClicked(null);
+        }
+    }
 }

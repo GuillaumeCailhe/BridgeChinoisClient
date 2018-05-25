@@ -235,7 +235,23 @@ public class Client implements Runnable {
                 break;
         }
     }
-
+    
+    /**
+     * Met la variable peutPiocher à jour et prévient l'application graphique.
+     */
+    private void prevenirPiocheJoueur(){
+        peutPiocher = true;
+        Platform.runLater(() -> app.getPlateauController().prevenirPiocheJoueur());
+    }
+    
+    /**
+     * 
+     */
+    private void prevenirPiocheAdversaire(){
+        peutPiocher = false;
+        Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
+    }
+    
     private void piocher() {
         Message msg;
 
@@ -246,9 +262,9 @@ public class Client implements Runnable {
             msg = this.c.getPremierMessage();
             switch (msg.getCode()) {
                 case TOUR_OK:
-                    peutPiocher = true;
+                    prevenirPiocheJoueur();
                     attendreJoueur();
-                    peutPiocher = false;
+                    prevenirPiocheAdversaire();
                     Collections.sort(main);
                     // Permet de révéler la carte retournée
                     recupererPiocheAdversaire();
@@ -259,9 +275,9 @@ public class Client implements Runnable {
                     recupererPiocheAdversaire();
                     attendreMessage();
                     c.getMessageParCode(CodeMessage.TOUR_OK);
-                    peutPiocher = true;
+                    prevenirPiocheJoueur();
                     attendreJoueur();
-                    peutPiocher = false;
+                    prevenirPiocheAdversaire();
                     Collections.sort(main);
                     recupererPiocheAdversaire();
                     break;

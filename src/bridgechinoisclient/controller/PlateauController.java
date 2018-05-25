@@ -36,6 +36,7 @@ public class PlateauController extends Controller {
     private CarteFX cartePliAdversaire;
     private PaquetFX paquetPliJoueur;
     private PaquetFX paquetPliAdversaire;
+    private ArrayList<PaquetFX> piles;
 
     @FXML
     private AnchorPane plateauPane;
@@ -71,6 +72,10 @@ public class PlateauController extends Controller {
         this.cartePliAdversaire = cartePliAdversaire;
     }
 
+    public void setPiles(ArrayList<PaquetFX> piles) {
+        this.piles = piles;
+    }
+    
     public void distributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         // On affiche les noms des joueurs.
         nomJoueurLabel.setText(nomJoueur);
@@ -97,7 +102,7 @@ public class PlateauController extends Controller {
         this.plateauPane.getChildren().add(paquetFX);
         this.plateauPane.getChildren().add(paquetPliJoueur);
         this.plateauPane.getChildren().add(paquetPliAdversaire);
-        paquetFX.animationDistributionInitiale(mainJoueur, this.getApplicationGraphique().getClient().peutJouer(), piles, plateauPane);
+        paquetFX.animationDistributionInitiale(mainJoueur, this.getApplicationGraphique().getClient().peutJouer(), piles, this);
     }
 
     /**
@@ -212,6 +217,14 @@ public class PlateauController extends Controller {
             }
         });
         pt.play();
+    }
+
+    public void prevenirPiocheJoueur() {
+        System.out.println("Tu peux piocher !");
+    }
+
+    public void prevenirPiocheAdversaire() {
+        System.out.println("Tu peux pô piocher !");
     }
 
 }
