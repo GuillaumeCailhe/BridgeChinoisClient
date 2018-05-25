@@ -11,6 +11,7 @@ import bridgechinoisclient.view.ObjetGraphique.MainFX;
 import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
@@ -75,7 +76,7 @@ public class PlateauController extends Controller {
     public void setPiles(ArrayList<PaquetFX> piles) {
         this.piles = piles;
     }
-    
+
     public void distributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         // On affiche les noms des joueurs.
         nomJoueurLabel.setText(nomJoueur);
@@ -90,11 +91,11 @@ public class PlateauController extends Controller {
         this.mainJoueurFX = new MainFX(this, 30, hauteurPlateauPane - 85);
 
         // On initialise les piles de pli.
-        this.paquetPliJoueur = new PaquetFX(0, largeurPlateauPane-60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
-        this.paquetPliAdversaire = new PaquetFX(0, largeurPlateauPane-60, 0, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliJoueur = new PaquetFX(0, this, largeurPlateauPane - 60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliAdversaire = new PaquetFX(0, this, largeurPlateauPane - 60, 0, mainJoueurFX, mainAdversaireFX);
 
         // On initialise le paquet de carte.
-        PaquetFX paquetFX = new PaquetFX(52, largeurPlateauPane / 2 - 60, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
+        PaquetFX paquetFX = new PaquetFX(52, this, largeurPlateauPane / 2 - 60, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
 
         // On ajoute les mains au plateau.
         this.plateauPane.getChildren().add(mainAdversaireFX);
@@ -219,13 +220,26 @@ public class PlateauController extends Controller {
         pt.play();
     }
 
+    /**
+     * Prévient le joueur que c'est son tour.
+     */
     public void prevenirPiocheJoueur() {
         System.out.println("Tu peux piocher !");
-        
+        Iterator<PaquetFX> it = this.piles.iterator();
+        while (it.hasNext()) {
+            it.next().ajouterEvenementsPioche();
+        }
     }
 
+    /**
+     * Prévient le joueur que c'est le tour de l'adversaire.
+     */
     public void prevenirPiocheAdversaire() {
         System.out.println("Tu peux pô piocher !");
+        Iterator<PaquetFX> it = this.piles.iterator();
+        while (it.hasNext()) {
+            it.next().ajouterEvenementsPioche();
+        }
     }
 
 }

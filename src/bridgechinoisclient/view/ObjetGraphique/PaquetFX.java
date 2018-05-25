@@ -6,21 +6,17 @@
 package bridgechinoisclient.view.ObjetGraphique;
 
 import LibrairieCarte.Carte;
-import LibrairieCarte.SymboleCarte;
-import LibrairieCarte.ValeurCarte;
 import bridgechinoisclient.controller.PlateauController;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
 import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
 /**
@@ -28,10 +24,14 @@ import javafx.util.Duration;
  * @author helgr
  */
 public class PaquetFX extends Parent {
-
+    /* Plateau pour récupérer des informations du serveur */
+    private PlateauController plateauController;
+    
     /* Gestion du paquet*/
+    private int idPile;
     private int nombreCartes;
     private Stack<CarteFX> cartesFX;
+
 
     /* Position de l'objet graphique paquet */
     private int positionPaquetX; // position du paquet du le plateau
@@ -52,8 +52,9 @@ public class PaquetFX extends Parent {
      * @param mainAdversaireFX l'objet graphique qui contiendra la main de
      * l'adversaire.
      */
-    public PaquetFX(int nombreCartes, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
+    public PaquetFX(int nombreCartes, PlateauController plateauController, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
         this.nombreCartes = 0;
+        this.plateauController = plateauController;
         this.cartesFX = new Stack<>();
         this.positionXTete = positionPaquetX;
         this.positionYTete = positionPaquetY;
@@ -65,6 +66,11 @@ public class PaquetFX extends Parent {
         for (int i = 0; i < nombreCartes; i++) {
             ajouterCarte(null);
         }
+    }
+
+    public PaquetFX(int idPile, int nombreCartes, PlateauController plateauController, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
+        this(nombreCartes, plateauController, positionPaquetX, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+        this.idPile = idPile;
     }
 
     /**
@@ -199,7 +205,7 @@ public class PaquetFX extends Parent {
         // Création des piles.
         for (int i = 0; i < 6; i++) {
             int offsetY = (int) (plateauController.getPlateauPane().getPrefWidth() / 6);
-            PaquetFX pile = new PaquetFX(5, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+            PaquetFX pile = new PaquetFX(i, 5, plateauController, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
             pilesFX.add(pile);
 
             // Animation de déplacement de la pile.
@@ -235,6 +241,9 @@ public class PaquetFX extends Parent {
         plateauController.setPiles(pilesFX);
     }
 
+    /**
+     * Ajoute les événements de souris sur le paquet.
+     */
     public void ajouterEvenementsPioche() {
         CarteFX tete = this.cartesFX.peek();
         if (tete != null) {
@@ -256,12 +265,20 @@ public class PaquetFX extends Parent {
             tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    System.out.println("Je pioche la carte " + tete.toString());
+                    System.out.println("Pioché :" + idPile);
+                    boolean aPioche = plateauController.getApplicationGraphique().getClient().piocher(idPile);
+                    if(aPioche){
+                        System.out.println("J'ai pioché !");
+                        animationDistributionCarteJoueur(tete.getCarte(), 12);
+                    }
                 }
             });
         }
     }
 
+    /**
+     * Retire les événements de souris sur le paquet.
+     */
     public void retirerEvenementPioche() {
         CarteFX tete = this.cartesFX.peek();
         if (tete != null) {
