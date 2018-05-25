@@ -116,6 +116,8 @@ public class CarteFX extends Parent {
      */
     public TranslateTransition animationDeplacementCarte(double duree, double nouvellePositionX, double nouvellePositionY) {
         TranslateTransition tt = new TranslateTransition(Duration.millis(duree), this);
+        tt.setFromX(this.getTranslateX());
+        tt.setFromY(this.getTranslateY());
         tt.setToX(nouvellePositionX);
         tt.setToY(nouvellePositionY);
 
