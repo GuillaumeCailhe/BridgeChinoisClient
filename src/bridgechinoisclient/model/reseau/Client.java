@@ -366,6 +366,7 @@ public class Client implements Runnable {
             this.c.envoyerEntier(CodeMessage.PIOCHER, (byte) i);
             attendreMessage();
             Message msg = this.c.getPremierMessage();
+            notify();
             return true;
         } else {
             return false;

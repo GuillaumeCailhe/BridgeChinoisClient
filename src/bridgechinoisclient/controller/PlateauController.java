@@ -221,6 +221,7 @@ public class PlateauController extends Controller {
 
     public void prevenirPiocheJoueur() {
         System.out.println("Tu peux piocher !");
+        
     }
 
     public void prevenirPiocheAdversaire() {
