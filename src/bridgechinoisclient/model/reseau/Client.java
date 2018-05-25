@@ -335,7 +335,7 @@ public class Client implements Runnable {
 
     private synchronized void attendreJoueur() {
         try {
-            while (peutJouer) {
+            while (peutJouer || peutPiocher) {
                 wait();
             }
         } catch (InterruptedException ex) {
@@ -361,11 +361,12 @@ public class Client implements Runnable {
         }
     }
 
-    public boolean piocher(int i) {
+    public synchronized boolean piocher(int i) {
         if (peutJouer) {
             this.c.envoyerEntier(CodeMessage.PIOCHER, (byte) i);
             attendreMessage();
             Message msg = this.c.getPremierMessage();
+            peutPiocher = false;
             notify();
             return true;
         } else {
