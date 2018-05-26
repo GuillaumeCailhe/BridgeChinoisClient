@@ -86,7 +86,7 @@ public class MainFX extends Parent {
      *
      * @param carte la carte à jouer.
      */
-    public void jouerCarteAdversaire(Carte carte) {
+    public SequentialTransition jouerCarteAdversaire(Carte carte) {
         // On choisit une carte au hasard de la main de l'adversaire.
         Random rand = new Random();
         int indiceCarteJouee = rand.nextInt(cartesFX.size());
@@ -107,9 +107,9 @@ public class MainFX extends Parent {
         seqT.getChildren().add(tt);
 
         // Lancement de la séquence
-        seqT.play();
         cartesFX.remove(carteFXJouee);
         plateauController.setCartePliAdversaire(carteFXJouee);
+        return seqT;
     }
 
     /**

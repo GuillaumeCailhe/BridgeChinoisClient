@@ -292,7 +292,7 @@ public class Client implements Runnable {
         attendreMessage();
         msg = c.getMessageParCode(CodeMessage.JOUER_ADVERSAIRE);
         Carte carte = ((ArrayList<Carte>) msg.getDonnees()).get(0);
-        Platform.runLater(() -> app.getPlateauController().getMainAdversaireFX().jouerCarteAdversaire(carte));
+        Platform.runLater(() -> app.getPlateauController().jouerCarteAdversaire(mode, carte));
     }
 
     private int recupererPiocheAdversaire() {

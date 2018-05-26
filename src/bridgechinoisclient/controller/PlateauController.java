@@ -253,23 +253,53 @@ public class PlateauController extends Controller {
     }
 
     /**
+     * Pause le jeu avant les coups des adversaires.
+     *
+     * @param modeDeJeu le mode de jeu (la pause varie selon si on est en
+     * multijoueur ou non)
+     * @return l'animation de pause.
+     */
+    private PauseTransition pauseCoupAdversaire(ModeDeJeu modeDeJeu) {
+        int durée = 300;
+        if (modeDeJeu != ModeDeJeu.JOUEUR_CONTRE_JOUEUR) {
+            durée = 1800;
+        }
+        return new PauseTransition(Duration.millis(durée));
+    }
+    
+    /**
+     * Permet à l'adversaire de jouer
+     * @param modeDeJeu le mode de jeu courant
+     * @param carte la carte à jouer.
+     */
+    public void jouerCarteAdversaire(ModeDeJeu modeDeJeu, Carte carte) {
+        /*PauseTransition pt = pauseCoupAdversaire(modeDeJeu);
+        pt.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                mainAdversaireFX.jouerCarteAdversaire(carte).play();
+            }
+        });
+        pt.play();*/
+        mainAdversaireFX.jouerCarteAdversaire(carte).play();
+    }
+
+    /**
      * Permet à l'adversaire de piocher.
      *
      * @param indicePilePiochee l'indice de la pile que l'adversaire a choisi.
      */
     public void piocherCarteAdversaire(ModeDeJeu modeDeJeu, int indicePilePiochee) {
-        int durée = 300;
-        if (modeDeJeu != ModeDeJeu.JOUEUR_CONTRE_JOUEUR) {
-            durée = 2000;
-        }
-        PauseTransition pt = new PauseTransition(Duration.millis(durée));
+        System.out.println("Il pioche");
+        /*PauseTransition pt = pauseCoupAdversaire(modeDeJeu);
         pt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
                 piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
             }
         });
-        
-        pt.play();
+
+        pt.play();*/
+        piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
     }
 }
