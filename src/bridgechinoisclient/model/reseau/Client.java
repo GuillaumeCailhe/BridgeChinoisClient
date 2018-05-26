@@ -106,7 +106,6 @@ public class Client implements Runnable {
     private void connexion() throws IOException {
         // Connexion au serveur
         Socket client = new Socket("localhost", 31000);
-        System.out.println("Connecté");
         this.c = new Communication(client);
         this.c.addNotifie(this);
         Thread t = new Thread(c);
@@ -235,19 +234,19 @@ public class Client implements Runnable {
                 break;
         }
     }
-    
+
     /**
      * Met la variable peutPiocher à jour et prévient l'application graphique.
      */
-    private void prevenirPiocheJoueur(){
+    private void prevenirPiocheJoueur() {
         peutPiocher = true;
         Platform.runLater(() -> app.getPlateauController().prevenirPiocheJoueur());
     }
-    
+
     /**
-     * 
+     *
      */
-    private void prevenirPiocheAdversaire(){
+    private void prevenirPiocheAdversaire() {
         peutPiocher = false;
         Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
     }
@@ -269,10 +268,12 @@ public class Client implements Runnable {
                     // Permet de révéler la carte retournée
                     recupererPiocheAdversaire();
                     // Permet de savoir la carte piochée par l'adversaire et la carte retournée
-                    recupererPiocheAdversaire();
+                    int indicePioche = recupererPiocheAdversaire();
+                    Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche));
                     break;
                 case TOUR_KO:
-                    recupererPiocheAdversaire();
+                    int indicePioche2 = recupererPiocheAdversaire();
+                    Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche2));
                     attendreMessage();
                     c.getMessageParCode(CodeMessage.TOUR_OK);
                     prevenirPiocheJoueur();
@@ -294,7 +295,7 @@ public class Client implements Runnable {
         Platform.runLater(() -> app.getPlateauController().getMainAdversaireFX().jouerCarteAdversaire(carte));
     }
 
-    private void recupererPiocheAdversaire() {
+    private int recupererPiocheAdversaire() {
         Message msg;
 
         attendreMessage();
@@ -308,7 +309,12 @@ public class Client implements Runnable {
                 break;
             }
         }
-        this.piles.set(i, pioche.get(1));
+        Carte carteDecouverte = pioche.get(1);
+        int indicePile = i;
+        this.piles.set(indicePile, carteDecouverte);
+        Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePile, carteDecouverte));
+        
+        return indicePile;
     }
 
     private void recupererResultat() {

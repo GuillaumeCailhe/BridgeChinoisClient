@@ -24,9 +24,10 @@ import javafx.util.Duration;
  * @author helgr
  */
 public class PaquetFX extends Parent {
+
     /* Plateau pour récupérer des informations du serveur */
     private PlateauController plateauController;
-    
+
     /* Gestion du paquet*/
     private int idPile;
     private int nombreCartes;
@@ -261,19 +262,24 @@ public class PaquetFX extends Parent {
                     tete.animationRelachementPile();
                 }
             });
-            
+
             PaquetFX pile = this;
             tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
                     boolean aPioche = plateauController.getApplicationGraphique().getClient().piocher(idPile);
-                    if(aPioche){
+                    if (aPioche) {
                         animationDistributionCarteJoueur(tete.getCarte(), 12).play();
                         mainJoueurFX.animationTriCarte(plateauController.getApplicationGraphique().getClient().getMain()).play();
                     }
                 }
             });
         }
+    }
+    
+    public void distribuerCarteEtRetrierMainAdversaire() {
+        animationDistributionCarteJoueur(this.cartesFX.peek().getCarte(), 12).play();
+        mainAdversaireFX.animationTriCarte(new ArrayList()).play();
     }
 
     /**

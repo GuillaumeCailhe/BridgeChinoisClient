@@ -42,7 +42,7 @@ public class MainFX extends Parent {
     public ArrayList<CarteFX> getCartesFX() {
         return cartesFX;
     }
-    
+
     public static int getOffsetCarteX() {
         return offsetCarteX;
     }
@@ -169,14 +169,21 @@ public class MainFX extends Parent {
         }
     }
 
+    /**
+     * Trie la main (enlève les cartes et remplace par une main triée)
+     *
+     * @param nouvelleMain la main déjà triée.
+     * @return l'animation de tri.
+     */
     public ParallelTransition animationTriCarte(ArrayList<Carte> nouvelleMain) {
         ParallelTransition pt = new ParallelTransition();
         Iterator<CarteFX> iteratorMainFX = this.cartesFX.iterator();
         int positionDansLaMainFX = 0;
+
         // On déplace chaque carte hors du plateau.
         while (iteratorMainFX.hasNext()) {
             CarteFX carteFX = iteratorMainFX.next();
-            TranslateTransition tt = carteFX.animationDeplacementCarte(500, carteFX.getTranslateX() - (carteFX.getLargeur()+10)*positionDansLaMainFX, carteFX.getTranslateY());
+            TranslateTransition tt = carteFX.animationDeplacementCarte(500, carteFX.getTranslateX() - (carteFX.getLargeur() + 10) * positionDansLaMainFX, carteFX.getTranslateY());
 
             // Suppression des cartes.
             MainFX cetteMain = this;
@@ -190,17 +197,25 @@ public class MainFX extends Parent {
             pt.getChildren().add(tt);
         }
         // On met à jour la main.
-        Iterator<Carte> iteratorNouvelleMainFX = nouvelleMain.iterator();
+
         MainFX cetteMain = this;
         pt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent arg0) {    
+            public void handle(ActionEvent arg0) {
                 cetteMain.getCartesFX().clear();
                 int positionDansLaMain = 0;
-                while(iteratorNouvelleMainFX.hasNext()){
-                    Carte carte = iteratorNouvelleMainFX.next();
-                    cetteMain.ajouterCarte(carte, positionDansLaMain);
-                    positionDansLaMain++;
+
+                if (nouvelleMain.isEmpty()) { // main adverse
+                    for (int i = 0; i < 11; i++) {
+                        cetteMain.ajouterCarte(null, i);
+                    }
+                } else { // mainJoueur
+                    Iterator<Carte> iteratorNouvelleMainFX = nouvelleMain.iterator();
+                    while (iteratorNouvelleMainFX.hasNext()) {
+                        Carte carte = iteratorNouvelleMainFX.next();
+                        cetteMain.ajouterCarte(carte, positionDansLaMain);
+                        positionDansLaMain++;
+                    }
                 }
             }
         });

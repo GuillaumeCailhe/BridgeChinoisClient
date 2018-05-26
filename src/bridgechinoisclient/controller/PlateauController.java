@@ -6,6 +6,7 @@
 package bridgechinoisclient.controller;
 
 import LibrairieCarte.Carte;
+import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.view.ObjetGraphique.CarteFX;
 import bridgechinoisclient.view.ObjetGraphique.MainFX;
 import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
@@ -224,7 +225,6 @@ public class PlateauController extends Controller {
      * Prévient le joueur que c'est son tour.
      */
     public void prevenirPiocheJoueur() {
-        System.out.println("Tu peux piocher !");
         Iterator<PaquetFX> it = this.piles.iterator();
         while (it.hasNext()) {
             it.next().ajouterEvenementsPioche();
@@ -235,11 +235,41 @@ public class PlateauController extends Controller {
      * Prévient le joueur que c'est le tour de l'adversaire.
      */
     public void prevenirPiocheAdversaire() {
-        System.out.println("Tu peux pô piocher !");
         Iterator<PaquetFX> it = this.piles.iterator();
         while (it.hasNext()) {
             it.next().ajouterEvenementsPioche();
         }
     }
 
+    /**
+     * Découvre une carte d'une pile.
+     *
+     * @param indicePile l'indice de la pile à découvrir.
+     * @param carteDecouverte la carte qui a été découverte.
+     */
+    public void decouvrirCartePile(int indicePile, Carte carteDecouverte) {
+        System.out.println("Pile" + indicePile + "découvre : " + carteDecouverte.toString());
+        this.piles.get(indicePile).decouvrirCarte(carteDecouverte);
+    }
+
+    /**
+     * Permet à l'adversaire de piocher.
+     *
+     * @param indicePilePiochee l'indice de la pile que l'adversaire a choisi.
+     */
+    public void piocherCarteAdversaire(ModeDeJeu modeDeJeu, int indicePilePiochee) {
+        int durée = 300;
+        if (modeDeJeu != ModeDeJeu.JOUEUR_CONTRE_JOUEUR) {
+            durée = 2000;
+        }
+        PauseTransition pt = new PauseTransition(Duration.millis(durée));
+        pt.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
+            }
+        });
+        
+        pt.play();
+    }
 }
