@@ -261,15 +261,15 @@ public class PaquetFX extends Parent {
                     tete.animationRelachementPile();
                 }
             });
-
+            
+            PaquetFX pile = this;
             tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    System.out.println("Pioché :" + idPile);
                     boolean aPioche = plateauController.getApplicationGraphique().getClient().piocher(idPile);
                     if(aPioche){
-                        System.out.println("J'ai pioché !");
-                        animationDistributionCarteJoueur(tete.getCarte(), 12);
+                        animationDistributionCarteJoueur(tete.getCarte(), 12).play();
+                        mainJoueurFX.animationTriCarte(plateauController.getApplicationGraphique().getClient().getMain()).play();
                     }
                 }
             });

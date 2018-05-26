@@ -11,6 +11,7 @@ import bridgechinoisclient.controller.PlateauController;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
@@ -162,5 +163,43 @@ public class MainFX extends Parent {
             carteFX.setOnMouseExited(null);
             carteFX.setOnMouseClicked(null);
         }
+    }
+
+    public ParallelTransition animationTriCarte(ArrayList<Carte> nouvelleMain) {
+        ParallelTransition pt = new ParallelTransition();
+        Iterator<CarteFX> iteratorMainFX = this.mainFX.iterator();
+        int positionDansLaMainFX = 0;
+        // On déplace chaque carte hors du plateau.
+        while (iteratorMainFX.hasNext()) {
+            CarteFX carteFX = iteratorMainFX.next();
+            TranslateTransition tt = carteFX.animationDeplacementCarte(500, carteFX.getTranslateX() - (carteFX.getLargeur()+10)*positionDansLaMainFX, carteFX.getTranslateY());
+
+            // Suppression des cartes.
+            MainFX cetteMain = this;
+            tt.setOnFinished(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent arg0) {
+                    cetteMain.getChildren().remove(carteFX);
+                }
+            });
+            positionDansLaMainFX++;
+            pt.getChildren().add(tt);
+        }
+        // On met à jour la main.
+        Iterator<Carte> iteratorNouvelleMainFX = nouvelleMain.iterator();
+        MainFX cetteMain = this;
+        pt.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {    
+                int positionDansLaMain = 0;
+                while(iteratorNouvelleMainFX.hasNext()){
+                    Carte carte = iteratorNouvelleMainFX.next();
+                    cetteMain.ajouterCarte(carte, positionDansLaMain);
+                    positionDansLaMain++;
+                }
+            }
+        });
+
+        return pt;
     }
 }
