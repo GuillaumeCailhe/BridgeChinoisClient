@@ -299,6 +299,8 @@ public class Client implements Runnable {
 
         attendreMessage();
         msg = c.getMessageParCode(CodeMessage.PIOCHER_ADVERSAIRE);
+        //msg = c.getPremierMessage();
+        //System.out.println("a - " +msg.getCode());
         ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
         int i;
         for (i = 0; i < 6; i++) {
@@ -324,7 +326,7 @@ public class Client implements Runnable {
     }
 
     private synchronized void attendreMessage() {
-        if (c.getNbMessages() == 0) {
+        while (c.getNbMessages() == 0) {
             try {
                 wait();
             } catch (InterruptedException ex) {
@@ -365,7 +367,7 @@ public class Client implements Runnable {
         if (peutPiocher) {
             this.c.envoyerEntier(CodeMessage.PIOCHER, (byte) i);
             attendreMessage();
-            Message msg = this.c.getPremierMessage();
+            //Message msg = this.c.getPremierMessage();
             peutPiocher = false;
             notify();
             return true;
