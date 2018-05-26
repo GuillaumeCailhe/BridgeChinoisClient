@@ -28,17 +28,21 @@ import javafx.scene.shape.Rectangle;
 public class MainFX extends Parent {
 
     private static final int offsetCarteX = 50;
-    private ArrayList<CarteFX> mainFX;
+    private ArrayList<CarteFX> cartesFX;
     private PlateauController plateauController;
 
     public MainFX(PlateauController plateauController, int positionX, int positionY) {
-        this.mainFX = new ArrayList<>();
+        this.cartesFX = new ArrayList<>();
         this.plateauController = plateauController;
 
         this.setLayoutX(positionX);
         this.setLayoutY(positionY);
     }
 
+    public ArrayList<CarteFX> getCartesFX() {
+        return cartesFX;
+    }
+    
     public static int getOffsetCarteX() {
         return offsetCarteX;
     }
@@ -48,7 +52,7 @@ public class MainFX extends Parent {
         CarteFX carteFX = new CarteFX(positionDansLaMain * this.getOffsetCarteX(), 0, carte);
 
         // Affichage de la carte.
-        this.mainFX.add(carteFX);
+        this.cartesFX.add(carteFX);
         this.getChildren().add(carteFX);
     }
 
@@ -58,7 +62,7 @@ public class MainFX extends Parent {
      * @param carteFXJouee
      */
     public void jouerCarteJoueur(CarteFX carteFXJouee) {
-        int positionDansLaMain = this.mainFX.indexOf(carteFXJouee);
+        int positionDansLaMain = this.cartesFX.indexOf(carteFXJouee);
         boolean aJoue = this.plateauController.getApplicationGraphique().getClient().jouer(positionDansLaMain);
 
         if (aJoue) {
@@ -72,7 +76,7 @@ public class MainFX extends Parent {
             TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
 
             tt.play();
-            mainFX.remove(carteFXJouee);
+            cartesFX.remove(carteFXJouee);
             plateauController.setCartePliJoueur(carteFXJouee);
         }
     }
@@ -85,8 +89,8 @@ public class MainFX extends Parent {
     public void jouerCarteAdversaire(Carte carte) {
         // On choisit une carte au hasard de la main de l'adversaire.
         Random rand = new Random();
-        int indiceCarteJouee = rand.nextInt(mainFX.size());
-        CarteFX carteFXJouee = this.mainFX.get(indiceCarteJouee);
+        int indiceCarteJouee = rand.nextInt(cartesFX.size());
+        CarteFX carteFXJouee = this.cartesFX.get(indiceCarteJouee);
 
         //Séquence d'animation
         SequentialTransition seqT = new SequentialTransition();
@@ -104,7 +108,7 @@ public class MainFX extends Parent {
 
         // Lancement de la séquence
         seqT.play();
-        mainFX.remove(carteFXJouee);
+        cartesFX.remove(carteFXJouee);
         plateauController.setCartePliAdversaire(carteFXJouee);
     }
 
@@ -112,7 +116,7 @@ public class MainFX extends Parent {
      * Remet les cartes les unes au dessus des autres.
      */
     public void recalculerZOrder() {
-        Iterator<CarteFX> it = this.mainFX.iterator();
+        Iterator<CarteFX> it = this.cartesFX.iterator();
         while (it.hasNext()) {
             CarteFX carteFX = it.next();
             carteFX.toFront();
@@ -123,7 +127,7 @@ public class MainFX extends Parent {
      * Ajoute les événements de souris sur la main du joueur.
      */
     public void ajouterEvenementCartes() {
-        Iterator<CarteFX> it = this.mainFX.iterator();
+        Iterator<CarteFX> it = this.cartesFX.iterator();
         while (it.hasNext()) {
             CarteFX carteFX = it.next();
 
@@ -156,7 +160,7 @@ public class MainFX extends Parent {
      * Retire les événements de souris sur la main du joueur.
      */
     public void retirerEvenementCartes() {
-        Iterator<CarteFX> it = this.mainFX.iterator();
+        Iterator<CarteFX> it = this.cartesFX.iterator();
         while (it.hasNext()) {
             CarteFX carteFX = it.next();
             carteFX.setOnMouseEntered(null);
@@ -167,7 +171,7 @@ public class MainFX extends Parent {
 
     public ParallelTransition animationTriCarte(ArrayList<Carte> nouvelleMain) {
         ParallelTransition pt = new ParallelTransition();
-        Iterator<CarteFX> iteratorMainFX = this.mainFX.iterator();
+        Iterator<CarteFX> iteratorMainFX = this.cartesFX.iterator();
         int positionDansLaMainFX = 0;
         // On déplace chaque carte hors du plateau.
         while (iteratorMainFX.hasNext()) {
@@ -191,6 +195,7 @@ public class MainFX extends Parent {
         pt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {    
+                cetteMain.getCartesFX().clear();
                 int positionDansLaMain = 0;
                 while(iteratorNouvelleMainFX.hasNext()){
                     Carte carte = iteratorNouvelleMainFX.next();

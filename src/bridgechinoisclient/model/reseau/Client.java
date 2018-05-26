@@ -352,6 +352,7 @@ public class Client implements Runnable {
             attendreMessage();
             Message msg = this.c.getPremierMessage();
             if (msg.getCode() == CodeMessage.JOUER_OK) {
+                main.remove(i);
                 peutJouer = false;
                 notify();
                 return true;
@@ -366,6 +367,7 @@ public class Client implements Runnable {
     public synchronized boolean piocher(int i) {
         if (peutPiocher) {
             this.c.envoyerEntier(CodeMessage.PIOCHER, (byte) i);
+            this.main.add(this.piles.get(i));
             attendreMessage();
             //Message msg = this.c.getPremierMessage();
             peutPiocher = false;
