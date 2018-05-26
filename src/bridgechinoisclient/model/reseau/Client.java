@@ -362,7 +362,7 @@ public class Client implements Runnable {
     }
 
     public synchronized boolean piocher(int i) {
-        if (peutJouer) {
+        if (peutPiocher) {
             this.c.envoyerEntier(CodeMessage.PIOCHER, (byte) i);
             attendreMessage();
             Message msg = this.c.getPremierMessage();
