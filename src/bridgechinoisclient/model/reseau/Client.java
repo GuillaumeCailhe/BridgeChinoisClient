@@ -32,6 +32,7 @@ public class Client implements Runnable {
     private ModeDeJeu mode;
     private Communication c;
     private String pseudo;
+    private String pseudoAdversaire;
     private int nbManches;
 
     private boolean peutJouer;
@@ -76,7 +77,7 @@ public class Client implements Runnable {
     }
 
     public String getPseudoAdversaire() {
-        return "Adversaire";
+        return pseudoAdversaire;
     }
 
     public boolean peutJouer() {
@@ -212,6 +213,7 @@ public class Client implements Runnable {
         // Réception du pseudo de l'adversaire
         this.attendreMessage();
         msg = c.getMessageParCode(CodeMessage.PSEUDO);
+        this.pseudoAdversaire = (String) msg.getDonnees();
     }
 
     private void initialisationManche() {
