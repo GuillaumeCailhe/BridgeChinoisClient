@@ -154,7 +154,9 @@ public class PaquetFX extends Parent {
         tt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                mainFX.ajouterCarte(carteADeplacer, positionCarteDansLaMain);
+                if(positionCarteDansLaMain != -1){
+                    mainFX.ajouterCarte(carteADeplacer, positionCarteDansLaMain);
+                }
                 paquet.getChildren().remove(carteFX);
             }
         });
@@ -290,7 +292,7 @@ public class PaquetFX extends Parent {
     }
 
     public SequentialTransition distribuerCarteEtRetrierMainAdversaire() {
-        TranslateTransition tt = animationDistributionCarteAdversaire(this.cartesFX.peek().getCarte(), 12);
+        TranslateTransition tt = animationDistributionCarteAdversaire(this.cartesFX.peek().getCarte(), -1);
         ParallelTransition parT = mainAdversaireFX.animationTriCarte(new ArrayList());
         SequentialTransition seqT = new SequentialTransition(tt, parT);
         return seqT;
