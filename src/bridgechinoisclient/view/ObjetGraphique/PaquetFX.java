@@ -30,7 +30,6 @@ public class PaquetFX extends Parent {
 
     /* Gestion du paquet*/
     private int idPile;
-    private int nombreCartes;
     private Stack<CarteFX> cartesFX;
 
 
@@ -54,7 +53,6 @@ public class PaquetFX extends Parent {
      * l'adversaire.
      */
     public PaquetFX(int nombreCartes, Animateur animateur, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
-        this.nombreCartes = 0;
         this.animateur = animateur;
         this.cartesFX = new Stack<>();
         this.positionXTete = positionPaquetX;
@@ -74,15 +72,17 @@ public class PaquetFX extends Parent {
         this.idPile = idPile;
     }
 
+    public int getNombreCartes() {
+        return cartesFX.size();
+    }    
     /**
      * Ajoute une carte dans le paquet.
      *
      * @param carte la carte à ajouter
      */
     public void ajouterCarte(Carte carte) {
-        nombreCartes++;
         CarteFX carteFX = new CarteFX(positionXTete, positionYTete, null);
-        if (nombreCartes < 11) { // pour ne pas surcharger l'affichage
+        if (this.cartesFX.size() < 11) { // pour ne pas surcharger l'affichage
             positionXTete += offsetX;
             positionYTete += offsetY;
         }
@@ -98,7 +98,12 @@ public class PaquetFX extends Parent {
      */
     public CarteFX decouvrirCarte(Carte carte) {
         // On récupère la carte en tête de pile.
-        CarteFX carteFX = cartesFX.peek();
+        CarteFX carteFX;
+        if (cartesFX.empty()) {
+            return null;
+        } else {
+            carteFX = cartesFX.peek();
+        }
 
         // Animation : on retourne la carte face cachée.
         SequentialTransition st = carteFX.animationDecouverteCarte(carte);
@@ -154,7 +159,7 @@ public class PaquetFX extends Parent {
         tt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                if(positionCarteDansLaMain != -1){
+                if (positionCarteDansLaMain != -1) {
                     mainFX.ajouterCarte(carteADeplacer, positionCarteDansLaMain);
                 }
                 paquet.getChildren().remove(carteFX);
@@ -251,43 +256,45 @@ public class PaquetFX extends Parent {
      * Ajoute les événements de souris sur le paquet.
      */
     public void ajouterEvenementsPioche() {
-        CarteFX tete = this.cartesFX.peek();
-        if (tete != null) {
-            // Rajout des événements associés de survol/relâchement.
-            tete.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    tete.animationSurvolPile();
-                }
-            });
-
-            tete.setOnMouseExited(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    tete.animationRelachementPile();
-                }
-            });
-
-            PaquetFX pile = this;
-            tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    boolean aPioche = animateur.getPlateau().getApplicationGraphique().getClient().piocher(idPile);
-                    if (aPioche) {
-                        TranslateTransition tt = animationDistributionCarteJoueur(tete.getCarte(), -1);
-                        ParallelTransition parT = mainJoueurFX.animationTriCarte(animateur.getClient().getMain());
-                        SequentialTransition seqT = new SequentialTransition(tt, parT);
-                        seqT.setOnFinished(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent arg0) {
-                                // Découverte des cartes
-                                animateur.onPiocherCarteJoueur();
-                            }
-                        });
-                        seqT.play();
+        if (!cartesFX.isEmpty()) {
+            CarteFX tete = this.cartesFX.peek();
+            if (tete != null) {
+                // Rajout des événements associés de survol/relâchement.
+                tete.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        tete.animationSurvolPile();
                     }
-                }
-            });
+                });
+
+                tete.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        tete.animationRelachementPile();
+                    }
+                });
+
+                PaquetFX pile = this;
+                tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        boolean aPioche = animateur.getPlateau().getApplicationGraphique().getClient().piocher(idPile);
+                        if (aPioche) {
+                            TranslateTransition tt = animationDistributionCarteJoueur(tete.getCarte(), -1);
+                            ParallelTransition parT = mainJoueurFX.animationTriCarte(animateur.getClient().getMain());
+                            SequentialTransition seqT = new SequentialTransition(tt, parT);
+                            seqT.setOnFinished(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent arg0) {
+                                    // Découverte des cartes
+                                    animateur.onPiocherCarteJoueur();
+                                }
+                            });
+                            seqT.play();
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -302,11 +309,13 @@ public class PaquetFX extends Parent {
      * Retire les événements de souris sur le paquet.
      */
     public void retirerEvenementsPioche() {
-        CarteFX tete = this.cartesFX.peek();
-        if (tete != null) {
-            tete.setOnMouseEntered(null);
-            tete.setOnMouseExited(null);
-            tete.setOnMouseClicked(null);
+        if (!cartesFX.isEmpty()) {
+            CarteFX tete = this.cartesFX.peek();
+            if (tete != null) {
+                tete.setOnMouseEntered(null);
+                tete.setOnMouseExited(null);
+                tete.setOnMouseClicked(null);
+            }
         }
     }
 }
