@@ -66,14 +66,15 @@ public class Animateur {
         plateau.changerAtout(this.client.getAtout());
 
         // On joue le coup du joueur à qui c'est le tour de jouer.
-        boolean peutJouer = this.client.peutJouer();
-        if (peutJouer) { // tour du joueur
-            plateau.prevenirJouerJoueur();
-        } else { // tour de l'adversaire
-            plateau.prevenirJouerAdversaire();
-            // On est pas certains que l'adversaire a joué.
-            if (client.adversaireAJoue() && !adversaireAJouePlateau) {
+        // On commene le tour de pioche.
+        if (client.adversaireAJoue()) { // tour de l'adversaire.
+            if (!adversaireAJouePlateau) { // On vérifie que l'adversaire n'a pas déjà joué son coup sur le plateau.
+                plateau.prevenirJouerAdversaire();
                 plateau.jouerCarteAdversaire(client.getDerniereCarteJoueeAdversaire());
+            }
+        } else { // tour du joueur
+            if (!joueurAJouePlateau) { // On vérifie que le joueur n'a pas déjà joué.
+                plateau.prevenirJouerJoueur();
             }
         }
     }
@@ -134,7 +135,7 @@ public class Animateur {
         if (!adversaireAPiochePlateau) {
             plateau.prevenirPiocheAdversaire();
             plateau.piocherCarteAdversaire(client.getIndicePileDerniereCartePiocheeAdversaire());
-        }else{
+        } else {
             this.onFinDeTourDePioche();
         }
     }
@@ -146,10 +147,10 @@ public class Animateur {
         adversaireAPiochePlateau = true;
         int indice = client.getIndicePileDerniereCartePiocheeAdversaire();
         plateau.decouvrirCartePile(indice, client.getPiles().get(indice));
-        
-        if(!joueurAPiochePlateau){
+
+        if (!joueurAPiochePlateau) {
             plateau.prevenirPiocheJoueur();
-        }else{
+        } else {
             this.onFinDeTourDePioche();
         }
     }
@@ -159,16 +160,16 @@ public class Animateur {
      */
     public void onFinDeTourDePioche() {
         int indice = client.getIndicePileDerniereCarteDecouverte();
-        
+
         PauseTransition pt = new PauseTransition(Duration.millis(1000));
         pt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 plateau.decouvrirCartePile(indice, client.getPiles().get(indice));
+                plateau.prevenirPiocheAdversaire();
                 onDebutDeTour();
             }
-        });  
-        
+        });
         pt.play();
     }
 }

@@ -119,7 +119,7 @@ public class Client implements Runnable {
     public int getIndicePileDerniereCartePiocheeAdversaire() {
         return indicePileDerniereCartePiocheeAdversaire;
     }
-    
+
     public boolean joueurARemportePli() {
         return joueurARemportePli;
     }
@@ -133,6 +133,11 @@ public class Client implements Runnable {
             initialisationManche();
 
             do {
+                joueurAJoue = false;
+                joueurAPioche = false;
+                adversaireAJoue = false;
+                adversaireAPioche = false;
+
                 receptionAtout();
 
                 tour();
@@ -267,8 +272,6 @@ public class Client implements Runnable {
     }
 
     private void tour() {
-        adversaireAJoue = false;
-        adversaireAPioche = false;
         Message msg;
 
         attendreMessage();
@@ -372,7 +375,7 @@ public class Client implements Runnable {
         Carte carteDecouverte = pioche.get(1);
         this.piles.set(i, carteDecouverte);
         //Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(i, carteDecouverte));
-        
+
         return i;
     }
 
@@ -396,8 +399,10 @@ public class Client implements Runnable {
         while (c.getNbMessages() == 0) {
             try {
                 wait();
+
             } catch (InterruptedException ex) {
-                Logger.getLogger(ClientTextuel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ClientTextuel.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -406,9 +411,11 @@ public class Client implements Runnable {
         try {
             while (peutJouer || peutPiocher) {
                 wait();
+
             }
         } catch (InterruptedException ex) {
-            Logger.getLogger(ClientTextuel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientTextuel.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -449,14 +456,18 @@ public class Client implements Runnable {
     public void run() {
         try {
             connexion();
+
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
             initialisation();
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         jeu();
