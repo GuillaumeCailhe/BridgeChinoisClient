@@ -274,7 +274,7 @@ public class PaquetFX extends Parent {
                 public void handle(MouseEvent event) {
                     boolean aPioche = animateur.getPlateau().getApplicationGraphique().getClient().piocher(idPile);
                     if (aPioche) {
-                        TranslateTransition tt = animationDistributionCarteJoueur(tete.getCarte(), 12);
+                        TranslateTransition tt = animationDistributionCarteJoueur(tete.getCarte(), -1);
                         ParallelTransition parT = mainJoueurFX.animationTriCarte(animateur.getClient().getMain());
                         SequentialTransition seqT = new SequentialTransition(tt, parT);
                         seqT.setOnFinished(new EventHandler<ActionEvent>() {
