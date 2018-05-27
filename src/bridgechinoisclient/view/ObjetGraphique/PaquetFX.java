@@ -17,6 +17,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 /**
@@ -27,6 +29,7 @@ public class PaquetFX extends Parent {
 
     /* Pour gérer les événements liées à l'animation. */
     private Animateur animateur;
+    Rectangle surbrillance;
 
     /* Gestion du paquet*/
     private int idPile;
@@ -74,7 +77,15 @@ public class PaquetFX extends Parent {
 
     public int getNombreCartes() {
         return cartesFX.size();
-    }    
+    }
+    
+    public int getNombreCartesAffichees(){
+        if(getNombreCartes()<11){
+            return getNombreCartes();
+        }else{
+            return 10;
+        }
+    }
     /**
      * Ajoute une carte dans le paquet.
      *
@@ -253,10 +264,45 @@ public class PaquetFX extends Parent {
     }
 
     /**
+     * Ajoute de la surbrillance au paquet.
+     */
+    private void ajouterSurbrillance() {
+        surbrillance = new Rectangle();
+        int tailleAjouteeX = offsetX*getNombreCartesAffichees();
+        int tailleAjouteeY = offsetX*getNombreCartesAffichees();
+        this.surbrillance.setWidth(67+tailleAjouteeX);
+        this.surbrillance.setHeight(92+tailleAjouteeY);
+        this.surbrillance.setFill(Color.rgb(204, 113, 20));
+        this.surbrillance.setTranslateX(positionPaquetX-tailleAjouteeX/2);
+        this.surbrillance.setTranslateY(positionPaquetY-tailleAjouteeY/2);
+        
+        this.getChildren().add(surbrillance);
+        this.surbrillance.setVisible(true);
+        this.surbrillance.toBack();
+    }
+
+    /**
+     * Retire la surbrillance du paquet.
+     */
+    private void retirerSurbrillance() {
+        if (this.surbrillance != null) {
+            this.surbrillance.setVisible(false);
+        }
+    }
+
+    public SequentialTransition distribuerCarteEtRetrierMainAdversaire() {
+        TranslateTransition tt = animationDistributionCarteAdversaire(this.cartesFX.peek().getCarte(), -1);
+        ParallelTransition parT = mainAdversaireFX.animationTriCarte(new ArrayList());
+        SequentialTransition seqT = new SequentialTransition(tt, parT);
+        return seqT;
+    }
+
+    /**
      * Ajoute les événements de souris sur le paquet.
      */
     public void ajouterEvenementsPioche() {
         if (!cartesFX.isEmpty()) {
+            ajouterSurbrillance();
             CarteFX tete = this.cartesFX.peek();
             if (tete != null) {
                 // Rajout des événements associés de survol/relâchement.
@@ -298,17 +344,11 @@ public class PaquetFX extends Parent {
         }
     }
 
-    public SequentialTransition distribuerCarteEtRetrierMainAdversaire() {
-        TranslateTransition tt = animationDistributionCarteAdversaire(this.cartesFX.peek().getCarte(), -1);
-        ParallelTransition parT = mainAdversaireFX.animationTriCarte(new ArrayList());
-        SequentialTransition seqT = new SequentialTransition(tt, parT);
-        return seqT;
-    }
-
     /**
      * Retire les événements de souris sur le paquet.
      */
     public void retirerEvenementsPioche() {
+        retirerSurbrillance();
         if (!cartesFX.isEmpty()) {
             CarteFX tete = this.cartesFX.peek();
             if (tete != null) {

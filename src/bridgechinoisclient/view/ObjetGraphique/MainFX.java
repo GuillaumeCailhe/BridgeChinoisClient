@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -27,13 +28,19 @@ import javafx.scene.shape.Rectangle;
  * @author helgr
  */
 public class MainFX extends Parent {
+
     private Animateur animateur;
     private static final int offsetCarteX = 50;
     private ArrayList<CarteFX> cartesFX;
+    private Rectangle surbrillance;
+    int positionX;
+    int positionY;
 
     public MainFX(Animateur animateur, int positionX, int positionY) {
         this.cartesFX = new ArrayList<>();
         this.animateur = animateur;
+        this.positionX = positionX;
+        this.positionY = positionY;
 
         this.setLayoutX(positionX);
         this.setLayoutY(positionY);
@@ -133,10 +140,29 @@ public class MainFX extends Parent {
         }
     }
 
+    public void ajouterSurbrillance() {
+        this.surbrillance = new Rectangle();
+        this.surbrillance.setWidth(52*cartesFX.size());
+        this.surbrillance.setHeight(100);
+        this.surbrillance.setTranslateX(-5);
+        this.surbrillance.setTranslateY(-5);
+        this.surbrillance.setFill(Color.rgb(204, 113, 20));
+        this.getChildren().add(surbrillance);
+        this.surbrillance.setVisible(true);
+        surbrillance.toBack();
+    }
+
+    public void retirerSurbrillance() {
+        if (this.surbrillance != null) {
+            this.surbrillance.setVisible(false);
+        }
+    }
+
     /**
      * Ajoute les événements de souris sur la main du joueur.
      */
     public void ajouterEvenementCartes() {
+        ajouterSurbrillance();
         Iterator<CarteFX> it = this.cartesFX.iterator();
         while (it.hasNext()) {
             CarteFX carteFX = it.next();
@@ -170,6 +196,7 @@ public class MainFX extends Parent {
      * Retire les événements de souris sur la main du joueur.
      */
     public void retirerEvenementCartes() {
+        retirerSurbrillance();
         Iterator<CarteFX> it = this.cartesFX.iterator();
         while (it.hasNext()) {
             CarteFX carteFX = it.next();
