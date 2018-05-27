@@ -6,6 +6,7 @@
 package bridgechinoisclient.view.ObjetGraphique;
 
 import LibrairieCarte.Carte;
+import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.ApplicationGraphique;
 import bridgechinoisclient.controller.PlateauController;
 import java.util.ArrayList;
@@ -26,14 +27,13 @@ import javafx.scene.shape.Rectangle;
  * @author helgr
  */
 public class MainFX extends Parent {
-
+    private Animateur animateur;
     private static final int offsetCarteX = 50;
     private ArrayList<CarteFX> cartesFX;
-    private PlateauController plateauController;
 
-    public MainFX(PlateauController plateauController, int positionX, int positionY) {
+    public MainFX(Animateur animateur, int positionX, int positionY) {
         this.cartesFX = new ArrayList<>();
-        this.plateauController = plateauController;
+        this.animateur = animateur;
 
         this.setLayoutX(positionX);
         this.setLayoutY(positionY);
@@ -63,7 +63,7 @@ public class MainFX extends Parent {
      */
     public void jouerCarteJoueur(CarteFX carteFXJouee) {
         int positionDansLaMain = this.cartesFX.indexOf(carteFXJouee);
-        boolean aJoue = this.plateauController.getApplicationGraphique().getClient().jouer(positionDansLaMain);
+        boolean aJoue = this.animateur.getClient().jouer(positionDansLaMain);
 
         if (aJoue) {
             this.retirerEvenementCartes();
@@ -74,10 +74,14 @@ public class MainFX extends Parent {
             double coordonneesY = -150;
 
             TranslateTransition tt = carteFXJouee.animationDeplacementCarte(200, coordonneesX, coordonneesY);
-
+            tt.setOnFinished(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent arg0) {
+                    cartesFX.remove(carteFXJouee);
+                    animateur.onJouerCarteJoueur(carteFXJouee);
+                }
+            });
             tt.play();
-            cartesFX.remove(carteFXJouee);
-            plateauController.setCartePliJoueur(carteFXJouee);
         }
     }
 
@@ -106,9 +110,15 @@ public class MainFX extends Parent {
         TranslateTransition tt = carteFXJouee.animationDeplacementCarte(250, coordonneesX, coordonneesY);
         seqT.getChildren().add(tt);
 
+        seqT.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                cartesFX.remove(carteFXJouee);
+                animateur.onJouerCarteAdversaire(carteFXJouee);
+            }
+        });
+
         // Lancement de la séquence
-        cartesFX.remove(carteFXJouee);
-        plateauController.setCartePliAdversaire(carteFXJouee);
         return seqT;
     }
 

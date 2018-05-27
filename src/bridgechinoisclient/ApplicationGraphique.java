@@ -4,6 +4,7 @@ import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.controller.Controller;
 import bridgechinoisclient.controller.PlateauController;
 import bridgechinoisclient.model.reseau.Client;
+import bridgechinoisclient.view.ObjetGraphique.Animateur;
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -29,9 +30,10 @@ public class ApplicationGraphique extends Application {
 
         afficherMenu();
     }
-    
+
     /**
      * Affiche la fenêtre choisie.
+     *
      * @param viewPath le chemin vers le fxml à afficher.
      * @return le controller associé
      */
@@ -105,8 +107,7 @@ public class ApplicationGraphique extends Application {
      */
     public void afficherPlateau() {
         this.plateauController = (PlateauController) afficherFenetre("view/Plateau.fxml");
-        
-        this.plateauController.distributionInitiale(this.client.getMain(), this.client.getPiles(), this.client.getPseudo(), "Adversaire");
+        Animateur animateur = new Animateur(this.getClient(), plateauController);
     }
 
     /**
@@ -123,10 +124,10 @@ public class ApplicationGraphique extends Application {
             thread.setDaemon(true);
             thread.start();
         } catch (IOException ex) {
-            
+
         } catch (InterruptedException ex) {
-            
-        }      
+
+        }
     }
 
     public static void main(String[] args) {

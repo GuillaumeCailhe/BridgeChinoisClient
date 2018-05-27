@@ -6,7 +6,10 @@
 package bridgechinoisclient.controller;
 
 import LibrairieCarte.Carte;
+import LibrairieCarte.SymboleCarte;
 import LibrairieMoteur.ModeDeJeu;
+import bridgechinoisclient.model.reseau.Client;
+import bridgechinoisclient.view.ObjetGraphique.Animateur;
 import bridgechinoisclient.view.ObjetGraphique.CarteFX;
 import bridgechinoisclient.view.ObjetGraphique.MainFX;
 import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
@@ -22,6 +25,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
@@ -32,6 +37,7 @@ import javafx.util.Duration;
  */
 public class PlateauController extends Controller {
 
+    Animateur animateur;
     private MainFX mainJoueurFX;
     private MainFX mainAdversaireFX;
     private CarteFX cartePliJoueur;
@@ -46,13 +52,8 @@ public class PlateauController extends Controller {
     private Label nomJoueurLabel;
     @FXML
     private Label nomAdversaireLabel;
-
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-    }
+    @FXML
+    private ImageView atoutImageView;
 
     public MainFX getMainJoueurFX() {
         return mainJoueurFX;
@@ -78,7 +79,8 @@ public class PlateauController extends Controller {
         this.piles = piles;
     }
 
-    public void distributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
+    public void initialiser(Animateur animateur, ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
+        this.animateur = animateur;
         // On affiche les noms des joueurs.
         nomJoueurLabel.setText(nomJoueur);
         nomAdversaireLabel.setText(nomAdversaire);
@@ -88,15 +90,15 @@ public class PlateauController extends Controller {
         int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
 
         // On initialise un objet graphique MainJoueur.
-        this.mainAdversaireFX = new MainFX(this, 30, 0);
-        this.mainJoueurFX = new MainFX(this, 30, hauteurPlateauPane - 85);
+        this.mainAdversaireFX = new MainFX(animateur, 30, 0);
+        this.mainJoueurFX = new MainFX(animateur, 30, hauteurPlateauPane - 85);
 
         // On initialise les piles de pli.
-        this.paquetPliJoueur = new PaquetFX(0, this, largeurPlateauPane - 60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
-        this.paquetPliAdversaire = new PaquetFX(0, this, largeurPlateauPane - 60, 0, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliJoueur = new PaquetFX(0, animateur, largeurPlateauPane - 60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliAdversaire = new PaquetFX(0, animateur, largeurPlateauPane - 60, 0, mainJoueurFX, mainAdversaireFX);
 
         // On initialise le paquet de carte.
-        PaquetFX paquetFX = new PaquetFX(52, this, largeurPlateauPane / 2 - 60, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
+        PaquetFX paquetFX = new PaquetFX(52, animateur, largeurPlateauPane / 2, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
 
         // On ajoute les mains au plateau.
         this.plateauPane.getChildren().add(mainAdversaireFX);
@@ -104,7 +106,7 @@ public class PlateauController extends Controller {
         this.plateauPane.getChildren().add(paquetFX);
         this.plateauPane.getChildren().add(paquetPliJoueur);
         this.plateauPane.getChildren().add(paquetPliAdversaire);
-        paquetFX.animationDistributionInitiale(mainJoueur, this.getApplicationGraphique().getClient().peutJouer(), piles, this);
+        paquetFX.animationDistributionInitiale(mainJoueur, piles);
     }
 
     /**
@@ -119,12 +121,32 @@ public class PlateauController extends Controller {
     }
 
     /**
-     * Prévient le joueur que c'est son tour.
+     * Met l'image de l'atout à jour.
      */
-    public void prevenirTourJoueur() {
-        // On change la couleur du nom
+    public void changerAtout(SymboleCarte symbole) {
+        if (symbole == null) {
+            symbole = SymboleCarte.PIQUE;
+        }
+        Image imageAtout = new Image(getClass().getResourceAsStream("../view/ressources/cartes/symbole_" + symbole.toString().toLowerCase() + ".png"));
+        this.atoutImageView.setImage(imageAtout);
+    }
+
+    private void setLabelJoueurActif() {
         changerClasseLabel(this.nomJoueurLabel, "labelNomTourJoueur");
         changerClasseLabel(this.nomAdversaireLabel, "labelNom");
+    }
+
+    private void setLabelJoueurInactif() {
+        changerClasseLabel(this.nomAdversaireLabel, "labelNomTourJoueur");
+        changerClasseLabel(this.nomJoueurLabel, "labelNom");
+    }
+
+    /**
+     * Prévient le joueur que c'est son tour de jeu.
+     */
+    public void prevenirJouerJoueur() {
+        // On change la couleur du nom
+        setLabelJoueurActif();
         // On met la main en surbrillance.
 
         // On rend l'usage de la main.
@@ -132,12 +154,11 @@ public class PlateauController extends Controller {
     }
 
     /**
-     * Prévient le joueur que c'est le tour de l'adversaire.
+     * Prévient le joueur que c'est le tour de jeu de l'adversaire.
      */
-    public void prevenirTourAdversaire() {
+    public void prevenirJouerAdversaire() {
         // On change la couleur du nom
-        changerClasseLabel(this.nomAdversaireLabel, "labelNomTourJoueur");
-        changerClasseLabel(this.nomJoueurLabel, "labelNom");
+        setLabelJoueurInactif();
         // On enlève la surbrillance de la main.
 
         // On bloque l'usage de la main.
@@ -151,7 +172,7 @@ public class PlateauController extends Controller {
      */
     public void comparerCartesPli(boolean estVictorieux) {
         // L'un des deux joueurs vient de jouer, on attend un peu pour ne pas surprendre l'utilisateur.
-        PauseTransition pt = new PauseTransition(Duration.millis(2000));
+        PauseTransition pt = new PauseTransition(Duration.millis(1000));
         pt.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
@@ -211,13 +232,16 @@ public class PlateauController extends Controller {
                 seqT.setOnFinished(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent arg0) {
+                        // Mise à jour de l'affichage
                         carteASupprimer2.setVisible(false);
                         paquet.ajouterCarte(null);
                         paquet.ajouterCarte(null);
+                        animateur.onComparaisonDePlis();
                     }
                 });
             }
         });
+
         pt.play();
     }
 
@@ -225,6 +249,8 @@ public class PlateauController extends Controller {
      * Prévient le joueur que c'est son tour.
      */
     public void prevenirPiocheJoueur() {
+        setLabelJoueurActif();
+
         Iterator<PaquetFX> it = this.piles.iterator();
         while (it.hasNext()) {
             it.next().ajouterEvenementsPioche();
@@ -235,9 +261,10 @@ public class PlateauController extends Controller {
      * Prévient le joueur que c'est le tour de l'adversaire.
      */
     public void prevenirPiocheAdversaire() {
+        setLabelJoueurInactif();
         Iterator<PaquetFX> it = this.piles.iterator();
         while (it.hasNext()) {
-            it.next().ajouterEvenementsPioche();
+            it.next().retirerEvenementsPioche();
         }
     }
 
@@ -248,58 +275,39 @@ public class PlateauController extends Controller {
      * @param carteDecouverte la carte qui a été découverte.
      */
     public void decouvrirCartePile(int indicePile, Carte carteDecouverte) {
-        System.out.println("Pile" + indicePile + "découvre : " + carteDecouverte.toString());
         this.piles.get(indicePile).decouvrirCarte(carteDecouverte);
     }
 
-    /**
-     * Pause le jeu avant les coups des adversaires.
-     *
-     * @param modeDeJeu le mode de jeu (la pause varie selon si on est en
-     * multijoueur ou non)
-     * @return l'animation de pause.
-     */
-    private PauseTransition pauseCoupAdversaire(ModeDeJeu modeDeJeu) {
-        int durée = 300;
-        if (modeDeJeu != ModeDeJeu.JOUEUR_CONTRE_JOUEUR) {
-            durée = 1800;
-        }
-        return new PauseTransition(Duration.millis(durée));
+    public void jouerCarteAdversaire(Carte carteJoueeParAdversaire) {
+        mainAdversaireFX.jouerCarteAdversaire(carteJoueeParAdversaire).play();
     }
-    
+
     /**
      * Permet à l'adversaire de jouer
+     *
      * @param modeDeJeu le mode de jeu courant
      * @param carte la carte à jouer.
      */
-    public void jouerCarteAdversaire(ModeDeJeu modeDeJeu, Carte carte) {
-        /*PauseTransition pt = pauseCoupAdversaire(modeDeJeu);
-        pt.setOnFinished(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent arg0) {
-                mainAdversaireFX.jouerCarteAdversaire(carte).play();
-            }
-        });
-        pt.play();*/
+    /*public void jouerCarteAdversaire(ModeDeJeu modeDeJeu, Carte carte) {
         mainAdversaireFX.jouerCarteAdversaire(carte).play();
-    }
-
+    }*/
     /**
      * Permet à l'adversaire de piocher.
      *
      * @param indicePilePiochee l'indice de la pile que l'adversaire a choisi.
      */
-    public void piocherCarteAdversaire(ModeDeJeu modeDeJeu, int indicePilePiochee) {
-        System.out.println("Il pioche");
-        /*PauseTransition pt = pauseCoupAdversaire(modeDeJeu);
-        pt.setOnFinished(new EventHandler<ActionEvent>() {
+    public void piocherCarteAdversaire(int indicePilePiochee) {
+        PauseTransition pt = new PauseTransition(Duration.millis(1000));
+        SequentialTransition animDistribution = piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
+        
+        SequentialTransition seqT = new SequentialTransition(pt, animDistribution);
+        seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
+                animateur.onPiocherCarteAdversaire();
             }
         });
-
-        pt.play();*/
-        piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
+        
+        seqT.play();
     }
 }

@@ -25,8 +25,8 @@ import javafx.util.Duration;
  */
 public class PaquetFX extends Parent {
 
-    /* Plateau pour récupérer des informations du serveur */
-    private PlateauController plateauController;
+    /* Pour gérer les événements liées à l'animation. */
+    private Animateur animateur;
 
     /* Gestion du paquet*/
     private int idPile;
@@ -53,9 +53,9 @@ public class PaquetFX extends Parent {
      * @param mainAdversaireFX l'objet graphique qui contiendra la main de
      * l'adversaire.
      */
-    public PaquetFX(int nombreCartes, PlateauController plateauController, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
+    public PaquetFX(int nombreCartes, Animateur animateur, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
         this.nombreCartes = 0;
-        this.plateauController = plateauController;
+        this.animateur = animateur;
         this.cartesFX = new Stack<>();
         this.positionXTete = positionPaquetX;
         this.positionYTete = positionPaquetY;
@@ -69,8 +69,8 @@ public class PaquetFX extends Parent {
         }
     }
 
-    public PaquetFX(int idPile, int nombreCartes, PlateauController plateauController, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
-        this(nombreCartes, plateauController, positionPaquetX, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+    public PaquetFX(int idPile, int nombreCartes, Animateur animateur, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
+        this(nombreCartes, animateur, positionPaquetX, positionPaquetY, mainJoueurFX, mainAdversaireFX);
         this.idPile = idPile;
     }
 
@@ -133,8 +133,8 @@ public class PaquetFX extends Parent {
      * @param positionCarteDansLaMain la position de la carte dans la main
      * @return l'animation
      */
-    private TranslateTransition animationDistributionCarteAdversaire(int positionCarteDansLaMain) {
-        return animationDistributionCarte(this.mainAdversaireFX, null, 0f, -200f, positionCarteDansLaMain);
+    private TranslateTransition animationDistributionCarteAdversaire(Carte carte, int positionCarteDansLaMain) {
+        return animationDistributionCarte(this.mainAdversaireFX, carte, 0f, -200f, positionCarteDansLaMain);
     }
 
     /**
@@ -170,14 +170,14 @@ public class PaquetFX extends Parent {
      * @param piles les cartes au dessus des piles.
      * @param plateau le plateau où dessiner les cartes.
      */
-    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, boolean estTourJoueur, ArrayList<Carte> piles, PlateauController plateau) {
+    public void animationDistributionInitiale(ArrayList<Carte> mainJoueur, ArrayList<Carte> piles) {
         SequentialTransition seqT = new SequentialTransition();
         Iterator<Carte> it = mainJoueur.iterator();
         int positionDansLaMain = 0;
         while (it.hasNext()) {
             Carte carteJoueur = it.next();
             TranslateTransition ttJoueur = animationDistributionCarteJoueur(carteJoueur, positionDansLaMain);
-            TranslateTransition ttAdversaire = animationDistributionCarteAdversaire(positionDansLaMain);
+            TranslateTransition ttAdversaire = animationDistributionCarteAdversaire(null, positionDansLaMain);
 
             seqT.getChildren().add(ttJoueur);
             seqT.getChildren().add(ttAdversaire);
@@ -189,7 +189,7 @@ public class PaquetFX extends Parent {
         seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                animationScinderEnPiles(piles, plateau, estTourJoueur);
+                animationScinderEnPiles(piles);
             }
         });
     }
@@ -199,20 +199,20 @@ public class PaquetFX extends Parent {
      *
      * @param plateau le plateau où dessiner les piles.
      */
-    private void animationScinderEnPiles(ArrayList<Carte> piles, PlateauController plateauController, boolean estTourJoueur) {
+    private void animationScinderEnPiles(ArrayList<Carte> piles) {
         // Création d'une liste d'animations jouées en parallèle.
         ParallelTransition parT = new ParallelTransition();
         ArrayList<PaquetFX> pilesFX = new ArrayList<>();
         // Création des piles.
         for (int i = 0; i < 6; i++) {
-            int offsetY = (int) (plateauController.getPlateauPane().getPrefWidth() / 6);
-            PaquetFX pile = new PaquetFX(i, 5, plateauController, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+            int offsetY = (int) (animateur.getPlateau().getPlateauPane().getPrefWidth() / 6);
+            PaquetFX pile = new PaquetFX(i, 5, animateur, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
             pilesFX.add(pile);
 
             // Animation de déplacement de la pile.
             TranslateTransition tt = new TranslateTransition(Duration.millis(1000), pile);
             tt.setFromX(positionPaquetX);
-            tt.setToX((i * offsetY) + 20);
+            tt.setToX((i * offsetY) + 130);
 
             int j = i;
             tt.setOnFinished(new EventHandler<ActionEvent>() {
@@ -220,9 +220,6 @@ public class PaquetFX extends Parent {
                 public void handle(ActionEvent arg0) {
                     // découverte des cartes
                     pile.decouvrirCarte(piles.get(j));
-                    if (estTourJoueur) {
-                        mainJoueurFX.ajouterEvenementCartes();
-                    }
                 }
             });
 
@@ -230,16 +227,22 @@ public class PaquetFX extends Parent {
             parT.getChildren().add(tt);
 
             // On ajoute la pile au plateau.
-            plateauController.getPlateauPane().getChildren().add(pile);
+            animateur.getPlateau().getPlateauPane().getChildren().add(pile);
         }
         // Suppression du paquet initial.
-        plateauController.getPlateauPane().getChildren().remove(this);
+        animateur.getPlateau().getPlateauPane().getChildren().remove(this);
+        parT.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent arg0) {
+                // Découverte des cartes
+                animateur.onDebutDeTour();
+            }
+        });
 
         // Lancement de l'animation.
         parT.play();
-
         // Enregistrement des piles dans le plateau
-        plateauController.setPiles(pilesFX);
+        animateur.getPlateau().setPiles(pilesFX);
     }
 
     /**
@@ -267,25 +270,36 @@ public class PaquetFX extends Parent {
             tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    boolean aPioche = plateauController.getApplicationGraphique().getClient().piocher(idPile);
+                    boolean aPioche = animateur.getPlateau().getApplicationGraphique().getClient().piocher(idPile);
                     if (aPioche) {
-                        animationDistributionCarteJoueur(tete.getCarte(), 12).play();
-                        mainJoueurFX.animationTriCarte(plateauController.getApplicationGraphique().getClient().getMain()).play();
+                        TranslateTransition tt = animationDistributionCarteJoueur(tete.getCarte(), 12);
+                        ParallelTransition parT = mainJoueurFX.animationTriCarte(animateur.getClient().getMain());
+                        SequentialTransition seqT = new SequentialTransition(tt, parT);
+                        seqT.setOnFinished(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent arg0) {
+                                // Découverte des cartes
+                                animateur.onPiocherCarteJoueur();
+                            }
+                        });
+                        seqT.play();
                     }
                 }
             });
         }
     }
-    
-    public void distribuerCarteEtRetrierMainAdversaire() {
-        animationDistributionCarteJoueur(this.cartesFX.peek().getCarte(), 12).play();
-        mainAdversaireFX.animationTriCarte(new ArrayList()).play();
+
+    public SequentialTransition distribuerCarteEtRetrierMainAdversaire() {
+        TranslateTransition tt = animationDistributionCarteAdversaire(this.cartesFX.peek().getCarte(), 12);
+        ParallelTransition parT = mainAdversaireFX.animationTriCarte(new ArrayList());
+        SequentialTransition seqT = new SequentialTransition(tt, parT);
+        return seqT;
     }
 
     /**
      * Retire les événements de souris sur le paquet.
      */
-    public void retirerEvenementPioche() {
+    public void retirerEvenementsPioche() {
         CarteFX tete = this.cartesFX.peek();
         if (tete != null) {
             tete.setOnMouseEntered(null);

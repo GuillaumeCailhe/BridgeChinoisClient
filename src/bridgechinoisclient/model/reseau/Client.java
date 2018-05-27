@@ -37,6 +37,16 @@ public class Client implements Runnable {
     private boolean peutJouer;
     private boolean peutPiocher;
 
+    private boolean joueurAJoue = false;
+    private boolean joueurAPioche = false;
+    private boolean adversaireAJoue = false;
+    private boolean adversaireAPioche = false;
+    private boolean joueurARemportePli;
+
+    Carte derniereCarteJoueeAdversaire;
+    int indicePileDerniereCartePiocheeAdversaire;
+    int indiceDerniereCarteDecouverte;
+
     private ArrayList<Carte> main;
     private ArrayList<Carte> piles;
     private SymboleCarte atout;
@@ -65,12 +75,52 @@ public class Client implements Runnable {
         return pseudo;
     }
 
+    public String getPseudoAdversaire() {
+        return "Adversaire";
+    }
+
     public boolean peutJouer() {
         return peutJouer;
     }
 
     public boolean peutPiocher() {
         return peutPiocher;
+    }
+
+    public SymboleCarte getAtout() {
+        return atout;
+    }
+
+    public boolean joueurAJoue() {
+        return joueurAJoue;
+    }
+
+    public boolean joueurAPioche() {
+        return joueurAPioche;
+    }
+
+    public boolean adversaireAJoue() {
+        return adversaireAJoue;
+    }
+
+    public boolean adversaireAPioche() {
+        return adversaireAPioche;
+    }
+
+    public Carte getDerniereCarteJoueeAdversaire() {
+        return derniereCarteJoueeAdversaire;
+    }
+
+    public int getIndicePileDerniereCarteDecouverte() {
+        return indiceDerniereCarteDecouverte;
+    }
+
+    public int getIndicePileDerniereCartePiocheeAdversaire() {
+        return indicePileDerniereCartePiocheeAdversaire;
+    }
+    
+    public boolean joueurARemportePli() {
+        return joueurARemportePli;
     }
 
     private void jeu() {
@@ -203,7 +253,7 @@ public class Client implements Runnable {
      */
     private void prevenirTourJoueur() {
         peutJouer = true;
-        Platform.runLater(() -> app.getPlateauController().prevenirTourJoueur());
+        //Platform.runLater(() -> app.getPlateauController().prevenirTourJoueur());
     }
 
     /**
@@ -211,10 +261,12 @@ public class Client implements Runnable {
      */
     private void prevenirTourAdversaire() {
         peutJouer = false;
-        Platform.runLater(() -> app.getPlateauController().prevenirTourAdversaire());
+        //Platform.runLater(() -> app.getPlateauController().prevenirTourAdversaire());
     }
 
     private void tour() {
+        adversaireAJoue = false;
+        adversaireAPioche = false;
         Message msg;
 
         attendreMessage();
@@ -240,7 +292,7 @@ public class Client implements Runnable {
      */
     private void prevenirPiocheJoueur() {
         peutPiocher = true;
-        Platform.runLater(() -> app.getPlateauController().prevenirPiocheJoueur());
+        //Platform.runLater(() -> app.getPlateauController().prevenirPiocheJoueur());
     }
 
     /**
@@ -248,9 +300,9 @@ public class Client implements Runnable {
      */
     private void prevenirPiocheAdversaire() {
         peutPiocher = false;
-        Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
+        //Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
     }
-    
+
     private void piocher() {
         Message msg;
 
@@ -266,21 +318,25 @@ public class Client implements Runnable {
                     prevenirPiocheAdversaire();
                     Collections.sort(main);
                     // Permet de révéler la carte retournée
-                    recupererPiocheAdversaire();
+                    indiceDerniereCarteDecouverte = recupererPiocheAdversaire();
+                    joueurAPioche = true;
                     // Permet de savoir la carte piochée par l'adversaire et la carte retournée
-                    int indicePioche = recupererPiocheAdversaire();
-                    Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche));
+                    indicePileDerniereCartePiocheeAdversaire = recupererPiocheAdversaire();
+                    adversaireAPioche = true;
+                    //Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche));
                     break;
                 case TOUR_KO:
-                    int indicePioche2 = recupererPiocheAdversaire();
-                    Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche2));
+                    indicePileDerniereCartePiocheeAdversaire = recupererPiocheAdversaire();
+                    adversaireAPioche = true;
+                    //Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche2));
                     attendreMessage();
                     c.getMessageParCode(CodeMessage.TOUR_OK);
                     prevenirPiocheJoueur();
                     attendreJoueur();
                     prevenirPiocheAdversaire();
                     Collections.sort(main);
-                    recupererPiocheAdversaire();
+                    indiceDerniereCarteDecouverte = recupererPiocheAdversaire();
+                    joueurAPioche = true;
                     break;
             }
         }
@@ -292,7 +348,9 @@ public class Client implements Runnable {
         attendreMessage();
         msg = c.getMessageParCode(CodeMessage.JOUER_ADVERSAIRE);
         Carte carte = ((ArrayList<Carte>) msg.getDonnees()).get(0);
-        Platform.runLater(() -> app.getPlateauController().jouerCarteAdversaire(mode, carte));
+        derniereCarteJoueeAdversaire = carte;
+        adversaireAJoue = true;
+        //Platform.runLater(() -> app.getPlateauController().jouerCarteAdversaire(mode, carte));
     }
 
     private int recupererPiocheAdversaire() {
@@ -310,11 +368,10 @@ public class Client implements Runnable {
             }
         }
         Carte carteDecouverte = pioche.get(1);
-        int indicePile = i;
-        this.piles.set(indicePile, carteDecouverte);
-        Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePile, carteDecouverte));
+        this.piles.set(i, carteDecouverte);
+        //Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(i, carteDecouverte));
         
-        return indicePile;
+        return i;
     }
 
     private void recupererResultat() {
@@ -323,10 +380,12 @@ public class Client implements Runnable {
         msg = c.getPremierMessage();
         switch (msg.getCode()) {
             case VICTOIRE_PLI:
-                Platform.runLater(() -> app.getPlateauController().comparerCartesPli(true));
+                joueurARemportePli = true;
+                //Platform.runLater(() -> app.getPlateauController().comparerCartesPli(true));
                 break;
             case DEFAITE_PLI:
-                Platform.runLater(() -> app.getPlateauController().comparerCartesPli(false));
+                joueurARemportePli = false;
+                //Platform.runLater(() -> app.getPlateauController().comparerCartesPli(false));
                 break;
         }
     }
