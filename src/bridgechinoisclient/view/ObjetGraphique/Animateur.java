@@ -50,6 +50,8 @@ public class Animateur {
      */
     public void onConnexion() {
         plateau.initialiser(this, this.client.getMain(), this.client.getPiles(), this.client.getPseudo(), this.client.getPseudoAdversaire());
+        // Changement de l'atout.
+        plateau.changerAtout(this.client.getAtout());
     }
 
     /**
@@ -61,9 +63,6 @@ public class Animateur {
         this.joueurAPiochePlateau = false;
         this.adversaireAJouePlateau = false;
         this.adversaireAPiochePlateau = false;
-
-        // Changement de l'atout.
-        plateau.changerAtout(this.client.getAtout());
 
         // On joue le coup du joueur à qui c'est le tour de jouer.
         if (client.adversaireAJoue()) { // tour de l'adversaire.

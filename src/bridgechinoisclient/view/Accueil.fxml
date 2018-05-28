@@ -13,7 +13,7 @@
             <Button mnemonicParsing="false" onAction="#traiterClicIA" prefHeight="50.0" prefWidth="200.0" text="JOUEUR VS IA" textAlignment="JUSTIFY" />
             <Button mnemonicParsing="false" onAction="#traiterClicTutoriel" prefHeight="50.0" prefWidth="200.0" text="TUTORIEL" textAlignment="JUSTIFY" />
             <Button mnemonicParsing="false" onAction="#traiterClicRegles" prefHeight="50.0" prefWidth="200.0" text="REGLES" textAlignment="JUSTIFY" />
-            <Button mnemonicParsing="false" onAction="#traiterClicScores" prefHeight="50.0" prefWidth="200.0" text="SCORES" textAlignment="JUSTIFY" />
+            <Button mnemonicParsing="false" onAction="#traiterClicScores" prefHeight="50.0" prefWidth="200.0" text="OPTIONS" textAlignment="JUSTIFY" />
             <Button mnemonicParsing="false" onAction="#traiterClicQuitter" prefHeight="50.0" prefWidth="200.0" text="QUITTER" />
          </children>
          <stylesheets>

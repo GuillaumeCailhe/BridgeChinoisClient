@@ -18,7 +18,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="720.0">
                <children>
-                  <AnchorPane fx:id="plateauPane" prefHeight="582.0" prefWidth="679.0">
+                  <AnchorPane fx:id="plateauPane" prefHeight="582.0" prefWidth="781.0" styleClass="fond-plateau">
                      <children>
                         <Label fx:id="nomAdversaireLabel" alignment="BOTTOM_CENTER" layoutY="113.0" prefHeight="17.0" prefWidth="117.0" styleClass="labelNom" text="Adversaire" textAlignment="CENTER">
                            <font>
@@ -38,12 +38,12 @@
                         </AnchorPane>
                      </children></AnchorPane>
                </children></AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="376.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="418.0">
                <children>
-                  <VBox id="chat" layoutX="10.0" layoutY="22.0" prefHeight="562.0" prefWidth="491.0" stylesheets="@Theme.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <VBox id="chat" layoutX="57.0" layoutY="22.0" prefHeight="562.0" prefWidth="444.0" stylesheets="@Theme.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Label prefHeight="39.0" prefWidth="87.0" text="Score :" />
-                        <FlowPane prefHeight="447.0" prefWidth="449.0">
+                        <FlowPane prefHeight="447.0" prefWidth="223.0">
                            <children>
                               <VBox alignment="CENTER" prefHeight="130.0" prefWidth="439.0">
                                  <children>
@@ -55,7 +55,7 @@
                                     </Button>
                                  </children>
                               </VBox>
-                              <TextArea prefHeight="317.0" prefWidth="419.0" />
+                              <TextArea prefHeight="317.0" prefWidth="444.0" />
                            </children>
                         </FlowPane>
                         <FlowPane prefHeight="31.0" prefWidth="287.0">

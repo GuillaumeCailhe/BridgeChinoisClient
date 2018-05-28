@@ -368,8 +368,10 @@ public class Client implements Runnable {
         ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
         int i;
         for (i = 0; i < 6; i++) {
-            if (this.piles.get(i).compareTo(pioche.get(0)) == 0) {
-                break;
+            if (!this.piles.isEmpty()) {
+                if (this.piles.get(i).compareTo(pioche.get(0)) == 0) {
+                    break;
+                }
             }
         }
         Carte carteDecouverte = pioche.get(1);

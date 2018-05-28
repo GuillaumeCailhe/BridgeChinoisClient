@@ -124,11 +124,10 @@ public class PlateauController extends Controller {
      * Met l'image de l'atout à jour.
      */
     public void changerAtout(SymboleCarte symbole) {
-        if (symbole == null) {
-            symbole = SymboleCarte.PIQUE;
+        if (symbole != null) {
+            Image imageAtout = new Image(getClass().getResourceAsStream("../view/ressources/cartes/symbole_" + symbole.toString().toLowerCase() + ".png"));
+            this.atoutImageView.setImage(imageAtout);
         }
-        Image imageAtout = new Image(getClass().getResourceAsStream("../view/ressources/cartes/symbole_" + symbole.toString().toLowerCase() + ".png"));
-        this.atoutImageView.setImage(imageAtout);
     }
 
     private void setLabelJoueurActif() {
@@ -299,7 +298,7 @@ public class PlateauController extends Controller {
     public void piocherCarteAdversaire(int indicePilePiochee) {
         PauseTransition pt = new PauseTransition(Duration.millis(1000));
         SequentialTransition animDistribution = piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
-        
+
         SequentialTransition seqT = new SequentialTransition(pt, animDistribution);
         seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
@@ -307,7 +306,7 @@ public class PlateauController extends Controller {
                 animateur.onPiocherCarteAdversaire();
             }
         });
-        
+
         seqT.play();
     }
 }

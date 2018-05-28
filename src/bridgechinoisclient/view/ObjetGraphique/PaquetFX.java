@@ -78,14 +78,15 @@ public class PaquetFX extends Parent {
     public int getNombreCartes() {
         return cartesFX.size();
     }
-    
-    public int getNombreCartesAffichees(){
-        if(getNombreCartes()<11){
+
+    public int getNombreCartesAffichees() {
+        if (getNombreCartes() < 11) {
             return getNombreCartes();
-        }else{
+        } else {
             return 10;
         }
     }
+
     /**
      * Ajoute une carte dans le paquet.
      *
@@ -268,14 +269,14 @@ public class PaquetFX extends Parent {
      */
     private void ajouterSurbrillance() {
         surbrillance = new Rectangle();
-        int tailleAjouteeX = offsetX*getNombreCartesAffichees();
-        int tailleAjouteeY = offsetX*getNombreCartesAffichees();
-        this.surbrillance.setWidth(67+tailleAjouteeX);
-        this.surbrillance.setHeight(92+tailleAjouteeY);
+        int tailleAjouteeX = offsetX * 6;
+        int tailleAjouteeY = offsetX * 6;
+        this.surbrillance.setWidth(67 + tailleAjouteeX);
+        this.surbrillance.setHeight(92 + tailleAjouteeY);
         this.surbrillance.setFill(Color.rgb(204, 113, 20));
-        this.surbrillance.setTranslateX(positionPaquetX-tailleAjouteeX/2);
-        this.surbrillance.setTranslateY(positionPaquetY-tailleAjouteeY/2);
-        
+        this.surbrillance.setTranslateX(positionPaquetX - tailleAjouteeX / 2);
+        this.surbrillance.setTranslateY(positionPaquetY - tailleAjouteeY / 2);
+
         this.getChildren().add(surbrillance);
         this.surbrillance.setVisible(true);
         this.surbrillance.toBack();
@@ -291,6 +292,9 @@ public class PaquetFX extends Parent {
     }
 
     public SequentialTransition distribuerCarteEtRetrierMainAdversaire() {
+        if(this.cartesFX.isEmpty()){
+            return null;
+        }
         TranslateTransition tt = animationDistributionCarteAdversaire(this.cartesFX.peek().getCarte(), -1);
         ParallelTransition parT = mainAdversaireFX.animationTriCarte(new ArrayList());
         SequentialTransition seqT = new SequentialTransition(tt, parT);

@@ -1,7 +1,7 @@
 /*
-Couleurs
+Charte graphique
 Vert : #40A44D
-
+Orange : #CC7114
 */
 
 #VBox{
@@ -27,6 +27,12 @@ Vert : #40A44D
 .text-field {
     -fx-font-size: 12pt;
     -fx-font-family: "Segoe UI Semibold";
+}
+
+.fond-plateau {
+    -fx-background-image: url("fond.jpg");
+    -fx-background-size: 500 500;
+    -fx-background-repeat: repeat;   
 }
 
 /* 
