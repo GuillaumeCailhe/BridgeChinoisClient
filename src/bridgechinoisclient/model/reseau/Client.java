@@ -95,11 +95,11 @@ public class Client implements Runnable {
 
         for (int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++) {
             initialisationManche();
-            receptionAtout();
             // Attente de la fin d'animation de distribution.
             attendreFinAnimation();
 
             do {
+                receptionAtout();
                 peutJouer = false;
                 peutPiocher = false;
                 tour();
@@ -248,9 +248,6 @@ public class Client implements Runnable {
                 prevenirJouerAdversaire();
                 prevenirJouerJoueur();
                 attendreJoueur();
-                break;
-            default:
-                System.out.println(msg.getCode().toString());
                 break;
         }
     }
