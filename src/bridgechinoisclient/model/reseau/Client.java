@@ -101,7 +101,7 @@ public class Client implements Runnable {
             do {
                 receptionAtout();
                 Platform.runLater(() -> app.getPlateauController().changerAtout());
-                
+
                 tour();
 
                 // Récupération du vainqueur
@@ -330,14 +330,15 @@ public class Client implements Runnable {
         //System.out.println("a - " +msg.getCode());
         ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
         int i = 0;
-        try {
-            for (i = 0; i < 6; i++) {
-                if (this.piles.get(i).compareTo(pioche.get(0)) == 0) {
+        
+        Carte carte = pioche.get(0);
+        for (i = 0; i < 6; i++) {
+            if (!this.piles.isEmpty() && carte != null) {
+                Carte carteCourante = this.piles.get(i);
+                if (carteCourante != null && carteCourante.compareTo(carte) == 0) {
                     break;
                 }
             }
-        } catch (NullPointerException e) {
-            return -1;
         }
 
         Carte carteDecouverte = pioche.get(1);
