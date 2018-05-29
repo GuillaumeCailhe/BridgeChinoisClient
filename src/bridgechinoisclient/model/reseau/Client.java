@@ -37,16 +37,7 @@ public class Client implements Runnable {
 
     private boolean peutJouer;
     private boolean peutPiocher;
-
-    private boolean joueurAJoue = false;
-    private boolean joueurAPioche = false;
-    private boolean adversaireAJoue = false;
-    private boolean adversaireAPioche = false;
-    private boolean joueurARemportePli;
-
-    Carte derniereCarteJoueeAdversaire;
-    int indicePileDerniereCartePiocheeAdversaire;
-    int indiceDerniereCarteDecouverte;
+    private boolean animationsSontTerminees;
 
     private ArrayList<Carte> main;
     private ArrayList<Carte> piles;
@@ -61,6 +52,7 @@ public class Client implements Runnable {
         this.piles = new ArrayList<Carte>();
         this.peutJouer = false;
         this.peutPiocher = false;
+        this.animationsSontTerminees = false;
         //client.close();
     }
 
@@ -92,36 +84,9 @@ public class Client implements Runnable {
         return atout;
     }
 
-    public boolean joueurAJoue() {
-        return joueurAJoue;
-    }
-
-    public boolean joueurAPioche() {
-        return joueurAPioche;
-    }
-
-    public boolean adversaireAJoue() {
-        return adversaireAJoue;
-    }
-
-    public boolean adversaireAPioche() {
-        return adversaireAPioche;
-    }
-
-    public Carte getDerniereCarteJoueeAdversaire() {
-        return derniereCarteJoueeAdversaire;
-    }
-
-    public int getIndicePileDerniereCarteDecouverte() {
-        return indiceDerniereCarteDecouverte;
-    }
-
-    public int getIndicePileDerniereCartePiocheeAdversaire() {
-        return indicePileDerniereCartePiocheeAdversaire;
-    }
-
-    public boolean joueurARemportePli() {
-        return joueurARemportePli;
+    public synchronized void prevenirFinAnimation() {
+        animationsSontTerminees = true;
+        notify();
     }
 
     private void jeu() {
@@ -129,24 +94,20 @@ public class Client implements Runnable {
         Message msg;
 
         for (int mancheActuelle = 1; mancheActuelle <= this.nbManches; mancheActuelle++) {
-
             initialisationManche();
+            receptionAtout();
+            // Attente de la fin d'animation de distribution.
+            attendreFinAnimation();
 
             do {
-                joueurAJoue = false;
-                joueurAPioche = false;
-                adversaireAJoue = false;
-                adversaireAPioche = false;
-
-                receptionAtout();
-
+                peutJouer = false;
+                peutPiocher = false;
                 tour();
 
                 // Récupération du vainqueur
                 recupererResultat();
 
                 piocher();
-
             } while (!main.isEmpty());
 
             // Réception victoire/défaite
@@ -185,10 +146,9 @@ public class Client implements Runnable {
 
         // Attente d'une réponse
         this.attendreMessage();
-
-        Platform.runLater(() -> app.afficherPlateau());
         Message msg = c.getMessageParCode(CodeMessage.PARTIE_DEMARRER);
 
+        Platform.runLater(() -> app.afficherPlateau());
     }
 
     /**
@@ -258,36 +218,39 @@ public class Client implements Runnable {
     /**
      * Met la variable peutJouer à jour et prévient l'application graphique.
      */
-    private void prevenirTourJoueur() {
+    private void prevenirJouerJoueur() {
         peutJouer = true;
-        //Platform.runLater(() -> app.getPlateauController().prevenirTourJoueur());
+        Platform.runLater(() -> app.getPlateauController().prevenirJouerJoueur());
+        attendreFinAnimation();
     }
 
     /**
      * Met la variable peutJouer à jour et prévient l'application graphique.
      */
-    private void prevenirTourAdversaire() {
+    private void prevenirJouerAdversaire() {
         peutJouer = false;
-        //Platform.runLater(() -> app.getPlateauController().prevenirTourAdversaire());
+        Platform.runLater(() -> app.getPlateauController().prevenirJouerAdversaire());
+        recupererCoupAdversaire();
+        attendreFinAnimation();
     }
 
     private void tour() {
         Message msg;
-
         attendreMessage();
         msg = this.c.getPremierMessage();
         switch (msg.getCode()) {
             case TOUR_OK:
-                prevenirTourJoueur();
+                prevenirJouerJoueur();
                 attendreJoueur();
-                prevenirTourAdversaire();
-                recupererCoupAdversaire();
+                prevenirJouerAdversaire();
                 break;
             case TOUR_KO:
-                prevenirTourAdversaire();
-                recupererCoupAdversaire();
-                prevenirTourJoueur();
+                prevenirJouerAdversaire();
+                prevenirJouerJoueur();
                 attendreJoueur();
+                break;
+            default:
+                System.out.println(msg.getCode().toString());
                 break;
         }
     }
@@ -297,7 +260,9 @@ public class Client implements Runnable {
      */
     private void prevenirPiocheJoueur() {
         peutPiocher = true;
-        //Platform.runLater(() -> app.getPlateauController().prevenirPiocheJoueur());
+        Platform.runLater(() -> app.getPlateauController().prevenirPiocheJoueur());
+        attendreFinAnimation();
+        Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
     }
 
     /**
@@ -305,7 +270,10 @@ public class Client implements Runnable {
      */
     private void prevenirPiocheAdversaire() {
         peutPiocher = false;
-        //Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
+        int indicePileCarteDecouverteAdversaire = recupererPiocheAdversaire();
+        Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(indicePileCarteDecouverteAdversaire));
+        attendreFinAnimation();
+        Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteAdversaire, piles.get(indicePileCarteDecouverteAdversaire)));
     }
 
     private void piocher() {
@@ -320,28 +288,20 @@ public class Client implements Runnable {
                 case TOUR_OK:
                     prevenirPiocheJoueur();
                     attendreJoueur();
-                    prevenirPiocheAdversaire();
                     Collections.sort(main);
                     // Permet de révéler la carte retournée
-                    indiceDerniereCarteDecouverte = recupererPiocheAdversaire();
-                    joueurAPioche = true;
-                    // Permet de savoir la carte piochée par l'adversaire et la carte retournée
-                    indicePileDerniereCartePiocheeAdversaire = recupererPiocheAdversaire();
-                    adversaireAPioche = true;
-                    //Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche));
+                    int indicePileCarteDecouverteJoueur = recupererPiocheAdversaire();
+                    Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteJoueur, piles.get(indicePileCarteDecouverteJoueur)));
+                    // Adversaire
+                    prevenirPiocheAdversaire();
                     break;
                 case TOUR_KO:
-                    indicePileDerniereCartePiocheeAdversaire = recupererPiocheAdversaire();
-                    adversaireAPioche = true;
-                    //Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(mode, indicePioche2));
+                    prevenirPiocheAdversaire();
                     attendreMessage();
                     c.getMessageParCode(CodeMessage.TOUR_OK);
                     prevenirPiocheJoueur();
                     attendreJoueur();
-                    prevenirPiocheAdversaire();
                     Collections.sort(main);
-                    indiceDerniereCarteDecouverte = recupererPiocheAdversaire();
-                    joueurAPioche = true;
                     break;
             }
         }
@@ -353,9 +313,7 @@ public class Client implements Runnable {
         attendreMessage();
         msg = c.getMessageParCode(CodeMessage.JOUER_ADVERSAIRE);
         Carte carte = ((ArrayList<Carte>) msg.getDonnees()).get(0);
-        derniereCarteJoueeAdversaire = carte;
-        adversaireAJoue = true;
-        //Platform.runLater(() -> app.getPlateauController().jouerCarteAdversaire(mode, carte));
+        Platform.runLater(() -> app.getPlateauController().jouerCarteAdversaire(carte));
     }
 
     private int recupererPiocheAdversaire() {
@@ -376,7 +334,6 @@ public class Client implements Runnable {
         }
         Carte carteDecouverte = pioche.get(1);
         this.piles.set(i, carteDecouverte);
-        //Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(i, carteDecouverte));
 
         return i;
     }
@@ -387,14 +344,13 @@ public class Client implements Runnable {
         msg = c.getPremierMessage();
         switch (msg.getCode()) {
             case VICTOIRE_PLI:
-                joueurARemportePli = true;
-                //Platform.runLater(() -> app.getPlateauController().comparerCartesPli(true));
+                Platform.runLater(() -> app.getPlateauController().comparerCartesPli(true));
                 break;
             case DEFAITE_PLI:
-                joueurARemportePli = false;
-                //Platform.runLater(() -> app.getPlateauController().comparerCartesPli(false));
+                Platform.runLater(() -> app.getPlateauController().comparerCartesPli(false));
                 break;
         }
+        attendreFinAnimation();
     }
 
     private synchronized void attendreMessage() {
@@ -422,6 +378,21 @@ public class Client implements Runnable {
 
     }
 
+    /**
+     * Attend la fin des animations côté client.
+     */
+    private synchronized void attendreFinAnimation() {
+        this.animationsSontTerminees = false;
+        try {
+            while (!this.animationsSontTerminees) {
+                wait();
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientTextuel.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public synchronized boolean jouer(int i) {
         if (peutJouer) {
             this.c.envoyerEntier(CodeMessage.JOUER, (byte) i);
@@ -430,7 +401,6 @@ public class Client implements Runnable {
             if (msg.getCode() == CodeMessage.JOUER_OK) {
                 main.remove(i);
                 peutJouer = false;
-                joueurAJoue = true;
                 notify();
                 return true;
             } else {
@@ -446,7 +416,6 @@ public class Client implements Runnable {
             this.c.envoyerEntier(CodeMessage.PIOCHER, (byte) i);
             this.main.add(this.piles.get(i));
             attendreMessage();
-            joueurAPioche = true;
             //Message msg = this.c.getPremierMessage();
             peutPiocher = false;
             notify();
@@ -460,7 +429,6 @@ public class Client implements Runnable {
     public void run() {
         try {
             connexion();
-
         } catch (IOException ex) {
             Logger.getLogger(Client.class
                     .getName()).log(Level.SEVERE, null, ex);

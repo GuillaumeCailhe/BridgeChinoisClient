@@ -28,7 +28,7 @@ import javafx.util.Duration;
 public class PaquetFX extends Parent {
 
     /* Pour gérer les événements liées à l'animation. */
-    private Animateur animateur;
+    private PlateauController plateau;
     Rectangle surbrillance;
 
     /* Gestion du paquet*/
@@ -55,8 +55,8 @@ public class PaquetFX extends Parent {
      * @param mainAdversaireFX l'objet graphique qui contiendra la main de
      * l'adversaire.
      */
-    public PaquetFX(int nombreCartes, Animateur animateur, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
-        this.animateur = animateur;
+    public PaquetFX(int nombreCartes, PlateauController plateau, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
+        this.plateau = plateau;
         this.cartesFX = new Stack<>();
         this.positionXTete = positionPaquetX;
         this.positionYTete = positionPaquetY;
@@ -70,8 +70,8 @@ public class PaquetFX extends Parent {
         }
     }
 
-    public PaquetFX(int idPile, int nombreCartes, Animateur animateur, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
-        this(nombreCartes, animateur, positionPaquetX, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+    public PaquetFX(int idPile, int nombreCartes, PlateauController plateau, int positionPaquetX, int positionPaquetY, MainFX mainJoueurFX, MainFX mainAdversaireFX) {
+        this(nombreCartes, plateau, positionPaquetX, positionPaquetY, mainJoueurFX, mainAdversaireFX);
         this.idPile = idPile;
     }
 
@@ -202,8 +202,7 @@ public class PaquetFX extends Parent {
             seqT.getChildren().add(ttAdversaire);
             positionDansLaMain++;
         }
-
-        seqT.play();
+ 
         seqT.setRate(2);
         seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
@@ -211,6 +210,7 @@ public class PaquetFX extends Parent {
                 animationScinderEnPiles(piles);
             }
         });
+        seqT.play();
     }
 
     /**
@@ -224,8 +224,8 @@ public class PaquetFX extends Parent {
         ArrayList<PaquetFX> pilesFX = new ArrayList<>();
         // Création des piles.
         for (int i = 0; i < 6; i++) {
-            int offsetY = (int) (animateur.getPlateau().getPlateauPane().getPrefWidth() / 6);
-            PaquetFX pile = new PaquetFX(i, 5, animateur, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
+            int offsetY = (int) (plateau.getPlateauPane().getPrefWidth() / 6);
+            PaquetFX pile = new PaquetFX(i, 5, plateau, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
             pilesFX.add(pile);
 
             // Animation de déplacement de la pile.
@@ -246,22 +246,23 @@ public class PaquetFX extends Parent {
             parT.getChildren().add(tt);
 
             // On ajoute la pile au plateau.
-            animateur.getPlateau().getPlateauPane().getChildren().add(pile);
+            plateau.getPlateauPane().getChildren().add(pile);
         }
         // Suppression du paquet initial.
-        animateur.getPlateau().getPlateauPane().getChildren().remove(this);
+        plateau.getPlateauPane().getChildren().remove(this);
         parT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                // Découverte des cartes
-                animateur.onDebutDeTour();
+                plateau.prevenirAnimationsTerminees();
+                // Changement de l'atout.
+                plateau.changerAtout();
             }
         });
 
         // Lancement de l'animation.
         parT.play();
         // Enregistrement des piles dans le plateau
-        animateur.getPlateau().setPiles(pilesFX);
+        plateau.setPiles(pilesFX);
     }
 
     /**
@@ -328,16 +329,16 @@ public class PaquetFX extends Parent {
                 tete.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        boolean aPioche = animateur.getPlateau().getApplicationGraphique().getClient().piocher(idPile);
+                        boolean aPioche = plateau.getApplicationGraphique().getClient().piocher(idPile);
                         if (aPioche) {
                             TranslateTransition tt = animationDistributionCarteJoueur(tete.getCarte(), -1);
-                            ParallelTransition parT = mainJoueurFX.animationTriCarte(animateur.getClient().getMain());
+                            ParallelTransition parT = mainJoueurFX.animationTriCarte(plateau.getApplicationGraphique().getClient().getMain());
                             SequentialTransition seqT = new SequentialTransition(tt, parT);
                             seqT.setOnFinished(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent arg0) {
                                     // Découverte des cartes
-                                    animateur.onPiocherCarteJoueur();
+                                    plateau.prevenirAnimationsTerminees();
                                 }
                             });
                             seqT.play();

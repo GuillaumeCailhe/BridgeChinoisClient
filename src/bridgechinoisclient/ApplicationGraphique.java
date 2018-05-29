@@ -1,10 +1,10 @@
 package bridgechinoisclient;
 
+import LibrairieCarte.SymboleCarte;
 import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.controller.Controller;
 import bridgechinoisclient.controller.PlateauController;
 import bridgechinoisclient.model.reseau.Client;
-import bridgechinoisclient.view.ObjetGraphique.Animateur;
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -107,7 +107,7 @@ public class ApplicationGraphique extends Application {
      */
     public void afficherPlateau() {
         this.plateauController = (PlateauController) afficherFenetre("view/Plateau.fxml");
-        Animateur animateur = new Animateur(this.getClient(), plateauController);
+        this.plateauController.initialiser(this.client, this.client.getMain(), this.client.getPiles(), this.client.getPseudo(), this.client.getPseudoAdversaire());
     }
 
     /**

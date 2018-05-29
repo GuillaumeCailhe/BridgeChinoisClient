@@ -29,16 +29,16 @@ import javafx.scene.shape.Rectangle;
  */
 public class MainFX extends Parent {
 
-    private Animateur animateur;
+    private PlateauController plateau;
     private static final int offsetCarteX = 50;
     private ArrayList<CarteFX> cartesFX;
     private Rectangle surbrillance;
     int positionX;
     int positionY;
 
-    public MainFX(Animateur animateur, int positionX, int positionY) {
+    public MainFX(PlateauController plateau, int positionX, int positionY) {
         this.cartesFX = new ArrayList<>();
-        this.animateur = animateur;
+        this.plateau = plateau;
         this.positionX = positionX;
         this.positionY = positionY;
 
@@ -70,7 +70,7 @@ public class MainFX extends Parent {
      */
     public void jouerCarteJoueur(CarteFX carteFXJouee) {
         int positionDansLaMain = this.cartesFX.indexOf(carteFXJouee);
-        boolean aJoue = this.animateur.getClient().jouer(positionDansLaMain);
+        boolean aJoue = this.plateau.getApplicationGraphique().getClient().jouer(positionDansLaMain);
 
         if (aJoue) {
             this.retirerEvenementCartes();
@@ -85,7 +85,8 @@ public class MainFX extends Parent {
                 @Override
                 public void handle(ActionEvent arg0) {
                     cartesFX.remove(carteFXJouee);
-                    animateur.onJouerCarteJoueur(carteFXJouee);
+                    plateau.setCartePliJoueur(carteFXJouee);
+                    plateau.prevenirAnimationsTerminees();
                 }
             });
             tt.play();
@@ -121,7 +122,8 @@ public class MainFX extends Parent {
             @Override
             public void handle(ActionEvent arg0) {
                 cartesFX.remove(carteFXJouee);
-                animateur.onJouerCarteAdversaire(carteFXJouee);
+                plateau.setCartePliAdversaire(carteFXJouee);
+                plateau.prevenirAnimationsTerminees();
             }
         });
 

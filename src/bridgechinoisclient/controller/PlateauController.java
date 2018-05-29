@@ -9,7 +9,6 @@ import LibrairieCarte.Carte;
 import LibrairieCarte.SymboleCarte;
 import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.model.reseau.Client;
-import bridgechinoisclient.view.ObjetGraphique.Animateur;
 import bridgechinoisclient.view.ObjetGraphique.CarteFX;
 import bridgechinoisclient.view.ObjetGraphique.MainFX;
 import bridgechinoisclient.view.ObjetGraphique.PaquetFX;
@@ -37,7 +36,6 @@ import javafx.util.Duration;
  */
 public class PlateauController extends Controller {
 
-    Animateur animateur;
     private MainFX mainJoueurFX;
     private MainFX mainAdversaireFX;
     private CarteFX cartePliJoueur;
@@ -45,6 +43,7 @@ public class PlateauController extends Controller {
     private PaquetFX paquetPliJoueur;
     private PaquetFX paquetPliAdversaire;
     private ArrayList<PaquetFX> piles;
+    private Client client;
 
     @FXML
     private AnchorPane plateauPane;
@@ -67,6 +66,10 @@ public class PlateauController extends Controller {
         return plateauPane;
     }
 
+    public synchronized void prevenirAnimationsTerminees() {
+        this.client.prevenirFinAnimation();
+    }
+
     public void setCartePliJoueur(CarteFX cartePliJoueur) {
         this.cartePliJoueur = cartePliJoueur;
     }
@@ -79,8 +82,9 @@ public class PlateauController extends Controller {
         this.piles = piles;
     }
 
-    public void initialiser(Animateur animateur, ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
-        this.animateur = animateur;
+    public void initialiser(Client client, ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
+        this.client = client;
+        
         // On affiche les noms des joueurs.
         nomJoueurLabel.setText(nomJoueur);
         nomAdversaireLabel.setText(nomAdversaire);
@@ -90,22 +94,22 @@ public class PlateauController extends Controller {
         int hauteurPlateauPane = (int) (plateauPane.getPrefHeight());
 
         // On initialise un objet graphique MainJoueur.
-        this.mainAdversaireFX = new MainFX(animateur, 30, 0);
-        this.mainJoueurFX = new MainFX(animateur, 30, hauteurPlateauPane - 85);
+        this.mainAdversaireFX = new MainFX(this, 30, 0);
+        this.mainJoueurFX = new MainFX(this, 30, hauteurPlateauPane - 85);
 
         // On initialise les piles de pli.
-        this.paquetPliJoueur = new PaquetFX(0, animateur, largeurPlateauPane - 60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
-        this.paquetPliAdversaire = new PaquetFX(0, animateur, largeurPlateauPane - 60, 0, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliJoueur = new PaquetFX(0, this, largeurPlateauPane - 60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliAdversaire = new PaquetFX(0, this, largeurPlateauPane - 60, 0, mainJoueurFX, mainAdversaireFX);
 
         // On initialise le paquet de carte.
-        PaquetFX paquetFX = new PaquetFX(52, animateur, largeurPlateauPane / 2, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
+        PaquetFX paquetFX = new PaquetFX(52, this, largeurPlateauPane / 2, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
 
         // On ajoute les mains au plateau.
         this.plateauPane.getChildren().add(mainAdversaireFX);
         this.plateauPane.getChildren().add(mainJoueurFX);
         this.plateauPane.getChildren().add(paquetFX);
         this.plateauPane.getChildren().add(paquetPliJoueur);
-        this.plateauPane.getChildren().add(paquetPliAdversaire);
+        this.plateauPane.getChildren().add(paquetPliAdversaire);      
         paquetFX.animationDistributionInitiale(mainJoueur, piles);
     }
 
@@ -123,7 +127,8 @@ public class PlateauController extends Controller {
     /**
      * Met l'image de l'atout à jour.
      */
-    public void changerAtout(SymboleCarte symbole) {
+    public void changerAtout() {
+        SymboleCarte symbole = client.getAtout();
         if (symbole != null) {
             Image imageAtout = new Image(getClass().getResourceAsStream("../view/ressources/cartes/symbole_" + symbole.toString().toLowerCase() + ".png"));
             this.atoutImageView.setImage(imageAtout);
@@ -235,7 +240,7 @@ public class PlateauController extends Controller {
                         carteASupprimer2.setVisible(false);
                         paquet.ajouterCarte(null);
                         paquet.ajouterCarte(null);
-                        animateur.onComparaisonDePlis();
+                        prevenirAnimationsTerminees();
                     }
                 });
             }
@@ -303,7 +308,7 @@ public class PlateauController extends Controller {
         seqT.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                animateur.onPiocherCarteAdversaire();
+                prevenirAnimationsTerminees();
             }
         });
 
