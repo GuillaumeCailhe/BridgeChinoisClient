@@ -84,7 +84,7 @@ public class PlateauController extends Controller {
 
     public void initialiser(Client client, ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         this.client = client;
-        
+
         // On affiche les noms des joueurs.
         nomJoueurLabel.setText(nomJoueur);
         nomAdversaireLabel.setText(nomAdversaire);
@@ -109,7 +109,7 @@ public class PlateauController extends Controller {
         this.plateauPane.getChildren().add(mainJoueurFX);
         this.plateauPane.getChildren().add(paquetFX);
         this.plateauPane.getChildren().add(paquetPliJoueur);
-        this.plateauPane.getChildren().add(paquetPliAdversaire);      
+        this.plateauPane.getChildren().add(paquetPliAdversaire);
         paquetFX.animationDistributionInitiale(mainJoueur, piles);
     }
 
@@ -266,6 +266,10 @@ public class PlateauController extends Controller {
      */
     public void prevenirPiocheAdversaire() {
         setLabelJoueurInactif();
+        retirerEvenementsPaquets();
+    }
+
+    public void retirerEvenementsPaquets() {
         Iterator<PaquetFX> it = this.piles.iterator();
         while (it.hasNext()) {
             it.next().retirerEvenementsPioche();
@@ -301,7 +305,6 @@ public class PlateauController extends Controller {
      * @param indicePilePiochee l'indice de la pile que l'adversaire a choisi.
      */
     public void piocherCarteAdversaire(int indicePilePiochee) {
-        System.out.println(indicePilePiochee);
         PauseTransition pt = new PauseTransition(Duration.millis(1000));
         SequentialTransition animDistribution = piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
 
@@ -314,5 +317,24 @@ public class PlateauController extends Controller {
         });
 
         seqT.play();
+    }
+
+    /**
+     * Vérifie si les piles sont vides ou non.
+     *
+     * @return vrai si les piles sont vides.
+     */
+    public boolean pilesSontVides() {
+        Iterator<PaquetFX> it = this.piles.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            int nombreCartes = it.next().getNombreCartes();
+            System.out.println("Pile numéro " + i + " contient " + nombreCartes);
+            if (nombreCartes != 0) {
+                return false;
+            }
+            i++;
+        }
+        return true;
     }
 }

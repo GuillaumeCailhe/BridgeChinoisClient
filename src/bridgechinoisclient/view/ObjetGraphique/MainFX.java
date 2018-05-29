@@ -87,6 +87,7 @@ public class MainFX extends Parent {
                     cartesFX.remove(carteFXJouee);
                     plateau.setCartePliJoueur(carteFXJouee);
                     plateau.prevenirAnimationsTerminees();
+                    retrierCarte();
                 }
             });
             tt.play();
@@ -124,6 +125,7 @@ public class MainFX extends Parent {
                 cartesFX.remove(carteFXJouee);
                 plateau.setCartePliAdversaire(carteFXJouee);
                 plateau.prevenirAnimationsTerminees();
+                retrierCarte();
             }
         });
 
@@ -144,7 +146,7 @@ public class MainFX extends Parent {
 
     public void ajouterSurbrillance() {
         this.surbrillance = new Rectangle();
-        this.surbrillance.setWidth(52*cartesFX.size());
+        this.surbrillance.setWidth(52 * cartesFX.size());
         this.surbrillance.setHeight(100);
         this.surbrillance.setTranslateX(-5);
         this.surbrillance.setTranslateY(-5);
@@ -206,6 +208,18 @@ public class MainFX extends Parent {
             carteFX.setOnMouseExited(null);
             carteFX.setOnMouseClicked(null);
         }
+    }
+
+    /**
+     * Retrie les cartes de la main courante.
+     */
+    public void retrierCarte() {
+        ArrayList<Carte> cartes = new ArrayList<>();
+        Iterator<CarteFX> it = cartesFX.iterator();
+        while (it.hasNext()) {
+            cartes.add(it.next().getCarte());
+        }
+        animationTriCarte(cartes).play();
     }
 
     /**

@@ -299,7 +299,7 @@ public class PaquetFX extends Parent {
         SequentialTransition seqT = new SequentialTransition(tt, parT);
         return seqT;
     }
-
+     
     /**
      * Ajoute les événements de souris sur le paquet.
      */

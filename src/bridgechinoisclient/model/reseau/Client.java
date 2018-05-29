@@ -99,9 +99,12 @@ public class Client implements Runnable {
             attendreFinAnimation();
 
             do {
+                // Mise à jour de l'atout.
                 receptionAtout();
                 Platform.runLater(() -> app.getPlateauController().changerAtout());
-
+                // On retire tous les événements
+                Platform.runLater(() -> app.getPlateauController().getMainJoueurFX().retirerEvenementCartes());
+                Platform.runLater(() -> app.getPlateauController().retirerEvenementsPaquets());
                 tour();
 
                 // Récupération du vainqueur
@@ -261,8 +264,6 @@ public class Client implements Runnable {
     private void prevenirPiocheJoueur() {
         peutPiocher = true;
         Platform.runLater(() -> app.getPlateauController().prevenirPiocheJoueur());
-        attendreFinAnimation();
-        Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
     }
 
     /**
@@ -270,10 +271,7 @@ public class Client implements Runnable {
      */
     private void prevenirPiocheAdversaire() {
         peutPiocher = false;
-        int indicePileCarteDecouverteAdversaire = recupererPiocheAdversaire();
-        Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(indicePileCarteDecouverteAdversaire));
-        attendreFinAnimation();
-        Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteAdversaire, piles.get(indicePileCarteDecouverteAdversaire)));
+        Platform.runLater(() -> app.getPlateauController().prevenirPiocheAdversaire());
     }
 
     private void piocher() {
@@ -285,22 +283,40 @@ public class Client implements Runnable {
             msg = this.c.getPremierMessage();
             switch (msg.getCode()) {
                 case TOUR_OK:
+                    // Tour du joueur.
                     prevenirPiocheJoueur();
                     attendreJoueur();
                     Collections.sort(main);
+                    attendreFinAnimation();
+                    
                     // Permet de révéler la carte retournée
                     int indicePileCarteDecouverteJoueur = recupererPiocheAdversaire();
                     Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteJoueur, piles.get(indicePileCarteDecouverteJoueur)));
-                    // Adversaire
+
+                    // Tour de l'adversaire
                     prevenirPiocheAdversaire();
+                    // Adversaire
+                    int indicePileCarteDecouverteAdversaire = recupererPiocheAdversaire();
+                    Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(indicePileCarteDecouverteAdversaire));
+                    attendreFinAnimation();
+                    Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteAdversaire, piles.get(indicePileCarteDecouverteAdversaire)));
                     break;
                 case TOUR_KO:
                     prevenirPiocheAdversaire();
+                    int indicePileCarteDecouverteAdversaire2 = recupererPiocheAdversaire();
+                    Platform.runLater(() -> app.getPlateauController().piocherCarteAdversaire(indicePileCarteDecouverteAdversaire2));
+                    attendreFinAnimation();
+                    Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteAdversaire2, piles.get(indicePileCarteDecouverteAdversaire2)));
+                    
+                    
                     attendreMessage();
                     c.getMessageParCode(CodeMessage.TOUR_OK);
+                    
                     prevenirPiocheJoueur();
                     attendreJoueur();
                     Collections.sort(main);
+                    attendreFinAnimation();
+                    
                     // Permet de révéler la carte retournée
                     int indicePileCarteDecouverteJoueur2 = recupererPiocheAdversaire();
                     Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteJoueur2, piles.get(indicePileCarteDecouverteJoueur2)));
@@ -330,7 +346,7 @@ public class Client implements Runnable {
         //System.out.println("a - " +msg.getCode());
         ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
         int i = 0;
-        
+
         Carte carte = pioche.get(0);
         for (i = 0; i < 6; i++) {
             if (!this.piles.isEmpty() && carte != null) {
