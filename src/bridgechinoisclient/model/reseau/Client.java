@@ -100,8 +100,6 @@ public class Client implements Runnable {
 
             do {
                 receptionAtout();
-                peutJouer = false;
-                peutPiocher = false;
                 tour();
 
                 // Récupération du vainqueur
@@ -249,6 +247,9 @@ public class Client implements Runnable {
                 prevenirJouerJoueur();
                 attendreJoueur();
                 break;
+            default:
+                System.out.println(msg.getCode().toString());
+                break;
         }
     }
 
@@ -299,6 +300,9 @@ public class Client implements Runnable {
                     prevenirPiocheJoueur();
                     attendreJoueur();
                     Collections.sort(main);
+                    // Permet de révéler la carte retournée
+                    int indicePileCarteDecouverteJoueur2 = recupererPiocheAdversaire();
+                    Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteJoueur2, piles.get(indicePileCarteDecouverteJoueur2)));
                     break;
             }
         }
