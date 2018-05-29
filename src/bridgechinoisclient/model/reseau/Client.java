@@ -100,6 +100,8 @@ public class Client implements Runnable {
 
             do {
                 receptionAtout();
+                Platform.runLater(() -> app.getPlateauController().changerAtout());
+                
                 tour();
 
                 // Récupération du vainqueur
@@ -303,6 +305,9 @@ public class Client implements Runnable {
                     int indicePileCarteDecouverteJoueur2 = recupererPiocheAdversaire();
                     Platform.runLater(() -> app.getPlateauController().decouvrirCartePile(indicePileCarteDecouverteJoueur2, piles.get(indicePileCarteDecouverteJoueur2)));
                     break;
+                default:
+                    System.out.println(msg.getCode().toString());
+                    break;
             }
         }
     }
@@ -324,14 +329,17 @@ public class Client implements Runnable {
         //msg = c.getPremierMessage();
         //System.out.println("a - " +msg.getCode());
         ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
-        int i;
-        for (i = 0; i < 6; i++) {
-            if (!this.piles.isEmpty() && !pioche.isEmpty()) {
+        int i = 0;
+        try {
+            for (i = 0; i < 6; i++) {
                 if (this.piles.get(i).compareTo(pioche.get(0)) == 0) {
                     break;
                 }
             }
+        } catch (NullPointerException e) {
+            return -1;
         }
+
         Carte carteDecouverte = pioche.get(1);
         this.piles.set(i, carteDecouverte);
 

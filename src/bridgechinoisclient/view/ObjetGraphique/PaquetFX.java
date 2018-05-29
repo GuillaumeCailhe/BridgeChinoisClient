@@ -254,8 +254,6 @@ public class PaquetFX extends Parent {
             @Override
             public void handle(ActionEvent arg0) {
                 plateau.prevenirAnimationsTerminees();
-                // Changement de l'atout.
-                plateau.changerAtout();
             }
         });
 

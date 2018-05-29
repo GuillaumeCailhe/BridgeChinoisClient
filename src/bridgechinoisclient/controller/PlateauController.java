@@ -301,6 +301,7 @@ public class PlateauController extends Controller {
      * @param indicePilePiochee l'indice de la pile que l'adversaire a choisi.
      */
     public void piocherCarteAdversaire(int indicePilePiochee) {
+        System.out.println(indicePilePiochee);
         PauseTransition pt = new PauseTransition(Duration.millis(1000));
         SequentialTransition animDistribution = piles.get(indicePilePiochee).distribuerCarteEtRetrierMainAdversaire();
 
