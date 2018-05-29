@@ -276,7 +276,6 @@ public class Client implements Runnable {
 
     private void piocher() {
         Message msg;
-
         attendreMessage();
         msg = this.c.getPremierMessage();
         if (msg.getCode() == CodeMessage.PIOCHER_OK) {
@@ -327,7 +326,7 @@ public class Client implements Runnable {
         ArrayList<Carte> pioche = (ArrayList<Carte>) msg.getDonnees();
         int i;
         for (i = 0; i < 6; i++) {
-            if (!this.piles.isEmpty()) {
+            if (!this.piles.isEmpty() && !pioche.isEmpty()) {
                 if (this.piles.get(i).compareTo(pioche.get(0)) == 0) {
                     break;
                 }
