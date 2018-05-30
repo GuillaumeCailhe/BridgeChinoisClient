@@ -98,8 +98,8 @@ public class PlateauController extends Controller {
         this.mainJoueurFX = new MainFX(this, 30, hauteurPlateauPane - 85);
 
         // On initialise les piles de pli.
-        this.paquetPliJoueur = new PaquetFX(0, this, largeurPlateauPane - 60, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
-        this.paquetPliAdversaire = new PaquetFX(0, this, largeurPlateauPane - 60, 0, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliJoueur = new PaquetFX(0, this, 600, hauteurPlateauPane - 90, mainJoueurFX, mainAdversaireFX);
+        this.paquetPliAdversaire = new PaquetFX(0, this, 600, 0, mainJoueurFX, mainAdversaireFX);
 
         // On initialise le paquet de carte.
         PaquetFX paquetFX = new PaquetFX(52, this, largeurPlateauPane / 2, hauteurPlateauPane / 2 - 65, mainJoueurFX, mainAdversaireFX);
@@ -186,7 +186,7 @@ public class PlateauController extends Controller {
                 // On cherche qui a gagné le pli.
                 CarteFX carteGagnante = cartePliAdversaire;
                 CarteFX cartePerdante = cartePliJoueur;
-                int deplacementY = -227;
+                int deplacementY = -250;
                 PaquetFX paquetDesPlisGagnant = paquetPliAdversaire;
                 int posXPaquetDesPlis = 350;
                 int posYPaquetDesPlis = -120;
@@ -194,7 +194,7 @@ public class PlateauController extends Controller {
                 if (estVictorieux) {
                     carteGagnante = cartePliJoueur;
                     cartePerdante = cartePliAdversaire;
-                    deplacementY = 227;
+                    deplacementY = 250;
                     paquetDesPlisGagnant = paquetPliJoueur;
                     posYPaquetDesPlis = 150;
                 }

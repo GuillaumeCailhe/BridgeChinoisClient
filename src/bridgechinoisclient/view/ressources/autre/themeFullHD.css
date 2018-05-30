@@ -1,0 +1,96 @@
+/*
+Charte graphique
+Vert : #40A44D
+Orange : #CC7114
+Rouge foncé : 691E31
+Rouge clair : #B23450
+*/
+
+.menu{
+    -fx-background-color: #1d1d1d;
+    -fx-border-color: #ffd700;
+    -fx-border-width: 5;
+}
+
+.fond-plateau {
+    -fx-background-image: url("fond.jpg");
+    -fx-background-size: 500 500;
+    -fx-background-repeat: repeat;   
+}
+
+.button {
+    -fx-padding: 5 22 5 22;   
+    -fx-border-color: #1d1d1d;
+    -fx-border-width: 2;
+    -fx-background-radius: 0;
+    -fx-background-color: #691E31;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 16pt;
+    -fx-text-fill: white;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}
+
+.label{
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 16pt;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-background-color: #B23450;
+    -fx-text-fill: black;
+}
+
+.button:pressed, .button:default:hover:pressed {
+    -fx-background-color: #691E31;
+    -fx-text-fill: white;
+}
+
+.button:focused {
+    -fx-border-color: white, white;
+    -fx-border-width: 1, 1;
+    -fx-border-style: solid, segments(1, 1);
+    -fx-border-radius: 0, 0;
+    -fx-border-insets: 1 1 1 1, 0;
+}
+
+.button:disabled, .button:default:disabled {
+    -fx-opacity: 0.4;
+    -fx-background-color: #1d1d1d;
+    -fx-text-fill: white;
+}
+
+.bandeau {
+    -fx-background-color: #691E31;
+    -fx-border-color: #ffd700;
+    -fx-border-width: 0 5 0 5;
+}
+
+.labelNom{
+    -fx-background-color: #691E31;
+    -fx-font-size: 14pt;
+    -fx-text-fill: white;
+    -fx-border-color: black;
+    -fx-border-width: 1;
+}
+
+.labelNomTourJoueur{
+    -fx-background-color: #B23450;
+    -fx-font-size: 14pt;
+    -fx-text-fill: white;
+    -fx-border-color: #ffd700;
+    -fx-border-width: 1;
+}
+
+.labelAtout{
+    -fx-text-fill: white;
+    -fx-font-size: 14pt;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 1 0;
+}
+
+.chat{
+    -fx-background-color: white;
+}
+
+

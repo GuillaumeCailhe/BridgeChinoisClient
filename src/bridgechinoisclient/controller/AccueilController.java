@@ -62,8 +62,8 @@ public class AccueilController extends Controller {
      * Affiche la fenêtre scores lors du clic sur le bouton.
      */
     @FXML
-    private void traiterClicScores() {
-        this.getApplicationGraphique().afficherScore();
+    private void traiterClicsOptions() {
+        this.getApplicationGraphique().afficherOptions();
     }
 
     /**

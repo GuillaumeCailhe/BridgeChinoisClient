@@ -6,6 +6,7 @@ import bridgechinoisclient.controller.Controller;
 import bridgechinoisclient.controller.PlateauController;
 import bridgechinoisclient.model.reseau.Client;
 import java.io.IOException;
+import java.util.Random;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -78,7 +79,7 @@ public class ApplicationGraphique extends Application {
      * Affiche le choix du mode IA
      */
     public void afficherModeIA() {
-        afficherFenetre("view/ModeIA.fxml");
+        afficherFenetre("view/Mode_IA.fxml");
     }
 
     /**
@@ -98,7 +99,7 @@ public class ApplicationGraphique extends Application {
     /**
      * Affiche le score
      */
-    public void afficherScore() {
+    public void afficherOptions() {
 
     }
 
@@ -119,7 +120,9 @@ public class ApplicationGraphique extends Application {
 
     public void connexionServeur(ModeDeJeu modeDeJeu) {
         try {
-            this.client = new Client("Guillaume", modeDeJeu, 3, this);
+            Random rand = new Random();
+            int randomNum = rand.nextInt((10000) + 1);
+            this.client = new Client("Joueur"+randomNum, modeDeJeu, 3, this);
             Thread thread = new Thread(this.client);
             thread.setDaemon(true);
             thread.start();

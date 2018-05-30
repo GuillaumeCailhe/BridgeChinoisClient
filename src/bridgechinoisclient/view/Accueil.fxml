@@ -1,24 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" stylesheets="@ressources/autre/Theme.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.AccueilController">
+<AnchorPane id="AnchorPane" maxHeight="768.0" maxWidth="1366.0" prefHeight="768.0" prefWidth="1366.0" styleClass="fond-plateau" stylesheets="@ressources/autre/themeFullHD.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bridgechinoisclient.controller.AccueilController">
    <children>
-      <VBox id="VBox" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="600.0" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+      <VBox alignment="CENTER" layoutX="440.0" layoutY="229.0" maxHeight="800.0" minHeight="300.0" minWidth="400.0" prefHeight="690.0" prefWidth="486.0" spacing="20.0" styleClass="menu" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="440.0" AnchorPane.topAnchor="229.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#traiterClicMultijoueur" prefHeight="50.0" prefWidth="200.0" text="MULTI-JOUEURS" textAlignment="JUSTIFY" />
-            <Button mnemonicParsing="false" onAction="#traiterClicIA" prefHeight="50.0" prefWidth="200.0" text="JOUEUR VS IA" textAlignment="JUSTIFY" />
-            <Button mnemonicParsing="false" onAction="#traiterClicTutoriel" prefHeight="50.0" prefWidth="200.0" text="TUTORIEL" textAlignment="JUSTIFY" />
-            <Button mnemonicParsing="false" onAction="#traiterClicRegles" prefHeight="50.0" prefWidth="200.0" text="REGLES" textAlignment="JUSTIFY" />
-            <Button mnemonicParsing="false" onAction="#traiterClicScores" prefHeight="50.0" prefWidth="200.0" text="OPTIONS" textAlignment="JUSTIFY" />
-            <Button mnemonicParsing="false" onAction="#traiterClicQuitter" prefHeight="50.0" prefWidth="200.0" text="QUITTER" />
+            <Button mnemonicParsing="false" onAction="#traiterClicMultijoueur" prefHeight="92.0" prefWidth="541.0" text="MULTI-JOUEURS" />
+            <Button mnemonicParsing="false" onAction="#traiterClicIA" prefHeight="92.0" prefWidth="541.0" text="CONTRE L'IA" />
+            <Button mnemonicParsing="false" onAction="#traiterClicTutoriel" prefHeight="92.0" prefWidth="541.0" text="TUTORIEL" />
+            <Button mnemonicParsing="false" onAction="#traiterClicRegles" prefHeight="92.0" prefWidth="541.0" text="REGLES" />
+            <Button mnemonicParsing="false" onAction="#traiterClicsOptions" prefHeight="92.0" prefWidth="541.0" text="OPTIONS" />
+            <Button mnemonicParsing="false" onAction="#traiterClicQuitter" prefHeight="92.0" prefWidth="541.0" text="QUITTER" />
          </children>
-         <stylesheets>
-            <URL value="@Theme.css" />
-         </stylesheets>
       </VBox>
+      <ImageView fitHeight="182.0" fitWidth="308.0" layoutX="529.0" layoutY="31.0" pickOnBounds="true" AnchorPane.leftAnchor="529.0" AnchorPane.rightAnchor="529.0">
+         <image>
+            <Image url="@ressources/autre/bridgechinois.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="218.0" prefHeight="0.0" prefWidth="0.0" styleClass="bandeau" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="156.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox layoutX="10.0" spacing="75.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_pique.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_coeur.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_carreau.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_trèfle.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_pique.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_coeur.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_carreau.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_trèfle.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="21.0" right="10.0" top="20.0" />
+               </padding>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="1113.0" prefHeight="1080.0" prefWidth="97.0" styleClass="bandeau" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="156.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox layoutX="-1.0" spacing="75.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_pique.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_coeur.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_carreau.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_trèfle.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_pique.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_coeur.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_carreau.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ressources/cartes/symbole_trèfle.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="21.0" right="10.0" top="20.0" />
+               </padding>
+            </VBox>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
