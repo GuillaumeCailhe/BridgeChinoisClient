@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
 import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -224,14 +225,14 @@ public class PaquetFX extends Parent {
         ArrayList<PaquetFX> pilesFX = new ArrayList<>();
         // Création des piles.
         for (int i = 0; i < 6; i++) {
-            int offsetY = (int) (plateau.getPlateauPane().getPrefWidth() / 6);
+            int offsetY = (int) (100);
             PaquetFX pile = new PaquetFX(i, 5, plateau, 0, positionPaquetY, mainJoueurFX, mainAdversaireFX);
             pilesFX.add(pile);
 
             // Animation de déplacement de la pile.
             TranslateTransition tt = new TranslateTransition(Duration.millis(1000), pile);
             tt.setFromX(positionPaquetX);
-            tt.setToX((i * offsetY) + 130);
+            tt.setToX((i * offsetY)+130);
 
             int j = i;
             tt.setOnFinished(new EventHandler<ActionEvent>() {
