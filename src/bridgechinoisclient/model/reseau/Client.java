@@ -426,7 +426,6 @@ public class Client implements Runnable {
     }
 
     public synchronized boolean jouer(int i) {
-        System.out.println(i);
         if (peutJouer) {
             this.c.envoyerEntier(CodeMessage.JOUER, (byte) i);
             attendreMessage();
