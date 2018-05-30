@@ -25,7 +25,7 @@ Rouge clair : #B23450
     -fx-background-radius: 0;
     -fx-background-color: #691E31;
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-    -fx-font-size: 16pt;
+    -fx-font-size: 14pt;
     -fx-text-fill: white;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
 }
@@ -68,7 +68,7 @@ Rouge clair : #B23450
 
 .labelNom{
     -fx-background-color: #691E31;
-    -fx-font-size: 14pt;
+    -fx-font-size: 12pt;
     -fx-text-fill: white;
     -fx-border-color: black;
     -fx-border-width: 1;
@@ -76,7 +76,7 @@ Rouge clair : #B23450
 
 .labelNomTourJoueur{
     -fx-background-color: #B23450;
-    -fx-font-size: 14pt;
+    -fx-font-size: 12pt;
     -fx-text-fill: white;
     -fx-border-color: #ffd700;
     -fx-border-width: 1;
@@ -84,7 +84,7 @@ Rouge clair : #B23450
 
 .labelAtout{
     -fx-text-fill: white;
-    -fx-font-size: 14pt;
+    -fx-font-size: 12pt;
     -fx-border-color: black;
     -fx-border-width: 0 0 1 0;
 }

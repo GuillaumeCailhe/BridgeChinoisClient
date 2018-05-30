@@ -81,17 +81,32 @@ public class PlateauController extends Controller {
     public void setPiles(ArrayList<PaquetFX> piles) {
         this.piles = piles;
     }
-    
+
     @FXML
-    private void traiterClicRegles(){
+    private void traiterClicRegles() {
         this.getApplicationGraphique().afficherRegles();
     }
-    
+
     @FXML
-    private void traiterClicAbandonner(){
+    private void traiterClicAbandonner() {
         this.getApplicationGraphique().afficherPopupAbandon();
     }
-    
+
+    @FXML
+    private void traiterClicEnvoyer() {
+        System.out.println("Fonctionnalité non implémentée.");
+    }
+
+    @FXML
+    private void traiterClicAnnuler() {
+        System.out.println("Fonctionnalité non implémentée.");
+    }
+
+    @FXML
+    private void traiterClicSauvegarder() {
+        System.out.println("Fonctionnalité non implémentée.");
+    }
+
     public void initialiser(Client client, ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         this.client = client;
 
