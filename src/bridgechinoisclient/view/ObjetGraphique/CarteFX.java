@@ -64,6 +64,7 @@ public class CarteFX extends Parent {
             return "../ressources/cartes/back-navy.png";
         } else {
             String nom = carte.getValeur() + "_" + carte.getSymbole();
+            nom = nom.toLowerCase();
             return "../ressources/cartes/" + nom + ".png";
         }
     }
