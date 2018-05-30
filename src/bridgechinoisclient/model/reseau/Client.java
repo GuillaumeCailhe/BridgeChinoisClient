@@ -137,7 +137,10 @@ public class Client implements Runnable {
      */
     private void connexion() throws IOException {
         // Connexion au serveur
-        Socket client = new Socket("localhost", 31000);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Ip serveur :");
+        String ip = sc.nextLine();
+        Socket client = new Socket(ip, 31000);
         this.c = new Communication(client);
         this.c.addNotifie(this);
         Thread t = new Thread(c);
