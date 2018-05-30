@@ -117,13 +117,13 @@ public class Client implements Runnable {
             msg = c.getPremierMessage();
             switch(msg.getCode()){
                 case VICTOIRE_MANCHE:
-                    System.out.println("VICTOIRE !");
+                    Platform.runLater(() -> app.afficherMessageVictoire("Félicitations, vous avez gagné !"));
                     break;
                 case EGALITE_MANCHE:
-                    System.out.println("Egalité.");
+                    Platform.runLater(() -> app.afficherMessageVictoire("Match nul."));
                     break;
                 case DEFAITE_MANCHE:
-                    System.out.println("Defaite...");
+                    Platform.runLater(() -> app.afficherMessageVictoire("Dommage, vous avez perdu."));
                     break;
             }
         }

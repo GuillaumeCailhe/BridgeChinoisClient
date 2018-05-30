@@ -4,6 +4,7 @@ import LibrairieCarte.SymboleCarte;
 import LibrairieMoteur.ModeDeJeu;
 import bridgechinoisclient.controller.Controller;
 import bridgechinoisclient.controller.PlateauController;
+import bridgechinoisclient.controller.VictoireController;
 import bridgechinoisclient.model.reseau.Client;
 import java.io.IOException;
 import java.util.Random;
@@ -63,7 +64,7 @@ public class ApplicationGraphique extends Application {
         return null;
     }
 
-    private void afficherPopup(String viewPath, Modality modality) {
+    private Controller afficherPopup(String viewPath, Modality modality) {
         final Stage dialog = new Stage();
         dialog.initModality(modality);
         dialog.initOwner(primaryStage);
@@ -82,9 +83,12 @@ public class ApplicationGraphique extends Application {
 
             dialog.setScene(scene);
             dialog.show();
+            
+            return controller;
         } catch (IOException ex) {
             Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     /**
@@ -129,9 +133,14 @@ public class ApplicationGraphique extends Application {
     public void afficherOptions() {
         System.out.println("Fonctionnalité non implémentée.");
     }
-    
-    public void afficherPopupAbandon(){
+
+    public void afficherPopupAbandon() {
         afficherPopup("view/Popup_Abandon.FXML", Modality.APPLICATION_MODAL);
+    }
+
+    public void afficherMessageVictoire(String messageVictoire) {
+        VictoireController vc = (VictoireController) afficherPopup("view/Victoire.FXML", Modality.APPLICATION_MODAL);
+        vc.setMessageVictoire(messageVictoire);
     }
 
     /**
