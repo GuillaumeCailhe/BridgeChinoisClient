@@ -7,6 +7,8 @@ import bridgechinoisclient.controller.PlateauController;
 import bridgechinoisclient.model.reseau.Client;
 import java.io.IOException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ApplicationGraphique extends Application {
@@ -93,7 +96,27 @@ public class ApplicationGraphique extends Application {
      * Affiche les règles
      */
     public void afficherRegles() {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
 
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(ApplicationGraphique.class.getResource("view/Regles.fxml"));
+        AnchorPane menu;
+        try {
+            menu = (AnchorPane) loader.load();
+            // On charge la scène
+            Scene scene = new Scene(menu);
+            dialog.setScene(scene);
+
+            Controller controller = loader.getController();
+            controller.setMainApp(this);
+            
+            dialog.setScene(scene);
+            dialog.show();
+        } catch (IOException ex) {
+            Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -122,7 +145,7 @@ public class ApplicationGraphique extends Application {
         try {
             Random rand = new Random();
             int randomNum = rand.nextInt((10000) + 1);
-            this.client = new Client("Joueur"+randomNum, modeDeJeu, 3, this);
+            this.client = new Client("Joueur" + randomNum, modeDeJeu, 3, this);
             Thread thread = new Thread(this.client);
             thread.setDaemon(true);
             thread.start();

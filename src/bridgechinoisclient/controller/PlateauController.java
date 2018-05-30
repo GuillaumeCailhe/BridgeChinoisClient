@@ -81,7 +81,12 @@ public class PlateauController extends Controller {
     public void setPiles(ArrayList<PaquetFX> piles) {
         this.piles = piles;
     }
-
+    
+    @FXML
+    private void traiterClicRegles(){
+        this.getApplicationGraphique().afficherRegles();
+    }
+    
     public void initialiser(Client client, ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         this.client = client;
 

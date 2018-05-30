@@ -93,4 +93,8 @@ Rouge clair : #B23450
     -fx-background-color: white;
 }
 
-
+.label-accordion{
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 12pt;
+    -fx-text-fill: black;
+}

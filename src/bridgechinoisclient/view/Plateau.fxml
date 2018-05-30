@@ -39,11 +39,11 @@
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="418.0" styleClass="menu">
                <children>
-                  <VBox id="chat" layoutX="57.0" layoutY="22.0" prefHeight="562.0" prefWidth="444.0" stylesheets="@Theme.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <VBox id="chat" layoutX="57.0" layoutY="22.0" prefHeight="562.0" prefWidth="444.0" spacing="10.0" stylesheets="@Theme.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
                            <children>
-                              <Button mnemonicParsing="false" prefHeight="41.0" prefWidth="165.0" text="Règles" />
+                              <Button mnemonicParsing="false" onAction="#traiterClicRegles" prefHeight="41.0" prefWidth="165.0" text="Règles" />
                               <Button mnemonicParsing="false" text="Abandonner" />
                            </children>
                         </VBox>
