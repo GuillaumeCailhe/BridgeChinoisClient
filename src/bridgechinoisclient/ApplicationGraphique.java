@@ -31,7 +31,7 @@ public class ApplicationGraphique extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("BRIDGE CHINOIS");
-        this.primaryStage.getIcons().add(new Image(ApplicationGraphique.class.getResourceAsStream("view/ressources/cartes/symbole_pique.png")));
+        this.primaryStage.getIcons().add(new Image(ApplicationGraphique.class.getResourceAsStream("view/ressources/cartes/logo.png")));
 
         afficherMenu();
     }
@@ -77,13 +77,15 @@ public class ApplicationGraphique extends Application {
             // On charge la scène
             Scene scene = new Scene(menu);
             dialog.setScene(scene);
+            dialog.setTitle("BRIDGE CHINOIS");
+            dialog.getIcons().add(new Image(ApplicationGraphique.class.getResourceAsStream("view/ressources/cartes/logo.png")));
 
             Controller controller = loader.getController();
             controller.setMainApp(this);
 
             dialog.setScene(scene);
             dialog.show();
-            
+
             return controller;
         } catch (IOException ex) {
             Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
@@ -139,7 +141,7 @@ public class ApplicationGraphique extends Application {
     }
 
     public void afficherMessageVictoire(String messageVictoire) {
-        VictoireController vc = (VictoireController) afficherPopup("view/Victoire.FXML", Modality.APPLICATION_MODAL);
+        VictoireController vc = (VictoireController) afficherPopup("view/popup_Victoire.FXML", Modality.APPLICATION_MODAL);
         vc.setMessageVictoire(messageVictoire);
     }
 
