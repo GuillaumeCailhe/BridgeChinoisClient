@@ -114,6 +114,18 @@ public class Client implements Runnable {
             } while (!main.isEmpty());
 
             // Réception victoire/défaite
+            msg = c.getPremierMessage();
+            switch(msg.getCode()){
+                case VICTOIRE_MANCHE:
+                    System.out.println("VICTOIRE !");
+                    break;
+                case EGALITE_MANCHE:
+                    System.out.println("Egalité.");
+                    break;
+                case DEFAITE_MANCHE:
+                    System.out.println("Defaite...");
+                    break;
+            }
         }
 
     }
@@ -213,6 +225,7 @@ public class Client implements Runnable {
         int i = msg.getDonnees();
         if (i < 4) {
             this.atout = SymboleCarte.values()[i];
+            this.atout.setAtout(true);
         } else {
             this.atout = null;
         }
@@ -419,6 +432,7 @@ public class Client implements Runnable {
     }
 
     public synchronized boolean jouer(int i) {
+        System.out.println(i);
         if (peutJouer) {
             this.c.envoyerEntier(CodeMessage.JOUER, (byte) i);
             attendreMessage();
