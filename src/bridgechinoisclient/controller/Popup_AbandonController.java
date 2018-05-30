@@ -17,7 +17,7 @@ import javafx.stage.Stage;
  *
  * @author helgr
  */
-public class ReglesController extends Controller {
+public class Popup_AbandonController extends Controller {
 
     @FXML
     Button button;
@@ -27,13 +27,21 @@ public class ReglesController extends Controller {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
     }
 
-    @FXML
-    private void traiterClicRetour() {
+    private void fermer() {
         Stage stage = (Stage) button.getScene().getWindow();
         stage.close();
     }
 
+    @FXML
+    private void traiterClicOui() {
+        this.getApplicationGraphique().afficherMenu();
+        fermer();
+    }
+
+    @FXML
+    private void traiterClicNon() {
+        fermer();
+    }
 }

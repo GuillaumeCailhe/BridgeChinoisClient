@@ -87,6 +87,11 @@ public class PlateauController extends Controller {
         this.getApplicationGraphique().afficherRegles();
     }
     
+    @FXML
+    private void traiterClicAbandonner(){
+        this.getApplicationGraphique().afficherPopupAbandon();
+    }
+    
     public void initialiser(Client client, ArrayList<Carte> mainJoueur, ArrayList<Carte> piles, String nomJoueur, String nomAdversaire) {
         this.client = client;
 

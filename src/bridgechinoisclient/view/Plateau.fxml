@@ -44,7 +44,7 @@
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#traiterClicRegles" prefHeight="41.0" prefWidth="165.0" text="Règles" />
-                              <Button mnemonicParsing="false" text="Abandonner" />
+                              <Button mnemonicParsing="false" onAction="#traiterClicAbandonner" text="Abandonner" />
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">

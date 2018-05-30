@@ -63,6 +63,30 @@ public class ApplicationGraphique extends Application {
         return null;
     }
 
+    private void afficherPopup(String viewPath, Modality modality) {
+        final Stage dialog = new Stage();
+        dialog.initModality(modality);
+        dialog.initOwner(primaryStage);
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(ApplicationGraphique.class.getResource(viewPath));
+        AnchorPane menu;
+        try {
+            menu = (AnchorPane) loader.load();
+            // On charge la scène
+            Scene scene = new Scene(menu);
+            dialog.setScene(scene);
+
+            Controller controller = loader.getController();
+            controller.setMainApp(this);
+
+            dialog.setScene(scene);
+            dialog.show();
+        } catch (IOException ex) {
+            Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * Affiche le menu principal
      */
@@ -96,34 +120,18 @@ public class ApplicationGraphique extends Application {
      * Affiche les règles
      */
     public void afficherRegles() {
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(primaryStage);
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(ApplicationGraphique.class.getResource("view/Regles.fxml"));
-        AnchorPane menu;
-        try {
-            menu = (AnchorPane) loader.load();
-            // On charge la scène
-            Scene scene = new Scene(menu);
-            dialog.setScene(scene);
-
-            Controller controller = loader.getController();
-            controller.setMainApp(this);
-            
-            dialog.setScene(scene);
-            dialog.show();
-        } catch (IOException ex) {
-            Logger.getLogger(ApplicationGraphique.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        afficherPopup("view/Regles.FXML", Modality.NONE);
     }
 
     /**
-     * Affiche le score
+     * Affiche les options
      */
     public void afficherOptions() {
-
+        System.out.println("Fonctionnalité non implémentée.");
+    }
+    
+    public void afficherPopupAbandon(){
+        afficherPopup("view/Popup_Abandon.FXML", Modality.APPLICATION_MODAL);
     }
 
     /**
