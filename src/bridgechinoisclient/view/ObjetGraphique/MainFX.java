@@ -150,7 +150,7 @@ public class MainFX extends Parent {
         this.surbrillance.setHeight(100);
         this.surbrillance.setTranslateX(-5);
         this.surbrillance.setTranslateY(-5);
-        this.surbrillance.setFill(Color.rgb(204, 113, 20));
+        this.surbrillance.setFill(Color.rgb(178, 52, 80));
         this.getChildren().add(surbrillance);
         this.surbrillance.setVisible(true);
         surbrillance.toBack();

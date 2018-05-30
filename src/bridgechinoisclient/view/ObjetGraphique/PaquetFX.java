@@ -273,7 +273,7 @@ public class PaquetFX extends Parent {
         int tailleAjouteeY = offsetX * 6;
         this.surbrillance.setWidth(67 + tailleAjouteeX);
         this.surbrillance.setHeight(92 + tailleAjouteeY);
-        this.surbrillance.setFill(Color.rgb(204, 113, 20));
+        this.surbrillance.setFill(Color.rgb(178, 52, 80));
         this.surbrillance.setTranslateX(positionPaquetX - tailleAjouteeX / 2);
         this.surbrillance.setTranslateY(positionPaquetY - tailleAjouteeY / 2);
 
